@@ -1,0 +1,3735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>愛車雹アラート | HAILSCOPE JAPAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b14;
+  --bg-1:#0d1120;
+  --panel:#11172a;
+  --panel-2:#161d33;
+  --line:#232c45;
+  --line-soft:#1a2138;
+  --text:#e9edf7;
+  --text-dim:#8a93b3;
+  --text-faint:#5c657f;
+  --ice:#7fe7ff;
+  --violet:#a58bff;
+  --amber:#ffc24b;
+  --orange:#ff8a3d;
+  --crimson:#ff3d6e;
+  --safe:#2fd4a8;
+  --r-0:#1c3b63;
+  --r-25:#2fa6a0;
+  --r-50:#ffc24b;
+  --r-75:#ff8a3d;
+  --r-100:#ff2f5e;
+  --radius:14px;
+  --font-display:'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+  --font-body:'Noto Sans JP', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{background:var(--bg); color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased;}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(165,139,255,0.14), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(127,231,255,0.10), transparent 55%),
+    var(--bg);
+  padding-bottom:80px;
+}
+a{color:inherit;}
+::selection{background:var(--violet); color:#0a0d16;}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:56px 24px 40px;
+  border-bottom:1px solid var(--line-soft);
+}
+.hero-sky{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, rgba(19,25,46,0.9) 0%, rgba(8,11,20,0) 70%);
+  pointer-events:none;
+}
+.cloud{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(40px);
+  opacity:0.35;
+  animation:drift 26s ease-in-out infinite;
+}
+.cloud.c1{width:320px;height:140px; top:-40px; left:-60px; background:radial-gradient(circle,#3d4a78,transparent 70%); animation-duration:32s;}
+.cloud.c2{width:260px;height:120px; top:10px; right:-40px; background:radial-gradient(circle,#4a3d78,transparent 70%); animation-duration:24s; animation-delay:-6s;}
+.cloud.c3{width:200px;height:100px; top:60px; left:40%; background:radial-gradient(circle,#2d5266,transparent 70%); animation-duration:28s; animation-delay:-14s;}
+@keyframes drift{
+  0%,100%{transform:translateX(0) translateY(0);}
+  50%{transform:translateX(30px) translateY(10px);}
+}
+.bolt{
+  position:absolute; top:18px; right:120px; width:46px; height:70px;
+  opacity:0; pointer-events:none;
+}
+.bolt svg{width:100%; height:100%; filter:drop-shadow(0 0 10px var(--ice));}
+@keyframes flash{
+  0%,100%{opacity:0;}
+  2%{opacity:1;}
+  4%{opacity:0.2;}
+  6%{opacity:0.9;}
+  9%{opacity:0;}
+}
+.bolt{animation:flash 7s ease-in-out infinite;}
+
+.eyebrow{
+  position:relative; z-index:1;
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-mono);
+  font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--ice);
+  background:rgba(127,231,255,0.08);
+  border:1px solid rgba(127,231,255,0.25);
+  padding:5px 12px; border-radius:100px;
+  margin-bottom:18px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ice); box-shadow:0 0 8px var(--ice); animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.25;}}
+
+.hero h1{
+  position:relative; z-index:1;
+  font-family:var(--font-display);
+  font-weight:900;
+  font-size:clamp(30px, 5.4vw, 54px);
+  line-height:1.1;
+  letter-spacing:-0.01em;
+  background:linear-gradient(120deg, #fff 10%, var(--ice) 55%, var(--violet) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  margin-bottom:14px;
+}
+.hero p{
+  position:relative; z-index:1;
+  max-width:640px;
+  color:var(--text-dim);
+  font-size:15px;
+  line-height:1.8;
+}
+.hero .meta{
+  position:relative; z-index:1;
+  margin-top:22px;
+  display:flex; flex-wrap:wrap; gap:10px;
+}
+.chip{
+  font-family:var(--font-mono);
+  font-size:11.5px;
+  color:var(--text-dim);
+  border:1px solid var(--line);
+  background:var(--panel);
+  padding:6px 11px;
+  border-radius:8px;
+}
+.chip b{color:var(--text); font-weight:600;}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+.stack{margin-top:34px; display:flex; flex-direction:column; gap:22px;}
+
+/* touch device: no sticky hover */
+@media (hover:none){
+  .tile:hover{transform:none; box-shadow:none;}
+  .tile:active{transform:scale(0.94); z-index:5;}
+  .seg button:not(.active):active{background:var(--panel-2); color:var(--text);}
+}
+
+/* stat row */
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px;}
+.stat-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:16px 18px;
+}
+.stat-card .label{font-size:11px; letter-spacing:0.06em; color:var(--text-faint); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:8px;}
+.stat-card .value{font-family:var(--font-display); font-weight:700; font-size:22px;}
+.stat-card .sub{font-size:12px; color:var(--text-dim); margin-top:4px;}
+.stat-card.warn .value{color:var(--orange);}
+.stat-card.danger .value{color:var(--crimson);}
+
+/* controls */
+.controls{
+  display:flex; flex-direction:column; gap:12px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px;
+  position:sticky; top:8px; z-index:20;
+  backdrop-filter:blur(10px);
+}
+.controls-label{font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; color:var(--text-faint); padding:0 4px; text-transform:uppercase;}
+.seg{
+  display:flex; gap:4px; background:var(--bg-1); border:1px solid var(--line); border-radius:10px; padding:4px;
+  overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.seg::-webkit-scrollbar{display:none;}
+.seg button{
+  font-family:var(--font-body);
+  font-size:13px; font-weight:500;
+  color:var(--text-dim);
+  background:transparent; border:none; border-radius:7px;
+  padding:10px 14px; cursor:pointer;
+  transition:all .18s ease;
+  white-space:nowrap;
+  flex:0 0 auto;
+  min-height:44px;
+}
+.seg button .d{display:block; font-family:var(--font-mono); font-size:10px; opacity:0.75; margin-top:1px;}
+.seg button.active{background:linear-gradient(135deg, var(--ice), var(--violet)); color:#0a0d16; font-weight:700;}
+.seg button:not(.active):hover{color:var(--text); background:var(--panel-2);}
+
+/* ---------- MAP CARD ---------- */
+.map-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:22px;
+  position:relative;
+  overflow:hidden;
+}
+.map-card::before{
+  content:"";
+  position:absolute; inset:0;
+  background:radial-gradient(circle at 85% 10%, rgba(165,139,255,0.08), transparent 45%);
+  pointer-events:none;
+}
+.map-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; margin-bottom:18px; position:relative;}
+.map-head h2{font-family:var(--font-display); font-size:19px; font-weight:700;}
+.map-head p{font-size:12.5px; color:var(--text-dim); margin-top:4px;}
+
+.legend{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px; color:var(--text-dim);}
+.legend .bar{width:150px; height:8px; border-radius:6px; background:linear-gradient(90deg, var(--r-0), var(--r-25), var(--r-50), var(--r-75), var(--r-100));}
+
+.map-scroll{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  margin:0 -22px;
+  padding:0 22px 6px;
+  scrollbar-width:thin;
+}
+.map-grid{
+  display:grid;
+  grid-template-columns:repeat(16, minmax(32px, 1fr));
+  grid-auto-rows:minmax(32px, 1fr);
+  gap:5px;
+  position:relative;
+}
+#mapGrid{ min-width:600px; }
+#mapGrid.compact{
+  min-width:0;
+  grid-template-columns:repeat(6, 1fr);
+  grid-auto-rows:minmax(50px, auto);
+}
+.tile.compact-tile{
+  font-size:13px;
+  border-radius:10px;
+  min-height:50px;
+}
+.scroll-hint{
+  display:none;
+  align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint);
+  margin-top:10px;
+}
+.scroll-hint svg{width:13px; height:13px; animation:swipe 1.6s ease-in-out infinite;}
+@keyframes swipe{0%,100%{transform:translateX(0); opacity:0.5;} 50%{transform:translateX(5px); opacity:1;}}
+.tile{
+  position:relative;
+  border-radius:7px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono);
+  font-size:10.5px;
+  font-weight:700;
+  color:rgba(8,11,20,0.75);
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,0.06);
+  transition:transform .15s ease, box-shadow .15s ease, outline .15s ease;
+  user-select:none;
+}
+.tile:hover{transform:translateY(-2px) scale(1.06); z-index:5; box-shadow:0 8px 20px rgba(0,0,0,0.45);}
+.tile.selected{outline:2px solid #fff; outline-offset:1px; z-index:6;}
+.tile.hokkaido{font-size:12px;}
+.tile.hot::after{
+  content:"";
+  position:absolute; inset:-4px;
+  border-radius:10px;
+  border:1.5px solid var(--crimson);
+  opacity:0.9;
+  animation:radarping 1.6s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes radarping{
+  0%{transform:scale(0.9); opacity:0.9;}
+  100%{transform:scale(1.35); opacity:0;}
+}
+.tile .pct{position:absolute; bottom:-16px; left:0; right:0; text-align:center; font-size:9px; color:var(--text-faint); font-weight:400; display:none;}
+
+.map-legend-labels{display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:10px; color:var(--text-faint); margin-top:6px; max-width:150px;}
+
+/* ---------- DETAIL PANEL ---------- */
+.detail{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:26px;
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:28px;
+}
+@media (max-width:680px){.detail{grid-template-columns:1fr;}}
+.detail .gauge-col{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border-right:1px solid var(--line-soft); padding-right:24px;}
+@media (max-width:680px){.detail .gauge-col{border-right:none; border-bottom:1px solid var(--line-soft); padding-right:0; padding-bottom:20px;}}
+.gauge{position:relative; width:150px; height:150px;}
+.gauge svg{transform:rotate(-90deg);}
+.gauge .bg{fill:none; stroke:var(--line); stroke-width:10;}
+.gauge .fg{fill:none; stroke-width:10; stroke-linecap:round; transition:stroke-dasharray .5s ease, stroke .5s ease;}
+.gauge .num{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.gauge .num .n{font-family:var(--font-display); font-weight:900; font-size:34px;}
+.gauge .num .u{font-family:var(--font-mono); font-size:11px; color:var(--text-dim); margin-top:-2px;}
+.risk-label{font-family:var(--font-display); font-weight:700; font-size:14px; padding:5px 14px; border-radius:100px; letter-spacing:0.02em;}
+
+.detail-body h3{font-family:var(--font-display); font-size:22px; font-weight:700; margin-bottom:4px;}
+.detail-body .region-tag{font-family:var(--font-mono); font-size:11.5px; color:var(--text-dim); margin-bottom:16px; display:block;}
+.factors{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+.factor{
+  display:flex; align-items:center; gap:6px;
+  font-size:12.5px; color:var(--text);
+  background:var(--bg-1); border:1px solid var(--line);
+  padding:7px 12px; border-radius:9px;
+}
+.factor .ic{font-size:14px;}
+.advice{
+  font-size:13.5px; line-height:1.85; color:var(--text-dim);
+  background:var(--bg-1); border:1px solid var(--line-soft); border-left:3px solid var(--ice);
+  padding:14px 16px; border-radius:0 10px 10px 0;
+}
+.advice b{color:var(--text);}
+.detail-empty{display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-faint); font-size:13.5px; grid-column:1/-1; text-align:center; line-height:1.8;}
+
+/* ---------- METHOD ---------- */
+.method{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:26px;
+}
+.method h2{font-family:var(--font-display); font-size:18px; font-weight:700; margin-bottom:14px;}
+.method-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:20px;}
+.method-item{border:1px solid var(--line-soft); border-radius:12px; padding:14px 16px; background:var(--bg-1);}
+.method-item .ic{font-size:18px; margin-bottom:8px; display:block;}
+.method-item h4{font-size:13.5px; margin-bottom:6px; font-weight:700;}
+.method-item p{font-size:12.5px; color:var(--text-dim); line-height:1.7;}
+.scale-guide{background:var(--bg-1); border:1px solid var(--line-soft); border-radius:14px; padding:18px 20px; margin-bottom:20px;}
+.scale-guide h3{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin-bottom:4px;}
+.scale-guide-lead{font-size:12.5px; color:var(--text-dim); line-height:1.7; margin-bottom:16px;}
+.scale-bar-visual{height:12px; border-radius:8px; background:linear-gradient(90deg, var(--r-0), var(--r-25), var(--r-50), var(--r-75), var(--r-100)); margin-bottom:10px;}
+.scale-levels{display:flex; flex-wrap:wrap; gap:16px 20px; margin-bottom:16px;}
+.scale-level{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-dim); white-space:nowrap;}
+.scale-level .dot{width:9px; height:9px; border-radius:50%; flex:none;}
+.scale-level b{color:var(--text); font-family:var(--font-mono); font-size:12px; font-weight:700;}
+.scale-note{font-size:12.5px; color:var(--text-dim); line-height:1.85; border-top:1px solid var(--line-soft); padding-top:14px;}
+.scale-note b{color:var(--text); font-weight:700;}
+@media (max-width:600px){
+  .scale-levels{gap:10px 16px;}
+  .scale-guide{padding:16px;}
+}
+.disclaimer{
+  font-size:12px; line-height:1.9; color:var(--text-faint);
+  border-top:1px solid var(--line-soft); padding-top:16px;
+}
+.disclaimer b{color:var(--text-dim);}
+.sources{margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;}
+.sources span{font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint); border:1px solid var(--line-soft); padding:3px 9px; border-radius:6px;}
+
+footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-size:11.5px; font-family:var(--font-mono);}
+
+/* ---------- SHARE / QR ---------- */
+.share-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:26px;
+  text-align:center;
+}
+.share-card h2{font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:4px;}
+.share-card .reg-sub{text-align:center; margin-left:auto; margin-right:auto;}
+.share-body{
+  display:flex; align-items:center; justify-content:center; gap:26px;
+  flex-wrap:wrap; margin-top:6px;
+}
+.qr-box{
+  width:168px; height:168px; flex:0 0 auto;
+  background:#fff; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  padding:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+.qr-box svg{width:100%; height:100%; display:block;}
+.qr-box .qr-loading, .qr-box .qr-placeholder{
+  font-family:var(--font-mono); font-size:11px; color:#666; text-align:center; line-height:1.6;
+}
+.share-link-col{text-align:left; max-width:320px;}
+.share-link-row{display:flex; align-items:center; gap:8px; margin-top:6px;}
+.share-link{
+  font-family:var(--font-mono); font-size:12px; color:var(--ice);
+  word-break:break-all; text-decoration:none;
+  border:1px solid var(--line); background:var(--bg-1);
+  padding:8px 10px; border-radius:8px; flex:1; min-width:0;
+}
+.share-link:hover{text-decoration:underline;}
+@media (max-width:600px){
+  .share-card{padding:18px; border-radius:16px;}
+  .share-body{flex-direction:column;}
+  .share-link-col{text-align:center; max-width:none; width:100%;}
+  .share-link-row{flex-direction:column;}
+  .share-link{width:100%; text-align:center;}
+  .perm-btn-row + .share-link-row .btn{width:100%;}
+}
+
+/* ---------- DRILL-DOWN / BACK ---------- */
+.back-btn{
+  font-family:var(--font-mono);
+  font-size:11.5px; font-weight:600;
+  color:var(--ice);
+  background:rgba(127,231,255,0.08);
+  border:1px solid rgba(127,231,255,0.3);
+  padding:6px 12px; border-radius:100px;
+  cursor:pointer; margin-bottom:10px;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:all .15s ease;
+}
+.back-btn:hover{background:rgba(127,231,255,0.16);}
+.tile.muni{font-size:9px; font-weight:600; line-height:1.15; text-align:center; padding:1px;}
+
+/* ---------- REGISTRATION / ALERTS ---------- */
+.reg-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:26px;
+}
+.reg-card h2{font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:4px;}
+.reg-card .reg-sub{font-size:12.5px; color:var(--text-dim); margin-bottom:20px; line-height:1.7; max-width:760px;}
+.reg-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+@media (max-width:780px){.reg-grid{grid-template-columns:1fr;}}
+.reg-block{border:1px solid var(--line-soft); border-radius:14px; padding:16px 18px; background:var(--bg-1);}
+.reg-block h3{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+.reg-block h3 .ic{font-size:16px;}
+
+.field-row{display:flex; flex-direction:column; gap:5px; margin-bottom:12px;}
+.field-row label{font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.04em; color:var(--text-faint); text-transform:uppercase;}
+.field-row select, .field-row input{
+  font-family:var(--font-body);
+  font-size:13.5px;
+  color:var(--text);
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px 12px;
+  outline:none;
+  min-height:42px;
+  width:100%;
+}
+.field-row select:focus, .field-row input:focus{border-color:var(--ice);}
+.field-row.checks{flex-direction:row; align-items:flex-start; gap:8px; margin-top:2px; margin-bottom:10px;}
+.field-row.checks label{text-transform:none; font-size:12.5px; color:var(--text-dim); font-family:var(--font-body); display:flex; align-items:flex-start; gap:6px; line-height:1.5;}
+.field-row.checks label input{margin-top:2px; flex:0 0 auto; width:18px; height:18px; min-height:0;}
+
+.btn{
+  font-family:var(--font-body); font-weight:700; font-size:13.5px;
+  color:#0a0d16;
+  background:linear-gradient(135deg, var(--ice), var(--violet));
+  border:none; border-radius:9px;
+  padding:11px 16px; cursor:pointer;
+  min-height:42px;
+  transition:opacity .15s ease;
+  width:100%;
+}
+.btn:hover{opacity:0.88;}
+.btn.ghost{
+  background:transparent; color:var(--text-dim);
+  border:1px solid var(--line);
+}
+.btn.ghost:hover{color:var(--text); background:var(--panel-2);}
+.btn.small{padding:9px 14px; font-size:12.5px; width:auto; min-height:40px;}
+
+.reg-list{display:flex; flex-direction:column; gap:10px; margin-top:2px; max-height:420px; overflow-y:auto;}
+.reg-empty{font-size:12.5px; color:var(--text-faint); padding:14px 4px; line-height:1.7;}
+.reg-item{
+  display:flex; align-items:center; gap:12px;
+  background:var(--panel-2); border:1px solid var(--line);
+  border-radius:12px; padding:10px 12px;
+}
+.reg-item .dot-score{
+  width:44px; height:44px; border-radius:10px; flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:900; font-size:13px; color:#0a0d16;
+}
+.reg-item .ri-body{flex:1; min-width:0;}
+.reg-item .ri-name{font-size:13.5px; font-weight:700; color:var(--text);}
+.reg-item .ri-meta{font-size:11px; color:var(--text-dim); margin-top:2px; font-family:var(--font-mono);}
+.reg-item .ri-forecast{font-size:10.5px; color:var(--amber); margin-top:3px;}
+.reg-item .ri-remove{
+  background:transparent; border:1px solid var(--line); color:var(--text-faint);
+  width:36px; height:36px; border-radius:8px; cursor:pointer; flex:0 0 auto;
+  font-size:16px; line-height:1;
+}
+.reg-item .ri-remove:hover{color:var(--crimson); border-color:var(--crimson);}
+.reg-item.alerting{border-color:var(--crimson); box-shadow:0 0 0 1px var(--crimson) inset;}
+
+.sim-note{
+  font-size:11.5px; line-height:1.8; color:#ffffff;
+  background:rgba(255,194,75,0.06); border:1px solid rgba(255,194,75,0.25);
+  border-radius:10px; padding:10px 12px; margin-top:16px;
+}
+.sim-note b{color:var(--amber);}
+
+.perm-btn-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;}
+
+.reg-btn-detail{
+  margin-top:14px; display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-body); font-weight:700; font-size:12.5px;
+  padding:9px 14px; border-radius:9px; cursor:pointer;
+  border:1px solid rgba(127,231,255,0.3); background:rgba(127,231,255,0.08); color:var(--ice);
+}
+.reg-btn-detail:hover{background:rgba(127,231,255,0.16);}
+.reg-btn-detail.done{border-color:rgba(47,212,168,0.4); background:rgba(47,212,168,0.1); color:var(--safe); cursor:default;}
+
+#toastWrap{position:fixed; top:14px; right:14px; z-index:999; display:flex; flex-direction:column; gap:8px; max-width:320px;}
+.toast{
+  background:var(--panel); border:1px solid var(--crimson); border-left:4px solid var(--crimson);
+  border-radius:10px; padding:12px 14px; box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  font-size:12.5px; line-height:1.6; color:var(--text);
+  animation:toastIn .25s ease;
+}
+.toast b{color:var(--crimson);}
+@keyframes toastIn{from{transform:translateX(30px); opacity:0;} to{transform:translateX(0); opacity:1;}}
+@media (max-width:600px){
+  #toastWrap{left:12px; right:12px; max-width:none;}
+}
+
+/* ================= MOBILE ================= */
+@media (max-width:760px){
+  .wrap{padding:0 16px;}
+  .hero{padding:36px 16px 28px;}
+  .hero p{font-size:14px;}
+  .hero .meta{gap:8px;}
+  .chip{font-size:10.5px; padding:5px 10px;}
+  .bolt{right:24px; top:10px; width:34px; height:52px;}
+  .cloud.c2{right:-70px;}
+
+  .stack{margin-top:22px; gap:16px;}
+  .stats{grid-template-columns:1fr 1fr; gap:8px;}
+  .stat-card{padding:12px 13px; border-radius:12px;}
+  .stat-card .value{font-size:18px;}
+  .stat-card .label{font-size:10px;}
+  .stat-card .sub{font-size:11px;}
+
+  .controls{padding:10px; top:6px;}
+  .controls-label{font-size:9.5px;}
+
+  .map-card{padding:16px 0 16px 16px; border-radius:16px;}
+  .map-head{padding-right:16px;}
+  .map-head h2{font-size:16.5px;}
+  .map-head p{font-size:11.5px;}
+  .legend{padding-right:0;}
+  .legend .bar{width:100px;}
+  .map-scroll{margin:0; padding:0 16px 6px 0;}
+
+  .detail{padding:18px; border-radius:16px; gap:18px;}
+  .detail-body h3{font-size:19px;}
+  .gauge{width:120px; height:120px;}
+  .gauge svg{width:120px; height:120px;}
+  .gauge .num .n{font-size:28px;}
+  .factor{font-size:12px; padding:6px 10px;}
+  .advice{font-size:13px; padding:12px 14px;}
+
+  .method{padding:18px; border-radius:16px;}
+  .method h2{font-size:16.5px;}
+  .method-grid{grid-template-columns:1fr; gap:10px;}
+
+  .reg-card{padding:18px; border-radius:16px;}
+  .reg-card h2{font-size:16.5px;}
+  .reg-grid{gap:14px;}
+  .reg-block{padding:14px;}
+}
+
+@media (max-width:400px){
+  .hero h1{font-size:28px;}
+  .stats{grid-template-columns:1fr 1fr;}
+  .stat-card .value{font-size:16px;}
+  .seg button{padding:10px 12px; font-size:12px;}
+}
+</style>
+</head>
+<body>
+
+<div id="toastWrap"></div>
+
+<div class="hero">
+  <div class="hero-sky"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="bolt"><svg viewBox="0 0 24 36" fill="none"><path d="M14 0 L2 20 H11 L8 36 L22 14 H13 L14 0Z" fill="currentColor" style="color:var(--ice)"/></svg></div>
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span>JMA SIGNAL BASED ESTIMATE — 全国降雹リスク推定</div>
+    <h1>愛車雹アラート</h1>
+    <p>気象庁が発表する天気図・大気の状態（不安定）・雷注意報・竜巻注意情報・台風進路などの公開情報をもとに、積乱雲が発達し雹（ひょう）が降りやすい条件を地域ごとにスコア化。当日から3日先まで、時間帯別に一目で確認できます。</p>
+    <div class="meta">
+      <div class="chip">対象期間 <b>8/14(金) 〜 8/17(月)</b></div>
+      <div class="chip">最終データ反映 <b>8/13(木) 21:38 JST</b></div>
+      <div class="chip">単位 <b>降雹ポテンシャル指数 0–100%</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap stack">
+
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <div>
+      <div class="controls-label">期間</div>
+      <div class="seg" id="daySeg"></div>
+    </div>
+    <div>
+      <div class="controls-label">時間帯</div>
+      <div class="seg" id="timeSeg"></div>
+    </div>
+  </div>
+
+  <div class="map-card">
+    <div class="map-head">
+      <div>
+        <button class="back-btn" id="backBtn" style="display:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 6l-6 6 6 6"/></svg>
+          全国マップに戻る
+        </button>
+        <h2 id="mapTitle">全国ヒートマップ</h2>
+        <p id="mapDesc">都道府県タイルをタップすると、市区町村単位のヒートマップと詳細スコアが表示されます</p>
+      </div>
+      <div>
+        <div class="legend"><span>低</span><div class="bar"></div><span>高</span></div>
+      </div>
+    </div>
+    <div class="map-scroll">
+      <div class="map-grid" id="mapGrid"></div>
+      <div class="map-grid" id="muniGrid" style="display:none;"></div>
+    </div>
+    <div class="scroll-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M15 6l6 6-6 6"/></svg>横にスクロールして全て表示</div>
+  </div>
+
+  <div class="detail" id="detail">
+    <div class="detail-empty">都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。</div>
+  </div>
+
+  <div class="reg-card">
+    <h2>登録地域と通知先（市区町村単位）</h2>
+    <p class="reg-sub">アラートを受け取りたい市区町村と、通知先のメールアドレス・電話番号（SMS）を登録できます。降雹指数が<b style="color:var(--text)">80%以上</b>になった際に実際にメール・SMSを送信するには、別途バックエンドサーバーとの連携が必要です（下部の注記をご確認ください）。登録した内容はこのブラウザに保存されます。</p>
+
+    <div class="reg-grid">
+      <div class="reg-block">
+        <h3><span class="ic">📍</span>地域を登録する</h3>
+        <div class="field-row">
+          <label>都道府県</label>
+          <select id="regPrefSelect"></select>
+        </div>
+        <div class="field-row">
+          <label>市区町村</label>
+          <select id="regCitySelect"></select>
+        </div>
+        <button class="btn" id="regAddBtn">この地域を登録する</button>
+
+        <h3 style="margin-top:22px;"><span class="ic">✉️</span>通知先設定</h3>
+        <div class="field-row">
+          <label>アラートメール</label>
+          <input type="email" id="contactEmail" placeholder="you@example.com" autocomplete="off">
+        </div>
+        <div class="field-row">
+          <label>アラートSMS（電話番号）</label>
+          <input type="tel" id="contactPhone" placeholder="090-1234-5678" autocomplete="off">
+        </div>
+        <div class="field-row checks">
+          <label><input type="checkbox" id="enableEmail" checked>メールで受け取る</label>
+        </div>
+        <div class="field-row checks">
+          <label><input type="checkbox" id="enableSms" checked>SMSで受け取る</label>
+        </div>
+        <div class="perm-btn-row">
+          <button class="btn ghost small" id="saveContactBtn">通知先を保存</button>
+        </div>
+      </div>
+
+      <div class="reg-block">
+        <h3><span class="ic">🗂️</span>登録済みの地域<span id="regCount" style="color:var(--text-faint); font-family:var(--font-mono); font-size:11px; font-weight:400;"></span></h3>
+        <div class="reg-list" id="regList"></div>
+      </div>
+    </div>
+
+    <div class="sim-note">
+      <b>ご注意：</b>本アプリはサーバーを持たない単体HTMLファイルのため、この画面だけでは実際のメール・SMS送信はできません。上記で登録した市区町村・通知先はこのブラウザ内に保存されるのみです。実際にメール・SMSを自動送信するには、EmailJS等の外部サービス連携、またはSendGrid・Twilio等と連携する専用のバックエンドサーバーの構築が別途必要です。ご希望の場合は別途その構成をご提案・実装できます。
+    </div>
+  </div>
+
+  <div class="method">
+    <h2>この指数の算出方法</h2>
+
+    <div class="scale-guide">
+      <h3>指数のスケール感（0〜100%の目安）</h3>
+      <p class="scale-guide-lead">降水確率とは考え方が異なるため、同じ「60%」でも意味が変わります。数値を見るときは下記を目安にしてください。</p>
+      <div class="scale-bar-visual"></div>
+      <div class="scale-levels">
+        <div class="scale-level"><span class="dot" style="background:var(--r-0)"></span><b>0〜19%</b>&nbsp;低い</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-25)"></span><b>20〜39%</b>&nbsp;やや低い</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-50)"></span><b>40〜59%</b>&nbsp;中程度</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-75)"></span><b>60〜79%</b>&nbsp;高い</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-100)"></span><b>80〜100%</b>&nbsp;非常に高い（通知の基準）</div>
+      </div>
+      <p class="scale-note">実際の算出結果では、全国47都道府県 × 4日間 × 6時間帯（合計940通り）のうち<b>約7割は20%未満</b>にとどまり、<b>60%以上になるのは全体の1.5%程度</b>、通知の基準となる<b>80%以上に達するのは0.1%程度</b>しかありません。天気予報の「降水確率60%」であれば「かなり降りそう」という感覚になりますが、本アプリの指数はそれとは別のスケールで、複数の悪条件（大気の不安定・雷の発生しやすさ・地形・時間帯など）が重なった時だけ数値が跳ね上がるように設計しています。そのため40〜50%台でもすでに「通常よりは注意が必要な状態」を意味し、降水確率の感覚で見るより低めの数値で危険度が上がっている、とご理解ください。</p>
+    </div>
+
+    <div class="method-grid">
+      <div class="method-item">
+        <span class="ic">🌩️</span>
+        <h4>大気の状態（不安定）</h4>
+        <p>気象庁・気象予報士が発表する「大気の状態が不安定」という表現や、地上の暖湿気と上空の寒気の対比状況を地域別に反映しています。</p>
+      </div>
+      <div class="method-item">
+        <span class="ic">⚡</span>
+        <h4>雷注意報・雷ナウキャスト</h4>
+        <p>雹単独の注意報は存在しないため、雷注意報や雷の発生確率（雷ナウキャスト）を積乱雲発達の代理指標として使用しています。</p>
+      </div>
+      <div class="method-item">
+        <span class="ic">🌀</span>
+        <h4>台風・低気圧の動き</h4>
+        <p>台風や熱帯低気圧の接近に伴う暖湿気の流入・上空寒気との衝突による大気不安定化を、進路予測に基づき加点しています。</p>
+      </div>
+      <div class="method-item">
+        <span class="ic">⛰️</span>
+        <h4>地形（内陸・山沿い）</h4>
+        <p>群馬・栃木・長野・山梨・岐阜など、夏場に積乱雲が発達しやすいとされる内陸・山沿い地域には地形係数を加算しています。</p>
+      </div>
+      <div class="method-item">
+        <span class="ic">🕐</span>
+        <h4>時間帯係数</h4>
+        <p>日射で地表が温まり積乱雲が発達しやすい午後〜夕方にピークが来るよう、時間帯ごとに指数を補正しています。</p>
+      </div>
+      <div class="method-item">
+        <span class="ic">🏘️</span>
+        <h4>市区町村単位の補正</h4>
+        <p>都道府県タイルをタップした先の市区町村マップは、都道府県の指数を基準に、内陸・沿岸・市街地などの傾向差を想定した地域ごとの補正値を加えた参考推定値です。実測データに基づく市区町村別の公式値ではありません。</p>
+      </div>
+      <div class="method-item">
+        <span class="ic">📉</span>
+        <h4>降雨・雷の確率との違い</h4>
+        <p>「大気の状態が不安定」「雷が発生しやすい」条件がそろっても、実際に雹が地表まで届くのはその中でもごく一部です。本アプリでは降水確率のように常に高めの数値になるのではなく、通常は低めに出て、複数の悪条件が重なった時だけ数値が跳ね上がるよう、非線形の補正をかけています。</p>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <b>ご利用にあたって：</b>本アプリの数値は気象庁が発表する天気図・注意報・解説情報等の公開情報を参考人が独自に指数化した「参考推定値」であり、気象庁による公式の降雹予報ではありません（気象庁は雹単独の注意報・予報を発表していません）。実際の外出・農作業・車両保護等の判断は、気象庁「今後の雨」「雷ナウキャスト」「竜巻注意情報」および最新の警報・注意報を必ずご確認のうえ行ってください。
+      <div class="sources">
+        <span>気象庁 天気図・警報注意報</span>
+        <span>気象庁 竜巻注意情報</span>
+        <span>tenki.jp 発雷確率</span>
+        <span>ウェザーニュース</span>
+        <span>TBS NEWS DIG</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="share-card">
+    <h2>このアプリを知人に紹介する</h2>
+    <p class="reg-sub">下のQRコードを読み取ると、このページをスマートフォンで開けます。</p>
+    <div class="share-body">
+      <div class="qr-box" id="qrBox"><div class="qr-loading">QRコードを生成中…</div></div>
+      <div class="share-link-col">
+        <div class="controls-label">このページのURL</div>
+        <div class="share-link-row">
+          <a id="shareLinkText" class="share-link" href="#" target="_blank" rel="noopener">-</a>
+          <button class="btn ghost small" id="copyLinkBtn">コピー</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>愛車雹アラート — 参考推定ツール ／ Not an official JMA forecast</footer>
+
+<script>
+/* qrcode.js -- QR Code Generator for JavaScript (MIT License, (c) 2009 Kazuhiko Arase) -- embedded for offline/self-contained use */
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+
+</script>
+
+<script>
+/* ================= DATA ================= */
+// region base risk [day0, day1, day2, day3]  (0-100)
+const REGION_BASE = {
+  hokkaido:      [24,20,18,22],
+  tohoku_p:      [48,26,20,42],   // 東北太平洋側
+  tohoku_j:      [30,22,20,30],   // 東北日本海側
+  kanto:         [62,28,22,50],
+  koshin:        [50,32,26,44],
+  hokuriku:      [34,24,20,32],
+  tokai:         [50,26,22,42],
+  kinki:         [46,24,20,34],
+  chugoku:       [38,22,20,28],
+  shikoku:       [36,22,20,28],
+  kyushu_n:      [34,24,22,26],
+  kyushu_s:      [30,26,24,24],
+  okinawa:       [24,22,22,20],
+};
+
+const MOUNTAIN_BONUS = new Set(['群馬','栃木','長野','山梨','岐阜','熊本','宮崎','福島','埼玉']);
+
+// factor tags per region (for detail panel)
+const REGION_FACTORS = {
+  hokkaido:['内陸で気温上昇','午後の熱雷リスク'],
+  tohoku_p:['暖湿気の流入','大気の状態が不安定','断続的な雷雨'],
+  tohoku_j:['日差し強く気温上昇','午後の積乱雲発達'],
+  kanto:['大気の状態が非常に不安定','暖かく湿った空気の流入','上空の寒気の影響','局地的な激しい雷雨'],
+  koshin:['山沿いで大気不安定','内陸性の積乱雲発達','急な天気の急変'],
+  hokuriku:['湿った空気の流入','午後の雷雨傾向'],
+  tokai:['大気の状態が不安定','午後の天気急変','急な強い雨'],
+  kinki:['大気の状態が不安定','天気急変の可能性'],
+  chugoku:['にわか雨・雷雨の可能性'],
+  shikoku:['湿った空気の影響','局地的な雷雨'],
+  kyushu_n:['雲が広がりやすい','所々でにわか雨・雷雨'],
+  kyushu_s:['台風周辺の湿った空気'],
+  okinawa:['スッキリしない空','高波・うねりに関連する不安定な気流'],
+};
+
+// prefectures: name, short label, region, grid col, row, size(1 or 2 for hokkaido)
+const PREFS = [
+  ['北海道','北海道','hokkaido',13,1,2],
+  ['青森県','青森','tohoku_p',13,3,1],
+  ['岩手県','岩手','tohoku_p',14,4,1],
+  ['秋田県','秋田','tohoku_j',12,4,1],
+  ['宮城県','宮城','tohoku_p',14,5,1],
+  ['山形県','山形','tohoku_j',12,5,1],
+  ['福島県','福島','tohoku_p',13,6,1],
+  ['新潟県','新潟','hokuriku',12,7,1],
+  ['茨城県','茨城','kanto',14,7,1],
+  ['栃木県','栃木','kanto',13,7,1],
+  ['群馬県','群馬','kanto',12,8,1],
+  ['埼玉県','埼玉','kanto',13,8,1],
+  ['千葉県','千葉','kanto',15,8,1],
+  ['東京都','東京','kanto',14,9,1],
+  ['神奈川県','神奈','kanto',13,9,1],
+  ['富山県','富山','hokuriku',11,8,1],
+  ['石川県','石川','hokuriku',10,8,1],
+  ['福井県','福井','hokuriku',10,9,1],
+  ['山梨県','山梨','koshin',12,9,1],
+  ['長野県','長野','koshin',11,9,1],
+  ['岐阜県','岐阜','tokai',10,10,1],
+  ['静岡県','静岡','tokai',13,10,1],
+  ['愛知県','愛知','tokai',11,10,1],
+  ['三重県','三重','tokai',10,11,1],
+  ['滋賀県','滋賀','kinki',9,9,1],
+  ['京都府','京都','kinki',8,9,1],
+  ['大阪府','大阪','kinki',8,10,1],
+  ['兵庫県','兵庫','kinki',7,9,1],
+  ['奈良県','奈良','kinki',9,10,1],
+  ['和歌山県','和歌','kinki',9,11,1],
+  ['鳥取県','鳥取','chugoku',6,9,1],
+  ['島根県','島根','chugoku',5,9,1],
+  ['岡山県','岡山','chugoku',7,10,1],
+  ['広島県','広島','chugoku',6,10,1],
+  ['山口県','山口','chugoku',5,10,1],
+  ['徳島県','徳島','shikoku',8,11,1],
+  ['香川県','香川','shikoku',7,11,1],
+  ['愛媛県','愛媛','shikoku',6,11,1],
+  ['高知県','高知','shikoku',7,12,1],
+  ['福岡県','福岡','kyushu_n',4,10,1],
+  ['佐賀県','佐賀','kyushu_n',3,11,1],
+  ['長崎県','長崎','kyushu_n',2,11,1],
+  ['熊本県','熊本','kyushu_n',3,12,1],
+  ['大分県','大分','kyushu_n',4,11,1],
+  ['宮崎県','宮崎','kyushu_s',4,12,1],
+  ['鹿児島県','鹿児','kyushu_s',3,13,1],
+  ['沖縄県','沖縄','okinawa',1,15,1],
+];
+
+const MUNI_DATA = {"北海道":{"region":"hokkaido","cols":22,"rows":20,"m":[["札幌市中央区","中央区",4,11],["札幌市北区","北区",5,13],["札幌市東区","東区",6,14],["札幌市白石区","白石区",8,14],["札幌市豊平区","豊平区",6,15],["札幌市南区","南区",4,14],["札幌市西区","西区",5,14],["札幌市厚別区","厚別区",5,15],["札幌市手稲区","手稲区",5,11],["札幌市清田区","清田区",8,15],["函館市","函館市",5,19],["小樽市","小樽市",5,12],["旭川市","旭川市",10,7],["室蘭市","室蘭市",5,18],["釧路市","釧路市",20,13],["帯広市","帯広市",15,14],["北見市","北見市",18,8],["夕張市","夕張市",10,13],["岩見沢市","岩見沢市",9,13],["網走市","網走市",20,7],["留萌市","留萌市",7,6],["苫小牧市","苫小牧市",6,17],["稚内市","稚内市",8,1],["美唄市","美唄市",9,12],["芦別市","芦別市",9,11],["江別市","江別市",6,13],["赤平市","赤平市",10,10],["紋別市","紋別市",16,5],["士別市","士別市",11,6],["名寄市","名寄市",12,5],["三笠市","三笠市",8,13],["根室市","根室市",21,11],["千歳市","千歳市",7,16],["滝川市","滝川市",8,11],["砂川市","砂川市",7,9],["歌志内市","歌志内市",10,11],["深川市","深川市",10,9],["富良野市","富良野市",11,12],["登別市","登別市",4,18],["恵庭市","恵庭市",6,16],["伊達市","伊達市",4,17],["北広島市","北広島市",9,15],["石狩市","石狩市",6,12],["北斗市","北斗市",4,20],["石狩郡当別町","当別町",6,11],["石狩郡新篠津村","新篠津村",7,13],["松前郡松前町","松前町",6,20],["松前郡福島町","福島町",6,19],["上磯郡知内町","知内町",6,18],["上磯郡木古内町","木古内町",5,20],["亀田郡七飯町","七飯町",3,20],["茅部郡鹿部町","鹿部町",4,19],["茅部郡森町","森町",3,19],["二海郡八雲町","八雲町",1,19],["山越郡長万部町","長万部町",1,17],["檜山郡江差町","江差町",2,19],["檜山郡上ノ国町","上ノ国町",3,18],["檜山郡厚沢部町","厚沢部町",2,20],["爾志郡乙部町","乙部町",1,20],["奥尻郡奥尻町","奥尻町",2,18],["瀬棚郡今金町","今金町",1,18],["久遠郡せたな町","せたな町",2,17],["島牧郡島牧村","島牧村",1,15],["寿都郡寿都町","寿都町",1,14],["寿都郡黒松内町","黒松内町",1,16],["磯谷郡蘭越町","蘭越町",1,13],["虻田郡ニセコ町","ニセコ町",2,15],["虻田郡真狩村","真狩村",3,16],["虻田郡留寿都村","留寿都村",4,16],["虻田郡喜茂別町","喜茂別町",4,15],["虻田郡京極町","京極町",3,15],["虻田郡倶知安町","倶知安町",3,14],["岩内郡共和町","共和町",2,13],["岩内郡岩内町","岩内町",2,14],["古宇郡泊村","泊村",3,13],["古宇郡神恵内村","神恵内村",2,12],["積丹郡積丹町","積丹町",2,11],["古平郡古平町","古平町",3,12],["余市郡仁木町","仁木町",3,11],["余市郡余市町","余市町",4,12],["余市郡赤井川村","赤井川村",4,13],["空知郡南幌町","南幌町",7,14],["空知郡奈井江町","奈井江町",8,12],["空知郡上砂川町","上砂川町",7,10],["夕張郡由仁町","由仁町",10,14],["夕張郡長沼町","長沼町",7,15],["夕張郡栗山町","栗山町",9,14],["樺戸郡月形町","月形町",7,12],["樺戸郡浦臼町","浦臼町",7,11],["樺戸郡新十津川町","新十津川町",9,10],["雨竜郡妹背牛町","妹背牛町",9,9],["雨竜郡秩父別町","秩父別町",8,8],["雨竜郡雨竜町","雨竜町",8,10],["雨竜郡北竜町","北竜町",8,9],["雨竜郡沼田町","沼田町",9,8],["上川郡鷹栖町","鷹栖町",11,8],["上川郡東神楽町","東神楽町",12,9],["上川郡当麻町","当麻町",11,9],["上川郡比布町","比布町",12,8],["上川郡愛別町","愛別町",12,7],["上川郡上川町","上川町",13,8],["上川郡東川町","東川町",11,10],["上川郡美瑛町","美瑛町",12,10],["空知郡上富良野町","上富良野町",11,11],["空知郡中富良野町","中富良野町",10,12],["空知郡南富良野町","南富良野町",12,12],["勇払郡占冠村","占冠村",12,13],["上川郡和寒町","和寒町",11,7],["上川郡剣淵町","剣淵町",10,5],["上川郡下川町","下川町",13,5],["中川郡美深町","美深町",11,4],["中川郡音威子府村","音威子府村",11,2],["中川郡中川町","中川町",9,2],["雨竜郡幌加内町","幌加内町",10,6],["増毛郡増毛町","増毛町",7,8],["留萌郡小平町","小平町",8,7],["苫前郡苫前町","苫前町",7,4],["苫前郡羽幌町","羽幌町",8,5],["苫前郡初山別村","初山別村",9,4],["天塩郡遠別町","遠別町",9,3],["天塩郡天塩町","天塩町",7,2],["宗谷郡猿払村","猿払村",10,1],["枝幸郡浜頓別町","浜頓別町",11,1],["枝幸郡中頓別町","中頓別町",10,2],["枝幸郡枝幸町","枝幸町",12,2],["天塩郡豊富町","豊富町",7,1],["礼文郡礼文町","礼文町",5,1],["利尻郡利尻町","利尻町",5,2],["利尻郡利尻富士町","利尻富士町",6,1],["天塩郡幌延町","幌延町",9,1],["網走郡美幌町","美幌町",19,8],["網走郡津別町","津別町",19,9],["斜里郡斜里町","斜里町",22,7],["斜里郡清里町","清里町",20,9],["斜里郡小清水町","小清水町",21,8],["常呂郡訓子府町","訓子府町",18,9],["常呂郡置戸町","置戸町",17,9],["常呂郡佐呂間町","佐呂間町",18,7],["紋別郡遠軽町","遠軽町",16,7],["紋別郡湧別町","湧別町",17,6],["紋別郡滝上町","滝上町",14,6],["紋別郡興部町","興部町",15,4],["紋別郡西興部村","西興部村",14,5],["紋別郡雄武町","雄武町",14,3],["網走郡大空町","大空町",20,8],["虻田郡豊浦町","豊浦町",2,16],["有珠郡壮瞥町","壮瞥町",5,16],["白老郡白老町","白老町",5,17],["勇払郡厚真町","厚真町",8,16],["虻田郡洞爺湖町","洞爺湖町",3,17],["勇払郡安平町","安平町",10,15],["勇払郡むかわ町","むかわ町",10,16],["沙流郡日高町","日高町",9,16],["沙流郡平取町","平取町",11,15],["新冠郡新冠町","新冠町",11,17],["浦河郡浦河町","浦河町",13,18],["様似郡様似町","様似町",14,18],["幌泉郡えりも町","えりも町",15,19],["日高郡新ひだか町","新ひだか町",12,17],["河東郡音更町","音更町",15,13],["河東郡士幌町","士幌町",15,12],["河東郡上士幌町","上士幌町",15,11],["河東郡鹿追町","鹿追町",14,12],["上川郡新得町","新得町",13,13],["上川郡清水町","清水町",14,13],["河西郡芽室町","芽室町",14,14],["河西郡中札内村","中札内村",15,15],["河西郡更別村","更別村",14,15],["広尾郡大樹町","大樹町",15,16],["広尾郡広尾町","広尾町",16,17],["中川郡幕別町","幕別町",16,14],["中川郡池田町","池田町",16,13],["中川郡豊頃町","豊頃町",17,15],["中川郡本別町","本別町",17,12],["足寄郡足寄町","足寄町",17,11],["足寄郡陸別町","陸別町",18,10],["十勝郡浦幌町","浦幌町",17,14],["釧路郡釧路町","釧路町",21,13],["厚岸郡厚岸町","厚岸町",22,13],["厚岸郡浜中町","浜中町",22,12],["川上郡標茶町","標茶町",21,12],["川上郡弟子屈町","弟子屈町",21,10],["阿寒郡鶴居村","鶴居村",20,12],["白糠郡白糠町","白糠町",19,13],["野付郡別海町","別海町",22,11],["標津郡中標津町","中標津町",22,10],["標津郡標津町","標津町",22,9],["目梨郡羅臼町","羅臼町",22,6]]},"青森県":{"region":"tohoku_p","cols":9,"rows":11,"m":[["青森市","青森市",4,7],["弘前市","弘前市",1,8],["八戸市","八戸市",9,10],["黒石市","黒石市",3,9],["五所川原市","五所川原市",1,6],["十和田市","十和田市",7,9],["三沢市","三沢市",9,8],["むつ市","むつ市",7,2],["つがる市","つがる市",2,7],["平川市","平川市",3,10],["東津軽郡平内町","平内町",6,6],["東津軽郡今別町","今別町",3,3],["東津軽郡蓬田村","蓬田村",4,5],["東津軽郡外ケ浜町","外ケ浜町",3,4],["西津軽郡鰺ヶ沢町","鰺ヶ沢町",1,7],["西津軽郡深浦町","深浦町",1,9],["中津軽郡西目屋村","西目屋村",1,10],["南津軽郡藤崎町","藤崎町",2,9],["南津軽郡大鰐町","大鰐町",2,11],["南津軽郡田舎館村","田舎館村",2,10],["北津軽郡板柳町","板柳町",3,8],["北津軽郡鶴田町","鶴田町",2,8],["北津軽郡中泊町","中泊町",2,5],["上北郡野辺地町","野辺地町",7,6],["上北郡七戸町","七戸町",7,8],["上北郡六戸町","六戸町",8,9],["上北郡横浜町","横浜町",8,4],["上北郡東北町","東北町",8,7],["上北郡六ヶ所村","六ヶ所村",8,6],["上北郡おいらせ町","おいらせ町",9,9],["下北郡大間町","大間町",6,1],["下北郡東通村","東通村",8,2],["下北郡風間浦村","風間浦村",5,1],["下北郡佐井村","佐井村",5,2],["三戸郡三戸町","三戸町",7,10],["三戸郡五戸町","五戸町",8,10],["三戸郡田子町","田子町",6,10],["三戸郡南部町","南部町",8,11],["三戸郡階上町","階上町",9,11],["三戸郡新郷村","新郷村",7,11]]},"岩手県":{"region":"tohoku_p","cols":7,"rows":12,"m":[["盛岡市","盛岡市",1,5],["宮古市","宮古市",7,7],["大船渡市","大船渡市",6,11],["花巻市","花巻市",2,8],["北上市","北上市",2,9],["久慈市","久慈市",6,2],["遠野市","遠野市",5,9],["一関市","一関市",1,11],["陸前高田市","陸前高田市",5,12],["釜石市","釜石市",7,10],["二戸市","二戸市",3,1],["八幡平市","八幡平市",1,3],["奥州市","奥州市",2,11],["滝沢市","滝沢市",2,6],["岩手郡雫石町","雫石町",1,6],["岩手郡葛巻町","葛巻町",4,3],["岩手郡岩手町","岩手町",2,4],["紫波郡紫波町","紫波町",1,7],["紫波郡矢巾町","矢巾町",2,7],["和賀郡西和賀町","西和賀町",1,9],["胆沢郡金ケ崎町","金ケ崎町",2,10],["西磐井郡平泉町","平泉町",2,12],["気仙郡住田町","住田町",5,10],["上閉伊郡大槌町","大槌町",7,9],["下閉伊郡山田町","山田町",7,8],["下閉伊郡岩泉町","岩泉町",6,5],["下閉伊郡田野畑村","田野畑村",7,4],["下閉伊郡普代村","普代村",7,3],["九戸郡軽米町","軽米町",4,1],["九戸郡野田村","野田村",6,3],["九戸郡九戸村","九戸村",4,2],["九戸郡洋野町","洋野町",6,1],["二戸郡一戸町","一戸町",3,2]]},"宮城県":{"region":"tohoku_p","cols":9,"rows":11,"m":[["仙台市青葉区","青葉区",3,7],["仙台市宮城野区","宮城野区",3,8],["仙台市若林区","若林区",4,8],["仙台市太白区","太白区",2,7],["仙台市泉区","泉区",2,5],["石巻市","石巻市",8,5],["塩竈市","塩竈市",5,6],["気仙沼市","気仙沼市",9,1],["白石市","白石市",3,11],["名取市","名取市",2,8],["角田市","角田市",1,10],["多賀城市","多賀城市",4,7],["岩沼市","岩沼市",3,9],["登米市","登米市",7,2],["栗原市","栗原市",5,1],["東松島市","東松島市",6,5],["大崎市","大崎市",4,3],["富谷市","富谷市",3,5],["刈田郡蔵王町","蔵王町",1,9],["刈田郡七ヶ宿町","七ヶ宿町",1,11],["柴田郡大河原町","大河原町",2,10],["柴田郡村田町","村田町",2,9],["柴田郡柴田町","柴田町",3,10],["柴田郡川崎町","川崎町",1,8],["伊具郡丸森町","丸森町",4,9],["亘理郡亘理町","亘理町",2,11],["亘理郡山元町","山元町",4,10],["宮城郡松島町","松島町",4,6],["宮城郡七ヶ浜町","七ヶ浜町",5,7],["宮城郡利府町","利府町",3,6],["黒川郡大和町","大和町",4,5],["黒川郡大郷町","大郷町",5,5],["黒川郡大衡村","大衡村",4,4],["加美郡色麻町","色麻町",3,3],["加美郡加美町","加美町",2,3],["遠田郡涌谷町","涌谷町",6,3],["遠田郡美里町","美里町",5,3],["牡鹿郡女川町","女川町",9,5],["本吉郡南三陸町","南三陸町",9,2]]},"秋田県":{"region":"tohoku_j","cols":6,"rows":11,"m":[["秋田市","秋田市",2,6],["能代市","能代市",2,2],["横手市","横手市",5,10],["大館市","大館市",5,2],["男鹿市","男鹿市",1,5],["湯沢市","湯沢市",3,10],["鹿角市","鹿角市",6,2],["由利本荘市","由利本荘市",2,9],["潟上市","潟上市",1,6],["大仙市","大仙市",4,8],["北秋田市","北秋田市",4,2],["にかほ市","にかほ市",1,10],["仙北市","仙北市",5,7],["鹿角郡小坂町","小坂町",6,1],["北秋田郡上小阿仁村","上小阿仁村",3,4],["山本郡藤里町","藤里町",3,1],["山本郡三種町","三種町",2,3],["山本郡八峰町","八峰町",2,1],["南秋田郡五城目町","五城目町",1,3],["南秋田郡八郎潟町","八郎潟町",2,4],["南秋田郡井川町","井川町",2,5],["南秋田郡大潟村","大潟村",1,4],["仙北郡美郷町","美郷町",5,9],["雄勝郡羽後町","羽後町",4,11],["雄勝郡東成瀬村","東成瀬村",6,11]]},"山形県":{"region":"tohoku_j","cols":6,"rows":13,"m":[["山形市","山形市",4,10],["米沢市","米沢市",2,12],["鶴岡市","鶴岡市",1,3],["酒田市","酒田市",1,1],["新庄市","新庄市",5,3],["寒河江市","寒河江市",5,8],["上山市","上山市",5,11],["村山市","村山市",6,6],["長井市","長井市",3,11],["天童市","天童市",6,8],["東根市","東根市",6,7],["尾花沢市","尾花沢市",6,5],["南陽市","南陽市",4,12],["東村山郡山辺町","山辺町",5,9],["東村山郡中山町","中山町",4,7],["西村山郡河北町","河北町",5,7],["西村山郡西川町","西川町",3,7],["西村山郡朝日町","朝日町",4,9],["西村山郡大江町","大江町",4,8],["北村山郡大石田町","大石田町",5,5],["最上郡金山町","金山町",4,1],["最上郡最上町","最上町",6,3],["最上郡舟形町","舟形町",5,4],["最上郡真室川町","真室川町",5,1],["最上郡大蔵村","大蔵村",4,4],["最上郡鮭川村","鮭川村",4,2],["最上郡戸沢村","戸沢村",4,3],["東置賜郡高畠町","高畠町",4,13],["東置賜郡川西町","川西町",3,13],["西置賜郡小国町","小国町",1,12],["西置賜郡白鷹町","白鷹町",3,10],["西置賜郡飯豊町","飯豊町",2,13],["東田川郡三川町","三川町",1,2],["東田川郡庄内町","庄内町",2,2],["飽海郡遊佐町","遊佐町",2,1]]},"福島県":{"region":"tohoku_p","cols":14,"rows":10,"m":[["福島市","福島市",8,1],["会津若松市","会津若松市",4,5],["郡山市","山市",8,6],["いわき市","いわき市",13,10],["白河市","白河市",6,8],["須賀川市","須賀川市",8,7],["喜多方市","喜多方市",4,3],["相馬市","相馬市",13,2],["二本松市","二本松市",9,4],["田村市","田村市",10,6],["南相馬市","南相馬市",14,3],["伊達市","伊達市",9,2],["本宮市","本宮市",9,5],["伊達郡桑折町","桑折町",9,1],["伊達郡国見町","国見町",10,1],["伊達郡川俣町","川俣町",10,3],["安達郡大玉村","大玉村",8,4],["岩瀬郡鏡石町","鏡石町",8,8],["岩瀬郡天栄村","天栄村",7,8],["南会津郡下郷町","下郷町",4,7],["南会津郡檜枝岐村","檜枝岐村",1,10],["南会津郡只見町","只見町",1,7],["南会津郡南会津町","南会津町",2,8],["耶麻郡北塩原村","北塩原村",5,3],["耶麻郡西会津町","西会津町",2,4],["耶麻郡磐梯町","磐梯町",5,4],["耶麻郡猪苗代町","猪苗代町",6,4],["河沼郡会津坂下町","会津坂下町",3,4],["河沼郡湯川村","湯川村",4,4],["河沼郡柳津町","柳津町",2,5],["大沼郡三島町","三島町",1,4],["大沼郡金山町","金山町",1,5],["大沼郡昭和村","昭和村",2,7],["大沼郡会津美里町","会津美里町",3,5],["西白河郡西郷村","西郷村",7,9],["西白河郡泉崎村","泉崎村",8,9],["西白河郡中島村","中島村",7,10],["西白河郡矢吹町","矢吹町",7,7],["東白川郡棚倉町","棚倉町",9,10],["東白川郡矢祭町","矢祭町",11,9],["東白川郡塙町","塙町",11,8],["東白川郡鮫川村","鮫川村",10,10],["石川郡石川町","石川町",9,9],["石川郡玉川村","玉川村",9,8],["石川郡平田村","平田村",10,8],["石川郡浅川町","浅川町",8,10],["石川郡古殿町","古殿町",10,9],["田村郡三春町","三春町",9,6],["田村郡小野町","小野町",11,7],["双葉郡広野町","広野町",14,8],["双葉郡楢葉町","楢葉町",14,7],["双葉郡富岡町","富岡町",13,5],["双葉郡川内村","川内村",12,7],["双葉郡大熊町","大熊町",14,6],["双葉郡双葉町","双葉町",13,4],["双葉郡浪江町","浪江町",14,5],["双葉郡葛尾村","葛尾村",12,5],["相馬郡新地町","新地町",13,1],["相馬郡飯舘村","飯舘村",12,3]]},"茨城県":{"region":"kanto","cols":9,"rows":10,"m":[["水戸市","水戸市",7,4],["日立市","日立市",9,2],["土浦市","土浦市",5,8],["古河市","古河市",1,6],["石岡市","石岡市",5,6],["結城市","結城市",2,5],["龍ヶ崎市","龍ヶ崎市",3,10],["下妻市","下妻市",3,6],["常総市","常総市",3,8],["常陸太田市","常陸太田市",7,2],["高萩市","高萩市",8,1],["北茨城市","北茨城市",9,1],["笠間市","笠間市",5,5],["取手市","取手市",2,10],["牛久市","牛久市",4,9],["つくば市","つくば市",4,8],["ひたちなか市","ひたちなか市",8,4],["鹿嶋市","鹿嶋市",8,9],["潮来市","潮来市",7,9],["守谷市","守谷市",2,9],["常陸大宮市","常陸大宮市",6,2],["那珂市","那珂市",7,3],["筑西市","筑西市",3,5],["坂東市","坂東市",2,8],["稲敷市","稲敷市",6,9],["かすみがうら市","かすみがうら",5,7],["桜川市","桜川市",4,5],["神栖市","神栖市",9,10],["行方市","行方市",7,8],["鉾田市","鉾田市",8,7],["つくばみらい市","つくばみらい",3,9],["小美玉市","小美玉市",6,6],["東茨城郡茨城町","茨城町",7,5],["東茨城郡大洗町","大洗町",8,5],["東茨城郡城里町","城里町",6,3],["那珂郡東海村","東海村",8,3],["久慈郡大子町","大子町",6,1],["稲敷郡美浦村","美浦村",6,8],["稲敷郡阿見町","阿見町",4,7],["稲敷郡河内町","河内町",5,10],["結城郡八千代町","八千代町",2,6],["猿島郡五霞町","五霞町",1,8],["猿島郡境町","境町",1,7],["北相馬郡利根町","利根町",4,10]]},"栃木県":{"region":"kanto","cols":7,"rows":9,"m":[["宇都宮市","宇都宮市",4,6],["足利市","足利市",1,9],["栃木市","栃木市",2,8],["佐野市","佐野市",1,8],["鹿沼市","鹿沼市",3,6],["日光市","日光市",2,3],["小山市","小山市",3,9],["真岡市","真岡市",5,7],["大田原市","大田原市",6,2],["矢板市","矢板市",5,3],["那須塩原市","那須塩原市",5,1],["さくら市","さくら市",5,4],["那須烏山市","那須烏山市",7,5],["下野市","下野市",4,8],["河内郡上三川町","上三川町",4,7],["芳賀郡益子町","益子町",6,7],["芳賀郡茂木町","茂木町",7,6],["芳賀郡市貝町","市貝町",6,6],["芳賀郡芳賀町","芳賀町",5,6],["下都賀郡壬生町","壬生町",3,7],["下都賀郡野木町","野木町",2,9],["塩谷郡塩谷町","塩谷町",4,3],["塩谷郡高根沢町","高根沢町",5,5],["那須郡那須町","那須町",7,1],["那須郡那珂川町","那珂川町",7,3]]},"群馬県":{"region":"kanto","cols":10,"rows":8,"m":[["前橋市","前橋市",6,5],["高崎市","高崎市",5,6],["桐生市","桐生市",8,5],["伊勢崎市","伊勢崎市",7,6],["太田市","太田市",8,6],["沼田市","沼田市",6,2],["館林市","館林市",10,7],["渋川市","渋川市",5,4],["藤岡市","藤岡市",5,7],["富岡市","富岡市",2,5],["安中市","安中市",3,6],["みどり市","みどり市",8,4],["北群馬郡榛東村","榛東村",4,4],["北群馬郡吉岡町","吉岡町",4,3],["多野郡上野村","上野村",3,8],["多野郡神流町","神流町",4,8],["甘楽郡下仁田町","下仁田町",2,7],["甘楽郡南牧村","南牧村",2,8],["甘楽郡甘楽町","甘楽町",4,7],["吾妻郡中之条町","中之条町",3,2],["吾妻郡長野原町","長野原町",1,3],["吾妻郡嬬恋村","嬬恋村",1,4],["吾妻郡草津町","草津町",1,2],["吾妻郡高山村","高山村",4,2],["吾妻郡東吾妻町","東吾妻町",3,3],["利根郡片品村","片品村",7,1],["利根郡川場村","川場村",6,1],["利根郡昭和村","昭和村",5,1],["利根郡みなかみ町","みなかみ町",4,1],["佐波郡玉村町","玉村町",6,6],["邑楽郡板倉町","板倉町",9,8],["邑楽郡明和町","明和町",10,6],["邑楽郡千代田町","千代田町",8,7],["邑楽郡大泉町","大泉町",9,7],["邑楽郡邑楽町","邑楽町",9,6]]},"埼玉県":{"region":"kanto","cols":15,"rows":10,"m":[["さいたま市西区","西区",10,8],["さいたま市北区","北区",11,7],["さいたま市大宮区","大宮区",11,8],["さいたま市見沼区","見沼区",12,7],["さいたま市中央区","中央区",10,7],["さいたま市桜区","桜区",11,9],["さいたま市浦和区","浦和区",10,9],["さいたま市南区","南区",10,10],["さいたま市緑区","緑区",12,8],["さいたま市岩槻区","岩槻区",13,7],["川越市","川越市",8,8],["熊谷市","熊谷市",6,2],["川口市","川口市",13,9],["行田市","行田市",8,2],["秩父市","秩父市",1,6],["所沢市","所沢市",7,10],["飯能市","飯能市",4,9],["加須市","加須市",11,2],["本庄市","本庄市",3,1],["東松山市","東松山市",6,5],["春日部市","春日部市",14,6],["狭山市","狭山市",7,9],["羽生市","羽生市",9,2],["鴻巣市","鴻巣市",8,4],["深谷市","深谷市",4,1],["上尾市","上尾市",10,6],["草加市","草加市",14,9],["越谷市","越谷市",14,8],["蕨市","蕨市",12,10],["戸田市","戸田市",11,10],["入間市","入間市",6,10],["朝霞市","朝霞市",9,10],["志木市","志木市",9,8],["和光市","和光市",12,9],["新座市","新座市",7,7],["桶川市","桶川市",10,5],["久喜市","久喜市",12,3],["北本市","北本市",9,5],["八潮市","八潮市",15,10],["富士見市","富士見市",8,9],["三郷市","三郷市",15,9],["蓮田市","蓮田市",11,6],["坂戸市","坂戸市",6,6],["幸手市","幸手市",13,4],["鶴ヶ島市","鶴ヶ島市",6,7],["日高市","日高市",5,8],["吉川市","吉川市",15,8],["ふじみ野市","ふじみ野市",9,9],["白岡市","白岡市",12,5],["北足立郡伊奈町","伊奈町",11,5],["入間郡三芳町","三芳町",8,10],["入間郡毛呂山町","毛呂山町",5,7],["入間郡越生町","越生町",4,6],["比企郡滑川町","滑川町",5,4],["比企郡嵐山町","嵐山町",4,3],["比企郡小川町","小川町",4,4],["比企郡川島町","川島町",8,6],["比企郡吉見町","吉見町",7,3],["比企郡鳩山町","鳩山町",5,6],["比企郡ときがわ町","ときがわ町",4,5],["秩父郡横瀬町","横瀬町",2,6],["秩父郡皆野町","皆野町",1,4],["秩父郡長瀞町","長瀞町",2,3],["秩父郡小鹿野町","小鹿野町",1,5],["秩父郡東秩父村","東秩父村",3,4],["児玉郡美里町","美里町",2,2],["児玉郡神川町","神川町",1,1],["児玉郡上里町","上里町",2,1],["大里郡寄居町","寄居町",3,3],["南埼玉郡宮代町","宮代町",12,4],["北葛飾郡杉戸町","杉戸町",13,5],["北葛飾郡松伏町","松伏町",15,7]]},"千葉県":{"region":"kanto","cols":11,"rows":13,"m":[["千葉市中央区","中央区",3,6],["千葉市花見川区","花見川区",4,4],["千葉市稲毛区","稲毛区",4,5],["千葉市若葉区","若葉区",5,5],["千葉市緑区","緑区",6,6],["千葉市美浜区","美浜区",3,5],["銚子市","銚子市",11,3],["市川市","市川市",1,3],["船橋市","船橋市",2,3],["館山市","館山市",1,12],["木更津市","木更津市",2,9],["松戸市","松戸市",2,2],["野田市","野田市",1,1],["茂原市","茂原市",7,8],["成田市","成田市",7,2],["佐倉市","佐倉市",5,3],["東金市","東金市",8,6],["旭市","旭市",10,2],["習志野市","習志野市",3,4],["柏市","柏市",1,2],["勝浦市","勝浦市",6,12],["市原市","市原市",4,7],["流山市","流山市",2,1],["八千代市","八千代市",4,3],["我孫子市","我孫子市",3,1],["鴨川市","鴨川市",3,13],["鎌ヶ谷市","鎌ヶ谷市",3,3],["君津市","君津市",2,10],["富津市","富津市",1,11],["浦安市","浦安市",1,5],["四街道市","四街道市",5,4],["袖ヶ浦市","袖ヶ浦市",3,8],["八街市","八街市",7,5],["印西市","印西市",5,2],["白井市","白井市",3,2],["富里市","富里市",7,3],["南房総市","南房総市",2,13],["匝瑳市","匝瑳市",10,4],["香取市","香取市",10,1],["山武市","山武市",8,5],["いすみ市","いすみ市",7,10],["大網白里市","大網白里市",7,7],["印旛郡酒々井町","酒々井町",6,3],["印旛郡栄町","栄町",6,1],["香取郡神崎町","神崎町",8,1],["香取郡多古町","多古町",9,3],["香取郡東庄町","東庄町",11,2],["山武郡九十九里町","九十九里町",7,6],["山武郡芝山町","芝山町",8,3],["山武郡横芝光町","横芝光町",9,4],["長生郡一宮町","一宮町",8,9],["長生郡睦沢町","睦沢町",7,9],["長生郡長生村","長生村",6,7],["長生郡白子町","白子町",8,8],["長生郡長柄町","長柄町",6,8],["長生郡長南町","長南町",6,9],["夷隅郡大多喜町","大多喜町",6,11],["夷隅郡御宿町","御宿町",7,12],["安房郡鋸南町","鋸南町",1,13]]},"東京都":{"region":"kanto","cols":6,"rows":16,"m":[["千代田区","千代田区",5,6],["中央区","中央区",2,7],["港区","港区",2,8],["新宿区","新宿区",2,6],["文京区","文京区",5,4],["台東区","台東区",6,4],["墨田区","墨田区",5,5],["江東区","江東区",4,7],["品川区","品川区",3,9],["目黒区","目黒区",6,8],["大田区","大田区",4,9],["世田谷区","世田谷区",4,8],["渋谷区","渋谷区",5,7],["中野区","中野区",2,5],["杉並区","杉並区",3,6],["豊島区","豊島区",6,3],["北区","北区",4,2],["荒川区","荒川区",6,2],["板橋区","板橋区",5,1],["練馬区","練馬区",4,3],["足立区","足立区",6,1],["葛飾区","葛飾区",5,2],["江戸川区","江戸川区",4,6],["八王子市","八王子市",3,8],["立川市","立川市",1,5],["武蔵野市","武蔵野市",4,5],["三鷹市","三鷹市",1,7],["青梅市","青梅市",2,1],["府中市","府中市",3,7],["昭島市","昭島市",3,5],["調布市","調布市",1,8],["町田市","町田市",5,9],["小金井市","小金井市",1,6],["小平市","小平市",4,4],["日野市","日野市",6,7],["東村山市","東村山市",3,1],["国分寺市","国分寺市",6,5],["国立市","国立市",6,6],["福生市","福生市",1,4],["狛江市","狛江市",5,8],["東大和市","東大和市",3,3],["清瀬市","清瀬市",4,1],["東久留米市","東久留米市",3,2],["武蔵村山市","武蔵村山市",2,3],["多摩市","多摩市",2,9],["稲城市","稲城市",1,9],["羽村市","羽村市",2,2],["あきる野市","あきる野市",3,4],["西東京市","西東京市",5,3],["西多摩郡瑞穂町","瑞穂町",1,2],["西多摩郡日の出町","日の出町",1,3],["西多摩郡檜原村","檜原村",2,4],["西多摩郡奥多摩町","奥多摩町",1,1],["大島町","大島町",2,10],["新島村","新島村",2,11],["神津島村","神津島村",1,12],["三宅村","三宅村",4,13],["御蔵島村","御蔵島村",4,14],["八丈町","八丈町",5,16],["青ヶ島村","青ヶ島村",4,15],["小笠原村","小笠原村",6,16]]},"神奈川県":{"region":"kanto","cols":13,"rows":11,"m":[["横浜市鶴見区","鶴見区",12,2],["横浜市神奈川区","神奈川区",12,4],["横浜市西区","西区",11,3],["横浜市中区","中区",12,5],["横浜市南区","南区",11,5],["横浜市保土ケ谷区","保土ケ谷区",11,4],["横浜市磯子区","磯子区",12,6],["横浜市金沢区","金沢区",12,7],["横浜市港北区","港北区",12,3],["横浜市戸塚区","戸塚区",10,6],["横浜市港南区","港南区",11,6],["横浜市旭区","旭区",10,4],["横浜市緑区","緑区",10,3],["横浜市瀬谷区","瀬谷区",9,4],["横浜市栄区","栄区",11,7],["横浜市泉区","泉区",10,5],["横浜市青葉区","青葉区",10,2],["横浜市都筑区","都筑区",11,2],["川崎市川崎区","川崎区",13,3],["川崎市幸区","幸区",13,2],["川崎市中原区","中原区",13,1],["川崎市高津区","高津区",12,1],["川崎市多摩区","多摩区",10,1],["川崎市宮前区","宮前区",11,1],["川崎市麻生区","麻生区",9,1],["相模原市緑区","緑区",5,1],["相模原市中央区","中央区",7,2],["相模原市南区","南区",8,3],["横須賀市","横須賀市",13,9],["平塚市","平塚市",6,7],["鎌倉市","鎌倉市",10,7],["藤沢市","藤沢市",9,7],["小田原市","小田原市",3,9],["茅ヶ崎市","茅ヶ崎市",8,7],["逗子市","逗子市",11,8],["三浦市","三浦市",12,11],["秦野市","秦野市",3,6],["厚木市","厚木市",6,4],["大和市","大和市",7,3],["伊勢原市","伊勢原市",6,6],["海老名市","海老名市",7,5],["座間市","座間市",8,4],["南足柄市","南足柄市",1,9],["綾瀬市","綾瀬市",8,5],["三浦郡葉山町","葉山町",12,9],["高座郡寒川町","寒川町",7,6],["中郡大磯町","大磯町",5,8],["中郡二宮町","二宮町",4,8],["足柄上郡中井町","中井町",3,7],["足柄上郡大井町","大井町",1,7],["足柄上郡松田町","松田町",2,7],["足柄上郡山北町","山北町",1,6],["足柄上郡開成町","開成町",1,8],["足柄下郡箱根町","箱根町",1,10],["足柄下郡真鶴町","真鶴町",2,11],["足柄下郡湯河原町","湯河原町",1,11],["愛甲郡愛川町","愛川町",6,3],["愛甲郡清川村","清川村",4,3]]},"新潟県":{"region":"hokuriku","cols":9,"rows":11,"m":[["新潟市北区","北区",7,3],["新潟市東区","東区",6,2],["新潟市中央区","中央区",6,3],["新潟市江南区","江南区",7,4],["新潟市秋葉区","秋葉区",7,5],["新潟市南区","南区",5,3],["新潟市西区","西区",6,4],["新潟市西蒲区","西蒲区",5,5],["長岡市","長岡市",4,8],["三条市","三条市",5,7],["柏崎市","柏崎市",3,8],["新発田市","新発田市",7,2],["小千谷市","小千谷市",3,9],["加茂市","加茂市",5,6],["十日町市","十日町市",4,10],["見附市","見附市",4,7],["村上市","村上市",9,1],["燕市","燕市",4,5],["糸魚川市","糸魚川市",1,11],["妙高市","妙高市",2,10],["五泉市","五泉市",6,6],["上越市","上越市",1,10],["阿賀野市","阿賀野市",6,5],["佐渡市","佐渡市",1,2],["魚沼市","魚沼市",6,9],["南魚沼市","南魚沼市",5,10],["胎内市","胎内市",8,1],["北蒲原郡聖籠町","聖籠町",8,3],["西蒲原郡弥彦村","弥彦村",4,4],["南蒲原郡田上町","田上町",5,4],["東蒲原郡阿賀町","阿賀町",9,5],["三島郡出雲崎町","出雲崎町",4,6],["南魚沼郡湯沢町","湯沢町",5,11],["中魚沼郡津南町","津南町",3,11],["刈羽郡刈羽村","刈羽村",3,7],["岩船郡関川村","関川村",9,2],["岩船郡粟島浦村","粟島浦村",7,1]]},"富山県":{"region":"hokuriku","cols":7,"rows":5,"m":[["富山市","富山市",4,4],["高岡市","高岡市",2,3],["魚津市","魚津市",5,1],["氷見市","氷見市",2,2],["滑川市","滑川市",5,3],["黒部市","黒部市",6,2],["砺波市","砺波市",2,4],["小矢部市","小矢部市",1,4],["南砺市","南砺市",1,5],["射水市","射水市",3,3],["中新川郡舟橋村","舟橋村",5,4],["中新川郡上市町","上市町",6,4],["中新川郡立山町","立山町",4,3],["下新川郡入善町","入善町",6,1],["下新川郡朝日町","朝日町",7,1]]},"石川県":{"region":"hokuriku","cols":5,"rows":9,"m":[["金沢市","金沢市",1,6],["七尾市","七尾市",4,4],["小松市","小松市",2,9],["輪島市","輪島市",3,1],["珠洲市","珠洲市",5,1],["加賀市","加賀市",3,7],["羽咋市","羽咋市",3,5],["かほく市","かほく市",3,6],["白山市","白山市",1,7],["能美市","能美市",1,9],["野々市市","野々市市",2,8],["能美郡川北町","川北町",1,8],["河北郡津幡町","津幡町",2,5],["河北郡内灘町","内灘町",2,7],["羽咋郡志賀町","志賀町",3,3],["羽咋郡宝達志水町","宝達志水町",2,4],["鹿島郡中能登町","中能登町",3,4],["鳳珠郡穴水町","穴水町",4,2],["鳳珠郡能登町","能登町",4,1]]},"福井県":{"region":"hokuriku","cols":7,"rows":7,"m":[["福井市","福井市",5,2],["敦賀市","敦賀市",4,5],["小浜市","小浜市",2,7],["大野市","大野市",7,3],["勝山市","勝山市",7,2],["鯖江市","鯖江市",5,3],["あわら市","あわら市",5,1],["越前市","越前市",4,2],["坂井市","坂井市",4,1],["吉田郡永平寺町","永平寺町",6,2],["今立郡池田町","池田町",6,4],["南条郡南越前町","南越前町",5,4],["丹生郡越前町","越前町",4,3],["三方郡美浜町","美浜町",3,6],["大飯郡高浜町","高浜町",1,7],["大飯郡おおい町","おおい町",1,6],["三方上中郡若狭町","若狭町",3,7]]},"山梨県":{"region":"koshin","cols":10,"rows":7,"m":[["甲府市","甲府市",3,3],["富士吉田市","富士吉田市",7,6],["都留市","都留市",8,5],["山梨市","山梨市",5,2],["大月市","大月市",9,4],["韮崎市","韮崎市",2,2],["南アルプス市","南アルプス市",2,4],["北杜市","北杜市",1,1],["甲斐市","甲斐市",3,2],["笛吹市","笛吹市",5,4],["上野原市","上野原市",10,4],["甲州市","甲州市",6,3],["中央市","中央市",2,3],["西八代郡市川三郷町","市川三郷町",3,5],["南巨摩郡早川町","早川町",1,7],["南巨摩郡身延町","身延町",2,7],["南巨摩郡南部町","南部町",1,6],["南巨摩郡富士川町","富士川町",2,5],["中巨摩郡昭和町","昭和町",3,4],["南都留郡道志村","道志村",10,5],["南都留郡西桂町","西桂町",7,5],["南都留郡忍野村","忍野村",6,5],["南都留郡山中湖村","山中湖村",8,7],["南都留郡鳴沢村","鳴沢村",4,5],["南都留郡富士河口湖町","富士河口湖町",5,6],["北都留郡小菅村","小菅村",9,2],["北都留郡丹波山村","丹波山村",8,1]]},"長野県":{"region":"koshin","cols":10,"rows":20,"m":[["長野市","長野市",6,4],["松本市","松本市",4,9],["上田市","上田市",7,7],["岡谷市","岡谷市",4,11],["飯田市","飯田市",3,18],["諏訪市","諏訪市",6,11],["須坂市","須坂市",8,4],["小諸市","小諸市",9,7],["伊那市","伊那市",4,14],["駒ヶ根市","駒ヶ根市",4,15],["中野市","中野市",7,1],["大町市","大町市",3,5],["飯山市","飯山市",8,1],["茅野市","茅野市",7,11],["塩尻市","塩尻市",4,10],["佐久市","佐久市",9,9],["千曲市","千曲市",6,5],["東御市","東御市",8,7],["安曇野市","安曇野市",4,8],["南佐久郡小海町","小海町",9,11],["南佐久郡川上村","川上村",10,12],["南佐久郡南牧村","南牧村",8,11],["南佐久郡南相木村","南相木村",9,12],["南佐久郡北相木村","北相木村",10,11],["南佐久郡佐久穂町","佐久穂町",9,10],["北佐久郡軽井沢町","軽井沢町",10,7],["北佐久郡御代田町","御代田町",10,8],["北佐久郡立科町","立科町",8,8],["小県郡青木村","青木村",6,7],["小県郡長和町","長和町",7,9],["諏訪郡下諏訪町","下諏訪町",5,11],["諏訪郡富士見町","富士見町",7,13],["諏訪郡原村","原村",7,12],["上伊那郡辰野町","辰野町",4,12],["上伊那郡箕輪町","箕輪町",4,13],["上伊那郡飯島町","飯島町",4,16],["上伊那郡南箕輪村","南箕輪村",3,12],["上伊那郡中川村","中川村",3,15],["上伊那郡宮田村","宮田村",3,13],["下伊那郡松川町","松川町",3,16],["下伊那郡高森町","高森町",3,17],["下伊那郡阿南町","阿南町",3,20],["下伊那郡阿智村","阿智村",2,18],["下伊那郡平谷村","平谷村",1,20],["下伊那郡根羽村","根羽村",1,19],["下伊那郡下條村","下條村",2,19],["下伊那郡売木村","売木村",2,20],["下伊那郡天龍村","天龍村",4,19],["下伊那郡泰阜村","泰阜村",3,19],["下伊那郡喬木村","喬木村",4,18],["下伊那郡豊丘村","豊丘村",4,17],["下伊那郡大鹿村","大鹿村",5,17],["木曽郡上松町","上松町",2,14],["木曽郡南木曽町","南木曽町",1,17],["木曽郡木祖村","木祖村",2,12],["木曽郡王滝村","王滝村",1,14],["木曽郡大桑村","大桑村",1,15],["木曽郡木曽町","木曽町",1,13],["東筑摩郡麻績村","麻績村",5,6],["東筑摩郡生坂村","生坂村",4,6],["東筑摩郡山形村","山形村",3,9],["東筑摩郡朝日村","朝日村",3,10],["東筑摩郡筑北村","筑北村",4,5],["北安曇郡池田町","池田町",3,7],["北安曇郡松川村","松川村",3,6],["北安曇郡白馬村","白馬村",3,3],["北安曇郡小谷村","小谷村",4,1],["埴科郡坂城町","坂城町",6,6],["上高井郡小布施町","小布施町",8,3],["上高井郡高山村","高山村",7,3],["下高井郡山ノ内町","山ノ内町",9,2],["下高井郡木島平村","木島平村",8,2],["下高井郡野沢温泉村","野沢温泉村",9,1],["上水内郡信濃町","信濃町",7,2],["上水内郡小川村","小川村",4,4],["上水内郡飯綱町","飯綱町",6,1],["下水内郡栄村","栄村",10,1]]},"岐阜県":{"region":"tokai","cols":9,"rows":7,"m":[["岐阜市","岐阜市",3,6],["大垣市","大垣市",4,7],["高山市","高山市",7,1],["多治見市","多治見市",6,7],["関市","関市",5,5],["中津川市","中津川市",9,5],["美濃市","美濃市",5,4],["瑞浪市","瑞浪市",8,6],["羽島市","羽島市",2,3],["恵那市","恵那市",9,6],["美濃加茂市","美濃加茂市",5,6],["土岐市","土岐市",7,6],["各務原市","各務原市",4,6],["可児市","可児市",6,6],["山県市","山県市",3,4],["瑞穂市","瑞穂市",1,6],["飛騨市","飛騨市",8,1],["本巣市","本巣市",2,4],["郡上市","上市",5,2],["下呂市","下呂市",8,2],["海津市","海津市",5,3],["羽島郡岐南町","岐南町",2,7],["羽島郡笠松町","笠松町",3,7],["養老郡養老町","養老町",3,3],["不破郡垂井町","垂井町",1,7],["不破郡関ケ原町","関ケ原町",1,3],["安八郡神戸町","神戸町",2,6],["安八郡輪之内町","輪之内町",4,3],["安八郡安八町","安八町",5,7],["揖斐郡揖斐川町","揖斐川町",1,4],["揖斐郡大野町","大野町",2,5],["揖斐郡池田町","池田町",1,5],["本巣郡北方町","北方町",3,5],["加茂郡坂祝町","坂祝町",4,5],["加茂郡富加町","富加町",4,4],["加茂郡川辺町","川辺町",6,5],["加茂郡七宗町","七宗町",7,4],["加茂郡八百津町","八百津町",7,5],["加茂郡白川町","白川町",8,3],["加茂郡東白川村","東白川村",9,3],["可児郡御嵩町","御嵩町",6,4],["大野郡白川村","白川村",5,1]]},"静岡県":{"region":"tokai","cols":14,"rows":7,"m":[["静岡市葵区","葵区",8,4],["静岡市駿河区","駿河区",7,3],["静岡市清水区","清水区",9,3],["浜松市中区","中区",2,7],["浜松市東区","東区",1,6],["浜松市西区","西区",1,7],["浜松市南区","南区",3,6],["浜松市北区","北区",1,5],["浜松市浜北区","浜北区",2,6],["浜松市天竜区","天竜区",3,4],["沼津市","沼津市",11,3],["熱海市","熱海市",14,3],["三島市","三島市",12,3],["富士宮市","富士宮市",10,1],["伊東市","伊東市",14,4],["島田市","島田市",6,5],["富士市","富士市",11,2],["磐田市","磐田市",3,7],["焼津市","焼津市",6,4],["掛川市","掛川市",4,6],["藤枝市","藤枝市",7,5],["御殿場市","御殿場市",12,1],["袋井市","袋井市",3,5],["下田市","下田市",13,7],["裾野市","裾野市",13,2],["湖西市","湖西市",2,5],["伊豆市","伊豆市",12,5],["御前崎市","御前崎市",5,7],["菊川市","菊川市",5,6],["伊豆の国市","伊豆の国市",13,4],["牧之原市","牧之原市",6,7],["賀茂郡東伊豆町","東伊豆町",14,5],["賀茂郡河津町","河津町",13,6],["賀茂郡南伊豆町","南伊豆町",12,7],["賀茂郡松崎町","松崎町",11,5],["賀茂郡西伊豆町","西伊豆町",12,6],["田方郡函南町","函南町",12,4],["駿東郡清水町","清水町",13,3],["駿東郡長泉町","長泉町",12,2],["駿東郡小山町","小山町",13,1],["榛原郡吉田町","吉田町",7,6],["榛原郡川根本町","川根本町",5,3],["周智郡森町","森町",4,5]]},"愛知県":{"region":"tokai","cols":13,"rows":12,"m":[["名古屋市千種区","千種区",5,4],["名古屋市東区","東区",4,5],["名古屋市北区","北区",3,5],["名古屋市西区","西区",3,4],["名古屋市中村区","中村区",1,2],["名古屋市中区","中区",1,6],["名古屋市昭和区","昭和区",3,6],["名古屋市瑞穂区","瑞穂区",5,6],["名古屋市熱田区","熱田区",4,6],["名古屋市中川区","中川区",2,6],["名古屋市港区","港区",2,7],["名古屋市南区","南区",3,7],["名古屋市守山区","守山区",4,4],["名古屋市緑区","緑区",4,7],["名古屋市名東区","名東区",5,5],["名古屋市天白区","天白区",6,6],["豊橋市","豊橋市",11,12],["岡崎市","岡崎市",8,9],["一宮市","一宮市",1,1],["瀬戸市","瀬戸市",7,3],["半田市","半田市",3,10],["春日井市","春日井市",5,3],["豊川市","豊川市",10,11],["津島市","津島市",2,5],["碧南市","碧南市",5,10],["刈谷市","刈谷市",5,8],["豊田市","豊田市",8,6],["安城市","安城市",6,9],["西尾市","西尾市",6,11],["蒲郡市","市",9,11],["犬山市","犬山市",4,1],["常滑市","常滑市",2,10],["江南市","江南市",2,1],["小牧市","小牧市",4,2],["稲沢市","稲沢市",1,3],["新城市","新城市",13,9],["東海市","東海市",3,8],["大府市","大府市",4,8],["知多市","知多市",2,9],["知立市","知立市",6,8],["尾張旭市","尾張旭市",6,3],["高浜市","高浜市",5,9],["岩倉市","岩倉市",2,2],["豊明市","豊明市",6,7],["日進市","日進市",6,5],["田原市","田原市",8,12],["愛西市","愛西市",1,4],["清須市","清須市",2,3],["北名古屋市","北名古屋市",3,3],["弥富市","弥富市",1,8],["みよし市","みよし市",7,6],["あま市","あま市",2,4],["長久手市","長久手市",6,4],["愛知郡東郷町","東郷町",5,7],["西春日井郡豊山町","豊山町",4,3],["丹羽郡大口町","大口町",3,2],["丹羽郡扶桑町","扶桑町",3,1],["海部郡大治町","大治町",1,5],["海部郡蟹江町","蟹江町",1,7],["海部郡飛島村","飛島村",2,8],["知多郡阿久比町","阿久比町",4,9],["知多郡東浦町","東浦町",3,9],["知多郡南知多町","南知多町",4,12],["知多郡美浜町","美浜町",3,12],["知多郡武豊町","武豊町",3,11],["額田郡幸田町","幸田町",8,10],["北設楽郡設楽町","設楽町",13,6],["北設楽郡東栄町","東栄町",12,5],["北設楽郡豊根村","豊根村",13,4]]},"三重県":{"region":"tokai","cols":6,"rows":11,"m":[["津市","津市",4,4],["四日市市","四日市市",4,3],["伊勢市","伊勢市",5,6],["松阪市","松阪市",4,5],["桑名市","桑名市",4,2],["鈴鹿市","鈴鹿市",3,2],["名張市","名張市",2,5],["尾鷲市","尾鷲市",2,9],["亀山市","亀山市",3,3],["鳥羽市","鳥羽市",6,6],["熊野市","熊野市",1,10],["いなべ市","いなべ市",4,1],["志摩市","志摩市",6,7],["伊賀市","伊賀市",2,4],["桑名郡木曽岬町","木曽岬町",6,1],["員弁郡東員町","東員町",5,1],["三重郡菰野町","菰野町",3,1],["三重郡朝日町","朝日町",5,2],["三重郡川越町","川越町",6,2],["多気郡多気町","多気町",3,5],["多気郡明和町","明和町",5,5],["多気郡大台町","大台町",3,7],["度会郡玉城町","玉城町",4,6],["度会郡度会町","度会町",4,7],["度会郡大紀町","大紀町",3,6],["度会郡南伊勢町","南伊勢町",5,7],["北牟婁郡紀北町","紀北町",3,8],["南牟婁郡御浜町","御浜町",1,11],["南牟婁郡紀宝町","紀宝町",2,10]]},"滋賀県":{"region":"kinki","cols":6,"rows":8,"m":[["大津市","大津市",1,8],["彦根市","彦根市",5,4],["長浜市","長浜市",5,1],["近江八幡市","近江八幡市",3,6],["草津市","草津市",1,7],["守山市","守山市",2,7],["栗東市","栗東市",1,6],["甲賀市","甲賀市",4,8],["野洲市","野洲市",2,6],["湖南市","湖南市",3,8],["高島市","高島市",2,1],["東近江市","東近江市",5,6],["米原市","米原市",6,2],["蒲生郡日野町","日野町",5,8],["蒲生郡竜王町","竜王町",3,7],["愛知郡愛荘町","愛荘町",5,5],["犬上郡豊郷町","豊郷町",4,4],["犬上郡甲良町","甲良町",4,3],["犬上郡多賀町","多賀町",6,4]]},"京都府":{"region":"kinki","cols":8,"rows":10,"m":[["京都市北区","北区",6,7],["京都市上京区","上京区",5,7],["京都市左京区","左京区",7,7],["京都市中京区","中京区",5,8],["京都市東山区","東山区",7,8],["京都市下京区","下京区",6,8],["京都市南区","南区",7,9],["京都市右京区","右京区",5,6],["京都市伏見区","伏見区",8,7],["京都市山科区","山科区",6,9],["京都市西京区","西京区",5,9],["福知山市","福知山市",1,4],["舞鶴市","舞鶴市",3,2],["綾部市","綾部市",2,4],["宇治市","宇治市",6,10],["宮津市","宮津市",1,2],["亀岡市","亀岡市",4,7],["城陽市","城陽市",8,9],["向日市","向日市",4,8],["長岡京市","長岡京市",4,9],["八幡市","八幡市",7,10],["京田辺市","京田辺市",6,6],["京丹後市","京丹後市",1,1],["南丹市","南丹市",3,5],["木津川市","木津川市",3,8],["乙訓郡大山崎町","大山崎町",4,10],["久世郡久御山町","久御山町",5,10],["綴喜郡井手町","井手町",8,10],["綴喜郡宇治田原町","宇治田原町",8,8],["相楽郡笠置町","笠置町",3,6],["相楽郡和束町","和束町",7,6],["相楽郡精華町","精華町",3,7],["相楽郡南山城村","南山城村",8,6],["船井郡京丹波町","京丹波町",4,6],["与謝郡伊根町","伊根町",2,1],["与謝郡与謝野町","与謝野町",1,3]]},"大阪府":{"region":"kinki","cols":11,"rows":15,"m":[["大阪市都島区","都島区",8,5],["大阪市福島区","福島区",5,4],["大阪市此花区","此花区",5,6],["大阪市西区","西区",5,5],["大阪市港区","港区",5,7],["大阪市大正区","大正区",5,8],["大阪市天王寺区","天王寺区",6,7],["大阪市浪速区","浪速区",7,7],["大阪市西淀川区","西淀川区",6,5],["大阪市東淀川区","東淀川区",8,4],["大阪市東成区","東成区",8,6],["大阪市生野区","生野区",8,7],["大阪市旭区","旭区",7,4],["大阪市城東区","城東区",7,6],["大阪市阿倍野区","阿倍野区",7,8],["大阪市住吉区","住吉区",6,9],["大阪市東住吉区","東住吉区",8,8],["大阪市西成区","西成区",6,8],["大阪市淀川区","淀川区",6,4],["大阪市鶴見区","鶴見区",9,5],["大阪市住之江区","住之江区",5,9],["大阪市平野区","平野区",7,9],["大阪市北区","北区",7,5],["大阪市中央区","中央区",6,6],["堺市堺区","堺区",5,10],["堺市中区","中区",7,11],["堺市東区","東区",8,10],["堺市西区","西区",5,11],["堺市南区","南区",7,12],["堺市北区","北区",6,10],["堺市美原区","美原区",8,11],["岸和田市","岸和田市",4,13],["豊中市","豊中市",6,3],["池田市","池田市",5,2],["吹田市","吹田市",7,3],["泉大津市","泉大津市",4,11],["高槻市","高槻市",10,1],["貝塚市","貝塚市",3,14],["守口市","守口市",9,4],["枚方市","枚方市",11,2],["茨木市","茨木市",9,2],["八尾市","八尾市",10,8],["泉佐野市","泉佐野市",2,14],["富田林市","富田林市",9,12],["寝屋川市","寝屋川市",10,3],["河内長野市","河内長野市",9,13],["松原市","松原市",8,9],["大東市","大東市",10,5],["和泉市","和泉市",6,13],["箕面市","箕面市",7,2],["柏原市","柏原市",10,9],["羽曳野市","羽曳野市",9,10],["門真市","門真市",10,4],["摂津市","摂津市",9,3],["高石市","高石市",4,10],["藤井寺市","藤井寺市",9,8],["東大阪市","東大阪市",10,6],["泉南市","泉南市",1,14],["四條畷市","四條畷市",11,4],["交野市","交野市",11,3],["大阪狭山市","大阪狭山市",8,12],["阪南市","阪南市",2,15],["三島郡島本町","島本町",11,1],["豊能郡豊能町","豊能町",6,1],["豊能郡能勢町","能勢町",5,1],["泉北郡忠岡町","忠岡町",4,12],["泉南郡熊取町","熊取町",3,15],["泉南郡田尻町","田尻町",1,15],["泉南郡岬町","岬町",1,13],["南河内郡太子町","太子町",11,11],["南河内郡河南町","河南町",11,12],["南河内郡千早赤阪村","千早赤阪村",10,13]]},"兵庫県":{"region":"kinki","cols":10,"rows":10,"m":[["神戸市東灘区","東灘区",8,8],["神戸市灘区","灘区",7,7],["神戸市兵庫区","兵庫区",8,9],["神戸市長田区","長田区",9,9],["神戸市須磨区","須磨区",6,8],["神戸市垂水区","垂水区",6,9],["神戸市北区","北区",8,7],["神戸市中央区","中央区",7,9],["神戸市西区","西区",7,8],["姫路市","姫路市",4,6],["尼崎市","尼崎市",9,8],["明石市","明石市",5,8],["西宮市","西宮市",9,7],["洲本市","洲本市",5,10],["芦屋市","芦屋市",8,6],["伊丹市","伊丹市",10,7],["相生市","相生市",1,5],["豊岡市","豊岡市",5,1],["加古川市","加古川市",5,7],["赤穂市","赤穂市",1,7],["西脇市","西脇市",5,3],["宝塚市","宝塚市",9,6],["三木市","三木市",7,6],["高砂市","高砂市",4,7],["川西市","川西市",10,6],["小野市","小野市",6,6],["三田市","三田市",8,5],["加西市","加西市",5,5],["丹波篠山市","丹波篠山市",8,4],["養父市","養父市",4,2],["丹波市","丹波市",7,3],["南あわじ市","南あわじ市",4,10],["朝来市","朝来市",5,2],["淡路市","淡路市",6,10],["宍粟市","宍粟市",2,4],["加東市","加東市",6,5],["たつの市","たつの市",2,6],["川辺郡猪名川町","猪名川町",10,5],["多可郡多可町","多可町",6,4],["加古郡稲美町","稲美町",6,7],["加古郡播磨町","播磨町",4,8],["神崎郡市川町","市川町",3,3],["神崎郡福崎町","福崎町",4,5],["神崎郡神河町","神河町",4,4],["揖保郡太子町","太子町",3,6],["赤穂郡上郡町","町",1,6],["佐用郡佐用町","佐用町",1,4],["美方郡香美町","香美町",3,1],["美方郡新温泉町","新温泉町",2,1]]},"奈良県":{"region":"kinki","cols":7,"rows":13,"m":[["奈良市","奈良市",3,1],["大和高田市","大和高田市",2,6],["大和郡山市","山市",2,2],["天理市","天理市",3,3],["橿原市","橿原市",3,6],["桜井市","桜井市",4,4],["五條市","五條市",1,9],["御所市","御所市",3,7],["生駒市","生駒市",1,1],["香芝市","香芝市",1,6],["葛城市","葛城市",1,7],["宇陀市","宇陀市",5,5],["山辺郡山添村","山添村",6,1],["生駒郡平群町","平群町",1,2],["生駒郡三郷町","三郷町",1,3],["生駒郡斑鳩町","斑鳩町",2,3],["生駒郡安堵町","安堵町",1,4],["磯城郡川西町","川西町",2,4],["磯城郡三宅町","三宅町",3,4],["磯城郡田原本町","田原本町",2,5],["宇陀郡曽爾村","曽爾村",7,5],["宇陀郡御杖村","御杖村",6,4],["高市郡高取町","高取町",1,8],["高市郡明日香村","明日香村",2,7],["北葛城郡上牧町","上牧町",2,1],["北葛城郡王寺町","王寺町",1,5],["北葛城郡広陵町","広陵町",3,5],["北葛城郡河合町","河合町",3,2],["吉野郡吉野町","吉野町",4,7],["吉野郡大淀町","大淀町",2,8],["吉野郡下市町","下市町",3,8],["吉野郡黒滝村","黒滝村",3,9],["吉野郡天川村","天川村",3,10],["吉野郡野迫川村","野迫川村",1,11],["吉野郡十津川村","十津川村",2,13],["吉野郡下北山村","下北山村",5,13],["吉野郡上北山村","上北山村",6,12],["吉野郡川上村","川上村",6,9],["吉野郡東吉野村","東吉野村",6,7]]},"和歌山県":{"region":"kinki","cols":8,"rows":9,"m":[["和歌山市","和歌山市",2,1],["海南市","海南市",2,2],["橋本市","橋本市",6,1],["有田市","有田市",1,3],["御坊市","御坊市",2,6],["田辺市","田辺市",5,7],["新宮市","新宮市",8,7],["紀の川市","紀の川市",3,2],["岩出市","岩出市",3,1],["海草郡紀美野町","紀美野町",4,2],["伊都郡かつらぎ町","かつらぎ町",5,1],["伊都郡九度山町","九度山町",4,1],["伊都郡高野町","高野町",6,2],["有田郡湯浅町","湯浅町",2,4],["有田郡広川町","広川町",1,4],["有田郡有田川町","有田川町",3,3],["日高郡美浜町","美浜町",2,5],["日高郡日高町","日高町",1,6],["日高郡由良町","由良町",1,5],["日高郡印南町","印南町",1,7],["日高郡みなべ町","みなべ町",3,6],["日高郡日高川町","日高川町",3,5],["西牟婁郡白浜町","白浜町",3,7],["西牟婁郡上富田町","上富田町",4,8],["西牟婁郡すさみ町","すさみ町",6,9],["東牟婁郡那智勝浦町","那智勝浦町",8,8],["東牟婁郡太地町","太地町",8,9],["東牟婁郡古座川町","古座川町",7,9],["東牟婁郡北山村","北山村",8,5],["東牟婁郡串本町","串本町",6,8]]},"鳥取県":{"region":"chugoku","cols":9,"rows":4,"m":[["鳥取市","鳥取市",7,2],["米子市","米子市",1,2],["倉吉市","倉吉市",4,1],["境港市","境港市",1,1],["岩美郡岩美町","岩美町",9,1],["八頭郡若桜町","若桜町",9,3],["八頭郡智頭町","智頭町",8,4],["八頭郡八頭町","八頭町",8,2],["東伯郡三朝町","三朝町",5,1],["東伯郡湯梨浜町","湯梨浜町",6,2],["東伯郡琴浦町","琴浦町",4,2],["東伯郡北栄町","北栄町",5,2],["西伯郡日吉津村","日吉津村",2,2],["西伯郡大山町","大山町",3,1],["西伯郡南部町","南部町",2,3],["西伯郡伯耆町","伯耆町",3,3],["日野郡日南町","日南町",1,4],["日野郡日野町","日野町",3,4],["日野郡江府町","江府町",2,4]]},"島根県":{"region":"chugoku","cols":6,"rows":7,"m":[["松江市","松江市",5,3],["浜田市","浜田市",1,4],["出雲市","出雲市",4,3],["益田市","益田市",1,6],["大田市","大田市",3,4],["安来市","安来市",6,3],["江津市","江津市",2,5],["雲南市","雲南市",5,4],["仁多郡奥出雲町","奥出雲町",4,4],["飯石郡飯南町","飯南町",4,5],["邑智郡川本町","川本町",2,4],["邑智郡美郷町","美郷町",3,5],["邑智郡邑南町","邑南町",2,6],["鹿足郡津和野町","津和野町",1,7],["鹿足郡吉賀町","吉賀町",2,7],["隠岐郡海士町","海士町",4,1],["隠岐郡西ノ島町","西ノ島町",5,1],["隠岐郡知夫村","知夫村",5,2],["隠岐郡隠岐の島町","隠岐の島町",6,1]]},"岡山県":{"region":"chugoku","cols":9,"rows":9,"m":[["岡山市北区","北区",6,7],["岡山市中区","中区",5,6],["岡山市東区","東区",7,7],["岡山市南区","南区",6,8],["倉敷市","倉敷市",4,9],["津山市","津山市",7,2],["玉野市","玉野市",6,9],["笠岡市","笠岡市",1,9],["井原市","井原市",1,7],["総社市","総社市",4,7],["高梁市","高梁市",2,5],["新見市","新見市",1,3],["備前市","備前市",9,6],["瀬戸内市","瀬戸内市",8,7],["赤磐市","赤磐市",7,5],["真庭市","真庭市",3,2],["美作市","美作市",9,3],["浅口市","浅口市",2,9],["和気郡和気町","和気町",8,5],["都窪郡早島町","早島町",5,8],["浅口郡里庄町","里庄町",1,8],["小田郡矢掛町","矢掛町",2,8],["真庭郡新庄村","新庄村",2,1],["苫田郡鏡野町","鏡野町",6,1],["勝田郡勝央町","勝央町",8,2],["勝田郡奈義町","奈義町",9,2],["英田郡西粟倉村","西粟倉村",9,1],["久米郡久米南町","久米南町",6,4],["久米郡美咲町","美咲町",6,3],["加賀郡吉備中央町","吉備中央町",4,5]]},"広島県":{"region":"chugoku","cols":11,"rows":7,"m":[["広島市中区","中区",3,6],["広島市東区","東区",2,4],["広島市南区","南区",4,6],["広島市西区","西区",2,6],["広島市安佐南区","安佐南区",3,5],["広島市安佐北区","安佐北区",4,4],["広島市安芸区","安芸区",3,4],["広島市佐伯区","佐伯区",2,5],["呉市","呉市",5,6],["竹原市","竹原市",8,6],["三原市","三原市",9,5],["尾道市","尾道市",10,5],["福山市","福山市",11,4],["府中市","府中市",10,3],["三次市","三次市",7,1],["庄原市","庄原市",9,1],["大竹市","大竹市",1,7],["東広島市","東広島市",6,5],["廿日市市","廿日市市",1,6],["安芸高田市","安芸高田市",5,2],["江田島市","江田島市",1,5],["安芸郡府中町","府中町",4,5],["安芸郡海田町","海田町",3,7],["安芸郡熊野町","熊野町",4,7],["安芸郡坂町","坂町",2,7],["山県郡安芸太田町","安芸太田町",1,3],["山県郡北広島町","北広島町",3,2],["豊田郡大崎上島町","大崎上島町",7,7],["世羅郡世羅町","世羅町",9,3],["神石郡神石高原町","神石高原町",11,1]]},"山口県":{"region":"chugoku","cols":8,"rows":6,"m":[["下関市","下関市",1,5],["宇部市","宇部市",1,4],["山口市","山口市",4,4],["萩市","萩市",3,1],["防府市","防府市",4,5],["下松市","下松市",5,5],["岩国市","岩国市",7,4],["光市","光市",6,5],["長門市","長門市",1,2],["柳井市","柳井市",7,5],["美祢市","美祢市",2,3],["周南市","周南市",5,4],["山陽小野田市","山陽小野田市",2,5],["大島郡周防大島町","周防大島町",8,6],["玖珂郡和木町","和木町",8,3],["熊毛郡上関町","上関町",6,6],["熊毛郡田布施町","田布施町",6,4],["熊毛郡平生町","平生町",7,6],["阿武郡阿武町","阿武町",4,1]]},"徳島県":{"region":"shikoku","cols":8,"rows":7,"m":[["徳島市","徳島市",6,3],["鳴門市","鳴門市",8,1],["小松島市","小松島市",8,3],["阿南市","阿南市",8,4],["吉野川市","吉野川市",3,1],["阿波市","阿波市",4,2],["美馬市","美馬市",3,2],["三好市","三好市",1,3],["勝浦郡勝浦町","勝浦町",7,4],["勝浦郡上勝町","上勝町",6,4],["名東郡佐那河内村","佐那河内村",5,3],["名西郡石井町","石井町",5,2],["名西郡神山町","神山町",4,3],["那賀郡那賀町","那賀町",5,5],["海部郡牟岐町","牟岐町",6,7],["海部郡美波町","美波町",7,6],["海部郡海陽町","海陽町",5,7],["板野郡松茂町","松茂町",7,1],["板野郡北島町","北島町",6,2],["板野郡藍住町","藍住町",7,2],["板野郡板野町","板野町",6,1],["板野郡上板町","上板町",5,1],["美馬郡つるぎ町","つるぎ町",2,2],["三好郡東みよし町","東みよし町",1,2]]},"香川県":{"region":"shikoku","cols":9,"rows":5,"m":[["高松市","高松市",6,3],["丸亀市","丸亀市",2,3],["坂出市","坂出市",3,2],["善通寺市","善通寺市",2,4],["観音寺市","観音寺市",1,5],["さぬき市","さぬき市",8,3],["東かがわ市","東かがわ市",9,4],["三豊市","三豊市",1,4],["小豆郡土庄町","土庄町",7,1],["小豆郡小豆島町","小豆島町",9,1],["木田郡三木町","三木町",7,3],["香川郡直島町","直島町",5,1],["綾歌郡宇多津町","宇多津町",3,3],["綾歌郡綾川町","綾川町",4,4],["仲多度郡琴平町","琴平町",3,4],["仲多度郡多度津町","多度津町",1,2],["仲多度郡まんのう町","まんのう町",3,5]]},"愛媛県":{"region":"shikoku","cols":6,"rows":8,"m":[["松山市","松山市",3,3],["今治市","今治市",4,1],["宇和島市","宇和島市",2,8],["八幡浜市","八幡浜市",1,6],["新居浜市","新居浜市",5,2],["西条市","西条市",5,3],["大洲市","大洲市",2,5],["伊予市","伊予市",3,4],["四国中央市","四国中央市",6,2],["西予市","西予市",2,6],["東温市","東温市",4,3],["越智郡上島町","上島町",5,1],["上浮穴郡久万高原町","久万高原町",4,4],["伊予郡松前町","松前町",2,2],["伊予郡砥部町","砥部町",2,3],["喜多郡内子町","内子町",3,5],["西宇和郡伊方町","伊方町",1,5],["北宇和郡松野町","松野町",3,8],["北宇和郡鬼北町","鬼北町",3,7],["南宇和郡愛南町","愛南町",1,7]]},"高知県":{"region":"shikoku","cols":10,"rows":8,"m":[["高知市","高知市",6,3],["室戸市","室戸市",9,5],["安芸市","安芸市",9,3],["南国市","南国市",7,2],["土佐市","土佐市",4,4],["須崎市","須崎市",5,4],["宿毛市","宿毛市",1,7],["土佐清水市","土佐清水市",3,7],["四万十市","四万十市",2,7],["香南市","香南市",7,3],["香美市","香美市",8,2],["安芸郡東洋町","東洋町",10,3],["安芸郡奈半利町","奈半利町",10,4],["安芸郡田野町","田野町",9,4],["安芸郡安田町","安田町",8,4],["安芸郡北川村","北川村",9,2],["安芸郡馬路村","馬路村",10,2],["安芸郡芸西村","芸西村",8,3],["長岡郡本山町","本山町",6,1],["長岡郡大豊町","大豊町",7,1],["土佐郡土佐町","土佐町",5,2],["土佐郡大川村","大川村",5,1],["吾川郡いの町","いの町",4,1],["吾川郡仁淀川町","仁淀川町",4,2],["高岡郡中土佐町","中土佐町",3,4],["高岡郡佐川町","佐川町",3,2],["高岡郡越知町","越知町",4,3],["高岡郡檮原町","檮原町",2,4],["高岡郡日高村","日高村",5,3],["高岡郡津野町","津野町",3,3],["高岡郡四万十町","四万十町",3,5],["幡多郡大月町","大月町",1,8],["幡多郡三原村","三原村",2,8],["幡多郡黒潮町","黒潮町",3,6]]},"福岡県":{"region":"kyushu_n","cols":12,"rows":14,"m":[["北九州市門司区","門司区",11,1],["北九州市若松区","若松区",7,1],["北九州市戸畑区","戸畑区",9,1],["北九州市小倉北区","小倉北区",8,1],["北九州市小倉南区","小倉南区",10,2],["北九州市八幡東区","八幡東区",8,2],["北九州市八幡西区","八幡西区",7,2],["福岡市東区","東区",2,5],["福岡市博多区","博多区",2,7],["福岡市中央区","中央区",1,7],["福岡市南区","南区",3,8],["福岡市西区","西区",1,6],["福岡市城南区","城南区",1,8],["福岡市早良区","早良区",1,5],["大牟田市","大牟田市",3,13],["久留米市","久留米市",4,12],["直方市","直方市",7,4],["飯塚市","飯塚市",6,6],["田川市","田川市",8,6],["柳川市","柳川市",1,13],["八女市","八女市",5,14],["筑後市","筑後市",3,14],["大川市","大川市",1,14],["行橋市","行橋市",11,4],["豊前市","豊前市",12,7],["中間市","中間市",6,3],["小郡市","市",4,10],["筑紫野市","筑紫野市",4,9],["春日市","春日市",1,9],["大野城市","大野城市",2,9],["宗像市","宗像市",4,3],["太宰府市","太宰府市",3,9],["古賀市","古賀市",3,4],["福津市","福津市",3,3],["うきは市","うきは市",8,11],["宮若市","宮若市",5,4],["嘉麻市","嘉麻市",7,7],["朝倉市","朝倉市",7,10],["みやま市","みやま市",2,13],["糸島市","糸島市",2,8],["那珂川市","那珂川市",1,10],["糟屋郡宇美町","宇美町",4,7],["糟屋郡篠栗町","篠栗町",4,6],["糟屋郡志免町","志免町",2,6],["糟屋郡須恵町","須恵町",3,7],["糟屋郡新宮町","新宮町",2,4],["糟屋郡久山町","久山町",3,5],["糟屋郡粕屋町","粕屋町",3,6],["遠賀郡芦屋町","芦屋町",6,1],["遠賀郡水巻町","水巻町",6,2],["遠賀郡岡垣町","岡垣町",5,2],["遠賀郡遠賀町","遠賀町",5,1],["鞍手郡小竹町","小竹町",6,4],["鞍手郡鞍手町","鞍手町",5,3],["嘉穂郡桂川町","桂川町",6,7],["朝倉郡筑前町","筑前町",5,9],["朝倉郡東峰村","東峰村",9,10],["三井郡大刀洗町","大刀洗町",5,11],["三潴郡大木町","大木町",2,14],["八女郡広川町","広川町",4,13],["田川郡香春町","香春町",9,5],["田川郡添田町","添田町",9,8],["田川郡糸田町","糸田町",7,5],["田川郡川崎町","川崎町",7,6],["田川郡大任町","大任町",9,6],["田川郡赤村","赤村",8,7],["田川郡福智町","福智町",8,5],["京都郡苅田町","苅田町",11,3],["京都郡みやこ町","みやこ町",10,5],["築上郡吉富町","吉富町",11,5],["築上郡上毛町","上毛町",11,6],["築上郡築上町","築上町",12,6]]},"佐賀県":{"region":"kyushu_n","cols":8,"rows":6,"m":[["佐賀市","佐賀市",5,2],["唐津市","唐津市",2,1],["鳥栖市","鳥栖市",8,2],["多久市","多久市",4,3],["伊万里市","伊万里市",1,3],["武雄市","武雄市",3,4],["鹿島市","鹿島市",4,6],["小城市","小城市",5,3],["嬉野市","嬉野市",2,6],["神埼市","神埼市",6,3],["神埼郡吉野ヶ里町","吉野ヶ里町",7,2],["三養基郡基山町","基山町",8,1],["三養基郡上峰町","上峰町",7,3],["三養基郡みやき町","みやき町",6,2],["東松浦郡玄海町","玄海町",1,1],["西松浦郡有田町","有田町",1,4],["杵島郡大町町","大町町",4,4],["杵島郡江北町","江北町",3,3],["杵島郡白石町","白石町",4,5],["藤津郡太良町","太良町",3,5]]},"長崎県":{"region":"kyushu_n","cols":7,"rows":7,"m":[["長崎市","長崎市",6,7],["佐世保市","佐世保市",3,5],["島原市","島原市",7,7],["諫早市","諫早市",5,6],["大村市","大村市",6,6],["平戸市","平戸市",3,4],["松浦市","松浦市",4,4],["対馬市","対馬市",2,1],["壱岐市","壱岐市",4,2],["五島市","五島市",1,7],["西海市","西海市",3,6],["雲仙市","雲仙市",7,6],["南島原市","南島原市",6,5],["西彼杵郡長与町","長与町",5,7],["西彼杵郡時津町","時津町",4,7],["東彼杵郡東彼杵町","東彼杵町",4,6],["東彼杵郡川棚町","川棚町",4,5],["東彼杵郡波佐見町","波佐見町",5,5],["北松浦郡小値賀町","小値賀町",1,4],["北松浦郡佐々町","佐々町",3,3],["南松浦郡新上五島町","新上五島町",1,6]]},"熊本県":{"region":"kyushu_n","cols":9,"rows":13,"m":[["熊本市中央区","中央区",4,5],["熊本市東区","東区",4,4],["熊本市西区","西区",3,4],["熊本市南区","南区",3,5],["熊本市北区","北区",5,4],["八代市","八代市",4,9],["人吉市","人吉市",5,13],["荒尾市","荒尾市",2,2],["水俣市","水俣市",1,13],["玉名市","玉名市",3,3],["山鹿市","山鹿市",5,1],["菊池市","菊池市",6,2],["宇土市","宇土市",4,6],["上天草市","上天草市",1,9],["宇城市","宇城市",4,7],["阿蘇市","阿蘇市",8,2],["天草市","天草市",1,10],["合志市","合志市",5,3],["下益城郡美里町","美里町",6,7],["玉名郡玉東町","玉東町",4,3],["玉名郡南関町","南関町",3,1],["玉名郡長洲町","長洲町",2,3],["玉名郡和水町","和水町",4,1],["菊池郡大津町","大津町",7,3],["菊池郡菊陽町","菊陽町",6,4],["阿蘇郡南小国町","南小国町",8,1],["阿蘇郡小国町","小国町",9,1],["阿蘇郡産山村","産山村",9,2],["阿蘇郡高森町","高森町",9,4],["阿蘇郡西原村","西原村",7,4],["阿蘇郡南阿蘇村","南阿蘇村",8,4],["上益城郡御船町","御船町",6,6],["上益城郡嘉島町","嘉島町",5,5],["上益城郡益城町","益城町",6,5],["上益城郡甲佐町","甲佐町",5,6],["上益城郡山都町","山都町",8,6],["八代郡氷川町","氷川町",4,8],["葦北郡芦北町","芦北町",3,12],["葦北郡津奈木町","津奈木町",2,13],["球磨郡錦町","錦町",6,13],["球磨郡多良木町","多良木町",7,12],["球磨郡水上村","水上村",8,11],["球磨郡相良村","相良村",6,12],["球磨郡五木村","五木村",6,10],["球磨郡山江村","山江村",5,12],["球磨郡球磨村","球磨村",4,12],["球磨郡あさぎり町","あさぎり町",7,13],["天草郡苓北町","苓北町",1,8]]},"大分県":{"region":"kyushu_n","cols":7,"rows":7,"m":[["大分市","大分市",5,5],["別府市","別府市",4,4],["中津市","中津市",2,2],["日田市","日田市",1,4],["佐伯市","佐伯市",7,7],["臼杵市","臼杵市",6,6],["津久見市","津久見市",7,6],["竹田市","竹田市",3,7],["豊後高田市","豊後高田市",4,1],["杵築市","杵築市",5,3],["宇佐市","宇佐市",3,2],["豊後大野市","豊後大野市",4,7],["由布市","由布市",4,5],["国東市","国東市",5,2],["東国東郡姫島村","姫島村",5,1],["速見郡日出町","日出町",4,3],["玖珠郡九重町","九重町",2,5],["玖珠郡玖珠町","玖珠町",1,3]]},"宮崎県":{"region":"kyushu_s","cols":6,"rows":11,"m":[["宮崎市","宮崎市",4,8],["都城市","都城市",1,9],["延岡市","延岡市",6,2],["日南市","日南市",4,11],["小林市","小林市",1,6],["日向市","日向市",5,2],["串間市","串間市",3,11],["西都市","西都市",4,6],["えびの市","えびの市",1,7],["北諸県郡三股町","三股町",2,10],["西諸県郡高原町","高原町",1,8],["東諸県郡国富町","国富町",2,6],["東諸県郡綾町","綾町",3,7],["児湯郡高鍋町","高鍋町",5,6],["児湯郡新富町","新富町",5,7],["児湯郡西米良村","西米良村",2,5],["児湯郡木城町","木城町",4,5],["児湯郡川南町","川南町",4,4],["児湯郡都農町","都農町",5,5],["東臼杵郡門川町","門川町",6,3],["東臼杵郡諸塚村","諸塚村",3,2],["東臼杵郡椎葉村","椎葉村",2,3],["東臼杵郡美郷町","美郷町",4,3],["西臼杵郡高千穂町","高千穂町",3,1],["西臼杵郡日之影町","日之影町",4,1],["西臼杵郡五ヶ瀬町","五ヶ瀬町",2,1]]},"鹿児島県":{"region":"kyushu_s","cols":7,"rows":13,"m":[["鹿児島市","鹿児島市",7,1],["鹿屋市","鹿屋市",7,4],["枕崎市","枕崎市",3,3],["阿久根市","阿久根市",4,2],["出水市","出水市",4,1],["指宿市","指宿市",7,5],["西之表市","西之表市",7,6],["垂水市","垂水市",5,4],["薩摩川内市","薩摩川内市",4,3],["日置市","日置市",3,2],["曽於市","曽於市",7,2],["霧島市","霧島市",5,3],["いちき串木野市","いちき串木野",3,1],["南さつま市","南さつま市",4,4],["志布志市","志布志市",7,3],["奄美市","奄美市",2,9],["南九州市","南九州市",4,5],["伊佐市","伊佐市",6,1],["姶良市","姶良市",6,3],["鹿児島郡三島村","三島村",6,6],["鹿児島郡十島村","十島村",3,8],["薩摩郡さつま町","さつま町",6,2],["出水郡長島町","長島町",5,1],["姶良郡湧水町","湧水町",5,2],["曽於郡大崎町","大崎町",6,4],["肝属郡東串良町","東串良町",5,5],["肝属郡錦江町","錦江町",5,6],["肝属郡南大隅町","南大隅町",4,6],["肝属郡肝付町","肝付町",6,5],["熊毛郡中種子町","中種子町",6,7],["熊毛郡南種子町","南種子町",7,7],["熊毛郡屋久島町","屋久島町",5,7],["大島郡大和村","大和村",2,10],["大島郡宇検村","宇検村",2,11],["大島郡瀬戸内町","瀬戸内町",3,11],["大島郡龍郷町","龍郷町",3,10],["大島郡喜界町","喜界町",4,10],["大島郡徳之島町","徳之島町",1,11],["大島郡天城町","天城町",2,12],["大島郡伊仙町","伊仙町",1,12],["大島郡和泊町","和泊町",1,13],["大島郡知名町","知名町",2,13],["大島郡与論町","与論町",3,12]]},"沖縄県":{"region":"okinawa","cols":11,"rows":7,"m":[["那覇市","那覇市",7,5],["宜野湾市","宜野湾市",10,4],["石垣市","石垣市",1,6],["浦添市","浦添市",5,4],["名護市","名護市",9,3],["糸満市","糸満市",8,6],["沖縄市","沖縄市",10,1],["豊見城市","豊見城市",5,6],["うるま市","うるま市",8,4],["宮古島市","宮古島市",4,6],["南城市","南城市",6,6],["国頭郡国頭村","国頭村",9,1],["国頭郡大宜味村","大宜味村",9,2],["国頭郡東村","東村",8,3],["国頭郡今帰仁村","今帰仁村",8,2],["国頭郡本部町","本部町",6,1],["国頭郡恩納村","恩納村",6,3],["国頭郡宜野座村","宜野座村",7,3],["国頭郡金武町","金武町",6,4],["国頭郡伊江村","伊江村",7,2],["中頭郡読谷村","読谷村",7,4],["中頭郡嘉手納町","嘉手納町",9,4],["中頭郡北谷町","北谷町",10,2],["中頭郡北中城村","北中城村",10,3],["中頭郡中城村","中城村",5,3],["中頭郡西原町","西原町",6,5],["島尻郡与那原町","与那原町",8,5],["島尻郡南風原町","南風原町",10,5],["島尻郡渡嘉敷村","渡嘉敷村",9,5],["島尻郡座間味村","座間味村",5,5],["島尻郡粟国村","粟国村",6,2],["島尻郡渡名喜村","渡名喜村",5,2],["島尻郡南大東村","南大東村",11,3],["島尻郡北大東村","北大東村",11,4],["島尻郡伊平屋村","伊平屋村",8,1],["島尻郡伊是名村","伊是名村",7,1],["島尻郡久米島町","久米島町",5,1],["島尻郡八重瀬町","八重瀬町",7,6],["宮古郡多良間村","多良間村",3,6],["八重山郡竹富町","竹富町",2,6],["八重山郡与那国町","与那国町",1,7]]}};
+
+const DAYS = [
+  {label:'今日', d:'8/14(金)'},
+  {label:'明日', d:'8/15(土)'},
+  {label:'明後日', d:'8/16(日)'},
+  {label:'3日後', d:'8/17(月)'},
+];
+const SLOTS = [
+  {key:'early',  label:'早朝', d:'5-9時',  mult:0.60},
+  {key:'morning',label:'午前', d:'9-12時', mult:0.80},
+  {key:'noon',   label:'午後', d:'12-17時',mult:1.20},
+  {key:'evening',label:'夕方', d:'17-21時',mult:1.05},
+  {key:'night',  label:'夜間', d:'21-5時', mult:0.50},
+];
+
+let state = {day:0, slot:2}; // default: today, afternoon
+
+/* deterministic pseudo-random variance from name */
+function hashVariance(name){
+  let h=0;
+  for(let i=0;i<name.length;i++){ h = (h*31 + name.charCodeAt(i)) % 997; }
+  return (h % 11) - 5; // -5..5
+}
+
+// 降雹は「大気の状態が不安定」「雷が発生しやすい」といった条件が揃ってもなお、
+// 実際に地表まで雹が到達するのはその中でもさらに稀なケースです。
+// そのため base/bonus/時間帯係数から求めた「大気不安定指数」を一旦0-100に収め、
+// べき乗（HAIL_CURVE_K > 1）で下側に圧縮してから最終指数とします。
+// これにより、通常時は指数が低めに出て、複数の悪条件が重なった時だけ
+// 指数が跳ね上がる（＝降雨・雷の確率のように常時高止まりしない）ようにしています。
+const HAIL_CURVE_K = 1.45;
+
+function computeScore(pref, dayIdx, slotIdx){
+  const base = REGION_BASE[pref[2]][dayIdx];
+  const bonus = MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? 9 : 0;
+  const instability = Math.min(100, (base + bonus) * SLOTS[slotIdx].mult);
+  const hail = Math.pow(instability / 100, HAIL_CURVE_K) * 100;
+  const variance = hashVariance(pref[0]);
+  return Math.max(1, Math.min(96, Math.round(hail + variance)));
+}
+
+function colorForScore(v){
+  const stops = [
+    [0, [28,59,99]],
+    [25,[47,166,160]],
+    [50,[255,194,75]],
+    [75,[255,138,61]],
+    [100,[255,47,94]],
+  ];
+  let a=stops[0], b=stops[stops.length-1];
+  for(let i=0;i<stops.length-1;i++){
+    if(v>=stops[i][0] && v<=stops[i+1][0]){ a=stops[i]; b=stops[i+1]; break; }
+  }
+  const t = (v-a[0])/(b[0]-a[0]||1);
+  const c = a[1].map((c0,i)=> Math.round(c0 + (b[1][i]-c0)*t));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+function riskMeta(v){
+  if(v<20) return {label:'低い', color:'var(--r-0)'};
+  if(v<40) return {label:'やや低い', color:'var(--r-25)'};
+  if(v<60) return {label:'中程度', color:'var(--r-50)'};
+  if(v<80) return {label:'高い', color:'var(--r-75)'};
+  return {label:'非常に高い', color:'var(--r-100)'};
+}
+
+function adviceFor(v){
+  if(v<20) return '積乱雲が発達する兆候は限定的です。通常どおりの活動で問題ありませんが、空模様の急変には留意してください。';
+  if(v<40) return '午後を中心に急な雷雨が発生する可能性があります。屋外の長時間活動では雨雲レーダーを時々確認すると安心です。';
+  if(v<60) return '大気の状態が不安定になりやすいタイミングです。屋外駐車では屋根のある場所を選び、洗濯物や農作物カバーの準備をおすすめします。';
+  if(v<80) return '積乱雲が発達し、雷・突風とあわせて雹が降る可能性があります。車両はガレージや屋根下へ、外出予定は柔軟に見直してください。';
+  return '雹害が発生しやすい非常に不安定な大気状態です。車両・農作物の保護を最優先に、最新の気象庁警報・注意報を必ず確認してください。';
+}
+
+/* ================= BUILD UI ================= */
+const daySeg = document.getElementById('daySeg');
+DAYS.forEach((d,i)=>{
+  const b = document.createElement('button');
+  b.innerHTML = `${d.label}<span class="d">${d.d}</span>`;
+  b.className = i===state.day ? 'active':'';
+  b.onclick = ()=>{ state.day=i; refresh(); [...daySeg.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); };
+  daySeg.appendChild(b);
+});
+
+const timeSeg = document.getElementById('timeSeg');
+SLOTS.forEach((s,i)=>{
+  const b = document.createElement('button');
+  b.innerHTML = `${s.label}<span class="d">${s.d}</span>`;
+  b.className = i===state.slot ? 'active':'';
+  b.onclick = ()=>{ state.slot=i; refresh(); [...timeSeg.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); };
+  timeSeg.appendChild(b);
+});
+
+const mapGrid = document.getElementById('mapGrid');
+const tileEls = {};
+
+// スマホ幅（760px以下）では、実際の日本列島の形を模した疎な配置だと
+// 横スクロールが必須になり見づらいため、都道府県コード順に整列した
+// コンパクトな均等グリッドに切り替える（デザインの正確な地形再現は諦め、
+// 一画面で見やすく・タップしやすいことを優先）。
+const COMPACT_BREAKPOINT = 760;
+function isCompactView(){ return window.innerWidth <= COMPACT_BREAKPOINT; }
+
+let nationalGridMode = null; // 'compact' | 'geo'
+
+function buildNationalGrid(){
+  const mode = isCompactView() ? 'compact' : 'geo';
+  if(mode === nationalGridMode) return false;
+  nationalGridMode = mode;
+
+  mapGrid.innerHTML = '';
+  Object.keys(tileEls).forEach(k=> delete tileEls[k]);
+  mapGrid.classList.toggle('compact', mode === 'compact');
+  mapGrid.style.gridTemplateColumns = '';
+  mapGrid.style.gridAutoRows = '';
+
+  PREFS.forEach(p=>{
+    const el = document.createElement('div');
+    if(mode === 'geo'){
+      el.className = 'tile' + (p[5]===2 ? ' hokkaido':'');
+      el.style.gridColumn = `${p[3]} / span ${p[5]}`;
+      el.style.gridRow = `${p[4]} / span ${p[5]}`;
+    } else {
+      el.className = 'tile compact-tile';
+    }
+    el.textContent = p[1];
+    el.title = p[0];
+    el.dataset.name = p[0];
+    el.onclick = ()=> selectPref(p[0]);
+    mapGrid.appendChild(el);
+    tileEls[p[0]] = el;
+  });
+  return true;
+}
+buildNationalGrid();
+
+let resizeTimer = null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=>{
+    if(buildNationalGrid()) refresh();
+  }, 200);
+});
+
+let selected = null;      // 選択中（またはドリルダウン中）の都道府県
+let drillPref = null;      // ドリルダウン中の都道府県名（nullなら全国表示）
+let selectedMuni = null;   // drillPref内で選択中の市区町村名
+
+const muniGrid = document.getElementById('muniGrid');
+const backBtn = document.getElementById('backBtn');
+const mapTitle = document.getElementById('mapTitle');
+const mapDesc = document.getElementById('mapDesc');
+
+let muniTileEls = {};
+let lastBuiltMuniPref = null;
+
+function buildMuniGrid(prefName){
+  const info = MUNI_DATA[prefName];
+  if(!info) return;
+  muniGrid.innerHTML = '';
+  muniTileEls = {};
+  muniGrid.style.gridTemplateColumns = `repeat(${info.cols}, minmax(26px, 1fr))`;
+  muniGrid.style.gridAutoRows = 'minmax(26px, 1fr)';
+  info.m.forEach(([full, short, col, row])=>{
+    const el = document.createElement('div');
+    el.className = 'tile muni';
+    el.style.gridColumn = `${col} / span 1`;
+    el.style.gridRow = `${row} / span 1`;
+    el.textContent = short;
+    el.title = full;
+    el.dataset.name = full;
+    el.onclick = ()=> selectMuni(full);
+    muniGrid.appendChild(el);
+    muniTileEls[full] = el;
+  });
+  lastBuiltMuniPref = prefName;
+}
+
+function computeMuniScore(prefName, muniName, dayIdx, slotIdx){
+  const pref = PREFS.find(p=>p[0]===prefName);
+  if(!pref) return 0;
+  const prefScore = computeScore(pref, dayIdx, slotIdx);
+  const v = hashVariance(prefName+'|'+muniName);
+  return Math.max(1, Math.min(97, Math.round(prefScore + v*1.3)));
+}
+
+function selectPref(name){
+  selected = name;
+  drillPref = name;
+  selectedMuni = null;
+  if(lastBuiltMuniPref !== name) buildMuniGrid(name);
+  mapGrid.style.display = 'none';
+  muniGrid.style.display = '';
+  backBtn.style.display = '';
+  refresh();
+}
+
+function selectMuni(name){
+  selectedMuni = name;
+  refresh();
+}
+
+backBtn.onclick = ()=>{
+  drillPref = null;
+  selectedMuni = null;
+  muniGrid.style.display = 'none';
+  mapGrid.style.display = '';
+  backBtn.style.display = 'none';
+  refresh();
+};
+
+const statsEl = document.getElementById('stats');
+const detailEl = document.getElementById('detail');
+
+function updateScrollHint(){
+  const box = document.querySelector('.map-scroll');
+  const hint = document.querySelector('.scroll-hint');
+  if(!box || !hint) return;
+  hint.style.display = (box.scrollWidth > box.clientWidth + 2) ? 'flex' : 'none';
+}
+
+function refresh(){
+  if(drillPref){
+    mapTitle.textContent = `${drillPref} 市区町村ヒートマップ`;
+    mapDesc.textContent = '市区町村タイルをタップすると詳細スコアと登録ボタンが表示されます';
+  } else {
+    mapTitle.textContent = '全国ヒートマップ';
+    mapDesc.textContent = '都道府県タイルをタップすると、市区町村単位のヒートマップと詳細スコアが表示されます';
+  }
+  updateScrollHint();
+
+  let top = {name:null, val:-1};
+  let dangerCount = 0;
+  let sum = 0;
+
+  PREFS.forEach(p=>{
+    const v = computeScore(p, state.day, state.slot);
+    const el = tileEls[p[0]];
+    el.style.background = colorForScore(v);
+    el.classList.toggle('hot', v>=75);
+    el.classList.toggle('selected', selected===p[0]);
+    sum += v;
+    if(v>top.val){ top={name:p[0], val:v}; }
+    if(v>=60) dangerCount++;
+  });
+
+  const avg = Math.round(sum/PREFS.length);
+
+  if(drillPref && MUNI_DATA[drillPref]){
+    MUNI_DATA[drillPref].m.forEach(([full])=>{
+      const v = computeMuniScore(drillPref, full, state.day, state.slot);
+      const el = muniTileEls[full];
+      if(!el) return;
+      el.style.background = colorForScore(v);
+      el.classList.toggle('hot', v>=75);
+      el.classList.toggle('selected', selectedMuni===full);
+    });
+  }
+
+  const regAlertCount = registered.filter(r=> computeMuniScore(r.pref, r.city, state.day, state.slot) >= 80).length;
+
+  statsEl.innerHTML = `
+    <div class="stat-card danger">
+      <div class="label">全国最高リスク</div>
+      <div class="value">${top.name}</div>
+      <div class="sub">指数 ${top.val}%（${riskMeta(top.val).label}）</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="label">警戒レベル該当（60%以上）</div>
+      <div class="value">${dangerCount}<span style="font-size:14px;color:var(--text-dim)"> 都道府県</span></div>
+      <div class="sub">${DAYS[state.day].d} / ${SLOTS[state.slot].label}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">全国平均指数</div>
+      <div class="value">${avg}%</div>
+      <div class="sub">47都道府県平均</div>
+    </div>
+    <div class="stat-card ${regAlertCount>0 ? 'danger':''}">
+      <div class="label">登録地域の警戒（80%以上）</div>
+      <div class="value">${regAlertCount}<span style="font-size:14px;color:var(--text-dim)"> / ${registered.length} 件</span></div>
+      <div class="sub">表示中の条件での判定</div>
+    </div>
+  `;
+
+  renderDetail(top);
+  renderRegisteredList();
+}
+
+function renderDetail(top){
+  if(selectedMuni && drillPref){
+    const pref = PREFS.find(p=>p[0]===drillPref);
+    const v = computeMuniScore(drillPref, selectedMuni, state.day, state.slot);
+    const meta = riskMeta(v);
+    const circumference = 2*Math.PI*66;
+    const dash = (v/100)*circumference;
+    const already = isRegistered(drillPref, selectedMuni);
+
+    detailEl.innerHTML = `
+      <div class="gauge-col">
+        <div class="gauge">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle class="bg" cx="75" cy="75" r="66"></circle>
+            <circle class="fg" cx="75" cy="75" r="66" stroke="${meta.color}"
+              stroke-dasharray="${dash} ${circumference}"></circle>
+          </svg>
+          <div class="num"><div class="n">${v}<span style="font-size:16px">%</span></div><div class="u">HAIL INDEX</div></div>
+        </div>
+        <div class="risk-label" style="background:${meta.color}22; color:${meta.color}; border:1px solid ${meta.color}55;">${meta.label}</div>
+      </div>
+      <div class="detail-body">
+        <h3>${selectedMuni}</h3>
+        <span class="region-tag">${drillPref} ・ ${DAYS[state.day].label}（${DAYS[state.day].d}） ・ ${SLOTS[state.slot].label}（${SLOTS[state.slot].d}）の推定</span>
+        <div class="factors">
+          ${REGION_FACTORS[pref[2]].map(f=>`<div class="factor"><span class="ic">⚡</span>${f}</div>`).join('')}
+          ${MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? '<div class="factor"><span class="ic">⛰️</span>山沿い・内陸性の積乱雲発達リスク</div>' : ''}
+        </div>
+        <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
+        <button class="reg-btn-detail ${already?'done':''}" id="detailRegBtn">${already ? '✓ 登録済みです' : '＋ この地域を登録する'}</button>
+      </div>
+    `;
+    const btn = document.getElementById('detailRegBtn');
+    if(btn && !already){
+      btn.onclick = ()=>{ addRegisteredRegion(drillPref, selectedMuni); };
+    }
+    return;
+  }
+
+  if(drillPref){
+    const pref = PREFS.find(p=>p[0]===drillPref);
+    const v = computeScore(pref, state.day, state.slot);
+    const meta = riskMeta(v);
+    const circumference = 2*Math.PI*66;
+    const dash = (v/100)*circumference;
+
+    detailEl.innerHTML = `
+      <div class="gauge-col">
+        <div class="gauge">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle class="bg" cx="75" cy="75" r="66"></circle>
+            <circle class="fg" cx="75" cy="75" r="66" stroke="${meta.color}"
+              stroke-dasharray="${dash} ${circumference}"></circle>
+          </svg>
+          <div class="num"><div class="n">${v}<span style="font-size:16px">%</span></div><div class="u">HAIL INDEX</div></div>
+        </div>
+        <div class="risk-label" style="background:${meta.color}22; color:${meta.color}; border:1px solid ${meta.color}55;">${meta.label}</div>
+      </div>
+      <div class="detail-body">
+        <h3>${drillPref}（都道府県全体）</h3>
+        <span class="region-tag">${DAYS[state.day].label}（${DAYS[state.day].d}） ・ ${SLOTS[state.slot].label}（${SLOTS[state.slot].d}）の推定</span>
+        <div class="factors">
+          ${REGION_FACTORS[pref[2]].map(f=>`<div class="factor"><span class="ic">⚡</span>${f}</div>`).join('')}
+          ${MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? '<div class="factor"><span class="ic">⛰️</span>山沿い・内陸性の積乱雲発達リスク</div>' : ''}
+        </div>
+        <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
+        <div style="margin-top:14px; font-size:12px; color:var(--text-faint);">上のヒートマップで市区町村タイルを選択すると、その地域の詳細とアラート登録ボタンが表示されます。</div>
+      </div>
+    `;
+    return;
+  }
+
+  if(!selected){
+    detailEl.innerHTML = `<div class="detail-empty">都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。<br>現在の最高リスクは <b style="color:var(--text)">${top.name}（${top.val}%）</b> です。</div>`;
+    return;
+  }
+}
+
+/* ================= 登録地域・アラート ================= */
+const LS_KEYS = { REG:'hailscope_registered_v1', CONTACT:'hailscope_contact_v1' };
+
+function lsGet(key, fallback){
+  try{
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  }catch(e){ return fallback; }
+}
+function lsSet(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* プライベートモード等: このセッション内のみ有効 */ }
+}
+
+let registered = lsGet(LS_KEYS.REG, []);
+let contact = lsGet(LS_KEYS.CONTACT, {email:'', phone:'', email_on:true, sms_on:true});
+
+function isRegistered(pref, city){
+  return registered.some(r=>r.pref===pref && r.city===city);
+}
+
+function addRegisteredRegion(pref, city){
+  if(isRegistered(pref, city)) return;
+  registered.push({pref, city});
+  lsSet(LS_KEYS.REG, registered);
+  refresh();
+  showToast(`<b>${city}（${pref}）</b>を登録しました。`);
+}
+
+function removeRegisteredRegion(pref, city){
+  registered = registered.filter(r=>!(r.pref===pref && r.city===city));
+  lsSet(LS_KEYS.REG, registered);
+  renderRegisteredList();
+}
+
+const regPrefSelect = document.getElementById('regPrefSelect');
+const regCitySelect = document.getElementById('regCitySelect');
+
+PREFS.forEach(p=>{
+  const opt = document.createElement('option');
+  opt.value = p[0]; opt.textContent = p[0];
+  regPrefSelect.appendChild(opt);
+});
+
+function populateCitySelect(prefName){
+  regCitySelect.innerHTML = '';
+  const info = MUNI_DATA[prefName];
+  if(!info) return;
+  const names = info.m.map(x=>x[0]).slice().sort((a,b)=>a.localeCompare(b,'ja'));
+  names.forEach(n=>{
+    const opt = document.createElement('option');
+    opt.value = n; opt.textContent = n;
+    regCitySelect.appendChild(opt);
+  });
+}
+regPrefSelect.value = PREFS[0][0];
+populateCitySelect(PREFS[0][0]);
+regPrefSelect.onchange = ()=> populateCitySelect(regPrefSelect.value);
+
+document.getElementById('regAddBtn').onclick = ()=>{
+  const pref = regPrefSelect.value;
+  const city = regCitySelect.value;
+  if(!pref || !city) return;
+  addRegisteredRegion(pref, city);
+};
+
+const regListEl = document.getElementById('regList');
+const regCountEl = document.getElementById('regCount');
+
+function forecastPeak(pref, city){
+  let max = -1, hit = null;
+  for(let d=0; d<DAYS.length; d++){
+    for(let s=0; s<SLOTS.length; s++){
+      const v = computeMuniScore(pref, city, d, s);
+      if(v>max) max = v;
+      if(v>=80 && !hit) hit = {d,s,v};
+    }
+  }
+  return {max, hit};
+}
+
+function renderRegisteredList(){
+  regCountEl.textContent = registered.length ? `（${registered.length}件）` : '';
+  if(!registered.length){
+    regListEl.innerHTML = `<div class="reg-empty">まだ登録された市区町村はありません。左のフォームから登録してください。</div>`;
+    return;
+  }
+  regListEl.innerHTML = registered.map(r=>{
+    const v = computeMuniScore(r.pref, r.city, state.day, state.slot);
+    const col = colorForScore(v);
+    const meta = riskMeta(v);
+    const fc = forecastPeak(r.pref, r.city);
+    const fcHtml = fc.hit ? `<div class="ri-forecast">⚠ ${DAYS[fc.hit.d].label} ${SLOTS[fc.hit.s].label}に80%到達の見込み（${fc.hit.v}%）</div>` : '';
+    return `
+      <div class="reg-item ${v>=80?'alerting':''}">
+        <div class="dot-score" style="background:${col};">${v}</div>
+        <div class="ri-body">
+          <div class="ri-name">${r.city}</div>
+          <div class="ri-meta">${r.pref} ・ ${DAYS[state.day].label} ${SLOTS[state.slot].label} ・ ${meta.label}</div>
+          ${fcHtml}
+        </div>
+        <button class="ri-remove" data-pref="${r.pref}" data-city="${r.city}" title="削除">×</button>
+      </div>
+    `;
+  }).join('');
+  [...regListEl.querySelectorAll('.ri-remove')].forEach(btn=>{
+    btn.onclick = ()=> removeRegisteredRegion(btn.dataset.pref, btn.dataset.city);
+  });
+}
+
+const toastWrap = document.getElementById('toastWrap');
+function showToast(html){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = html;
+  toastWrap.appendChild(el);
+  setTimeout(()=>{
+    el.style.transition = 'opacity .4s';
+    el.style.opacity = '0';
+    setTimeout(()=> el.remove(), 400);
+  }, 5000);
+}
+
+const contactEmailEl = document.getElementById('contactEmail');
+const contactPhoneEl = document.getElementById('contactPhone');
+const enableEmailEl = document.getElementById('enableEmail');
+const enableSmsEl = document.getElementById('enableSms');
+
+contactEmailEl.value = contact.email || '';
+contactPhoneEl.value = contact.phone || '';
+enableEmailEl.checked = contact.email_on !== false;
+enableSmsEl.checked = contact.sms_on !== false;
+
+document.getElementById('saveContactBtn').onclick = ()=>{
+  contact = {
+    email: contactEmailEl.value.trim(),
+    phone: contactPhoneEl.value.trim(),
+    email_on: enableEmailEl.checked,
+    sms_on: enableSmsEl.checked,
+  };
+  lsSet(LS_KEYS.CONTACT, contact);
+  showToast('通知先設定を保存しました。');
+};
+
+/* ================= 共有用QRコード ================= */
+// このページが実際に公開されたURL（https://...）を自動的に読み取ってQR化する。
+// ローカルファイルとして開いている間（file://）は、公開後に自動で表示される旨を案内する。
+function renderShareQR(){
+  const box = document.getElementById('qrBox');
+  const linkEl = document.getElementById('shareLinkText');
+  if(!box || !linkEl) return;
+  const url = window.location.href;
+  const isLocalFile = window.location.protocol === 'file:';
+
+  if(isLocalFile){
+    box.innerHTML = '<div class="qr-placeholder">Web公開後、<br>ここに自動で<br>QRコードが<br>表示されます</div>';
+    linkEl.textContent = '（Webに公開すると、ここにURLが表示されます）';
+    linkEl.removeAttribute('href');
+    return;
+  }
+
+  try{
+    const qr = qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    box.innerHTML = qr.createSvgTag({ scalable:true, margin:2 });
+    linkEl.textContent = url;
+    linkEl.href = url;
+  }catch(e){
+    box.innerHTML = '<div class="qr-placeholder">QRコードの生成に失敗しました</div>';
+    linkEl.textContent = url;
+    linkEl.href = url;
+  }
+}
+renderShareQR();
+
+document.getElementById('copyLinkBtn').onclick = async ()=>{
+  const url = window.location.protocol === 'file:' ? '' : window.location.href;
+  if(!url){ showToast('Webに公開すると、ここからURLをコピーできます。'); return; }
+  try{
+    await navigator.clipboard.writeText(url);
+    showToast('URLをコピーしました。');
+  }catch(e){
+    showToast('コピーできませんでした。URLを長押しして手動でコピーしてください。');
+  }
+};
+
+/* ================= 初期化 ================= */
+refresh();
+
+/* スマートフォン等、横幅が狭い画面では初期表示位置を関東周辺（東京都）に合わせて、
+   最初から意味のあるエリアが見えるようにする（コンパクト表示では横スクロールが
+   発生しないため、この処理は自動的にスキップされる） */
+requestAnimationFrame(()=>{
+  const scrollBox = document.querySelector('.map-scroll');
+  const tokyoEl = tileEls['東京都'];
+  if(scrollBox && tokyoEl && scrollBox.scrollWidth > scrollBox.clientWidth){
+    const target = tokyoEl.offsetLeft - (scrollBox.clientWidth/2) + (tokyoEl.offsetWidth/2);
+    scrollBox.scrollLeft = Math.max(0, target);
+  }
+});
+</script>
+</body>
+</html>
