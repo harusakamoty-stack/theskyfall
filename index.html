@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>愛車雹アラート | HAILSCOPE JAPAN</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#080b14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="雹アラート">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=RocknRoll+One&family=Orbitron:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -3698,6 +3707,15 @@ requestAnimationFrame(()=>{
     scrollBox.scrollLeft = Math.max(0, target);
   }
 });
+</script>
+<script>
+// ホーム画面に追加した際にアプリらしく（オフラインでも一部表示できるように）動作させるための
+// Service Worker登録。file://で開いている場合や対応していないブラウザでは何もしない。
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
