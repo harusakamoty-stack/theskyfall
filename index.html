@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>雹アラート | HAILSCOPE JAPAN</title>
+<title>雹害アラート | HAILSCOPE JAPAN</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#080b14">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="雹アラート">
+<meta name="apple-mobile-web-app-title" content="雹害アラート">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -54,6 +54,22 @@ body{
 }
 a{color:inherit;}
 ::selection{background:var(--violet); color:#0a0d16;}
+
+/* ---------- PULL TO REFRESH ---------- */
+body{will-change:transform;}
+.ptr-indicator{
+  position:fixed; top:0; left:0; right:0; height:60px; margin-top:-60px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  background:var(--bg-1); border-bottom:1px solid var(--line-soft);
+  font-family:var(--font-mono); font-size:13px; color:var(--text-dim);
+  z-index:998;
+}
+.ptr-spinner{
+  width:16px; height:16px; border-radius:50%; flex:none;
+  border:2px solid var(--line); border-top-color:var(--ice);
+}
+.ptr-spinner.spin{animation:ptrspin 0.7s linear infinite;}
+@keyframes ptrspin{to{transform:rotate(360deg);}}
 
 /* ---------- HERO ---------- */
 .hero{
@@ -601,6 +617,11 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 </head>
 <body>
 
+<div id="ptrIndicator" class="ptr-indicator">
+  <div class="ptr-spinner" id="ptrSpinner"></div>
+  <span class="ptr-label" id="ptrLabel">下に引くと更新</span>
+</div>
+
 <div id="toastWrap"></div>
 
 <div class="hero">
@@ -611,7 +632,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   <div class="bolt"><svg viewBox="0 0 24 36" fill="none"><path d="M14 0 L2 20 H11 L8 36 L22 14 H13 L14 0Z" fill="currentColor" style="color:var(--ice)"/></svg></div>
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span>JMA SIGNAL BASED ESTIMATE — 全国降雹リスク推定</div>
-    <h1>雹アラート</h1>
+    <h1>雹害アラート</h1>
     <p>気象庁が発表する天気図・大気の状態（不安定）・雷注意報・竜巻注意情報・台風進路などの公開情報をもとに、積乱雲が発達し雹（ひょう）が降りやすい条件を地域ごとにスコア化。当日から3日先まで、時間帯別に一目で確認できます。</p>
     <div class="meta">
       <div class="chip">対象期間 <b>8/14(金) 〜 8/17(月)</b></div>
@@ -729,7 +750,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 
 </div>
 
-<footer>雹アラート — 参考推定ツール ／ Not an official JMA forecast ／ <a class="footer-link" href="manual.html">使い方マニュアル</a></footer>
+<footer>雹害アラート — 参考推定ツール ／ Not an official JMA forecast ／ <a class="footer-link" href="manual.html">使い方マニュアル</a></footer>
 
 <script>
 /* qrcode.js -- QR Code Generator for JavaScript (MIT License, (c) 2009 Kazuhiko Arase) -- embedded for offline/self-contained use */
@@ -3714,6 +3735,89 @@ if('serviceWorker' in navigator && location.protocol === 'https:'){
     navigator.serviceWorker.register('sw.js').catch(()=>{});
   });
 }
+</script>
+<script>
+// ホーム画面に追加した状態（standalone）ではブラウザ標準の
+// 「引っ張って更新」が効かないことが多いため、独自に実装する。
+// 画面最上部でのみ有効。ページ全体を実際に下へずらして視覚的に追従させる。
+(function(){
+  const indicator = document.getElementById('ptrIndicator');
+  const spinner = document.getElementById('ptrSpinner');
+  const label = document.getElementById('ptrLabel');
+  if(!indicator || !spinner || !label) return;
+
+  const THRESHOLD = 70;   // これ以上引くと「離すと更新」になる
+  const MAX_PULL = 110;   // 見た目上の引っ張れる最大距離
+  const PULL_RATIO = 0.5; // 指の移動量に対する実際の移動量の比率（ゴム的な重さを出す）
+
+  let startY = 0;
+  let currentPull = 0;
+  let dragging = false;
+  let refreshing = false;
+
+  function atTop(){
+    return (window.scrollY || document.documentElement.scrollTop || 0) <= 0;
+  }
+
+  function setPull(px){
+    currentPull = px;
+    document.body.style.transform = px ? `translateY(${px}px)` : '';
+    indicator.style.marginTop = `${px - 60}px`;
+    label.textContent = px >= THRESHOLD ? '離すと更新します' : '下に引くと更新';
+  }
+
+  function resetPull(){
+    document.body.style.transition = 'transform .2s ease';
+    indicator.style.transition = 'margin-top .2s ease';
+    setPull(0);
+    setTimeout(()=>{
+      document.body.style.transition = '';
+      indicator.style.transition = '';
+    }, 220);
+  }
+
+  function doRefresh(){
+    refreshing = true;
+    document.body.style.transition = 'transform .2s ease';
+    indicator.style.transition = 'margin-top .2s ease';
+    setPull(60);
+    label.textContent = '更新中…';
+    spinner.classList.add('spin');
+    setTimeout(()=>{ location.reload(); }, 300);
+  }
+
+  window.addEventListener('touchstart', (e)=>{
+    if(refreshing || e.touches.length !== 1 || !atTop()){ dragging = false; return; }
+    startY = e.touches[0].clientY;
+    dragging = true;
+    document.body.style.transition = '';
+    indicator.style.transition = '';
+  }, { passive:true });
+
+  window.addEventListener('touchmove', (e)=>{
+    if(!dragging || refreshing) return;
+    const dy = e.touches[0].clientY - startY;
+    if(dy <= 0 || !atTop()){ return; }
+    e.preventDefault();
+    setPull(Math.min(dy * PULL_RATIO, MAX_PULL));
+  }, { passive:false });
+
+  window.addEventListener('touchend', ()=>{
+    if(!dragging || refreshing) return;
+    dragging = false;
+    if(currentPull >= THRESHOLD){
+      doRefresh();
+    }else{
+      resetPull();
+    }
+  }, { passive:true });
+
+  window.addEventListener('touchcancel', ()=>{
+    if(!dragging || refreshing) return;
+    dragging = false;
+    resetPull();
+  }, { passive:true });
+})();
 </script>
 </body>
 </html>
