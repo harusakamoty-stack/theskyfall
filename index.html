@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>愛車雹アラート | HAILSCOPE JAPAN</title>
+<title>雹アラート | HAILSCOPE JAPAN</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#080b14">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="雹アラート">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -183,8 +183,6 @@ a{color:inherit;}
   border:1px solid var(--line);
   border-radius:var(--radius);
   padding:12px;
-  position:sticky; top:8px; z-index:20;
-  backdrop-filter:blur(10px);
 }
 .controls-label{font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.08em; color:var(--text-faint); padding:0 4px; text-transform:uppercase;}
 .seg{
@@ -613,7 +611,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   <div class="bolt"><svg viewBox="0 0 24 36" fill="none"><path d="M14 0 L2 20 H11 L8 36 L22 14 H13 L14 0Z" fill="currentColor" style="color:var(--ice)"/></svg></div>
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span>JMA SIGNAL BASED ESTIMATE — 全国降雹リスク推定</div>
-    <h1>愛車雹アラート</h1>
+    <h1>雹アラート</h1>
     <p>気象庁が発表する天気図・大気の状態（不安定）・雷注意報・竜巻注意情報・台風進路などの公開情報をもとに、積乱雲が発達し雹（ひょう）が降りやすい条件を地域ごとにスコア化。当日から3日先まで、時間帯別に一目で確認できます。</p>
     <div class="meta">
       <div class="chip">対象期間 <b>8/14(金) 〜 8/17(月)</b></div>
@@ -731,7 +729,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 
 </div>
 
-<footer>愛車雹アラート — 参考推定ツール ／ Not an official JMA forecast ／ <a class="footer-link" href="manual.html">使い方マニュアル</a></footer>
+<footer>雹アラート — 参考推定ツール ／ Not an official JMA forecast ／ <a class="footer-link" href="manual.html">使い方マニュアル</a></footer>
 
 <script>
 /* qrcode.js -- QR Code Generator for JavaScript (MIT License, (c) 2009 Kazuhiko Arase) -- embedded for offline/self-contained use */
