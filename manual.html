@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>使い方マニュアル | 愛車雹アラート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=RocknRoll+One&family=Orbitron:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b14;
+  --bg-1:#0d1120;
+  --panel:#11172a;
+  --panel-2:#161d33;
+  --line:#232c45;
+  --line-soft:#1a2138;
+  --text:#e9edf7;
+  --text-dim:#8a93b3;
+  --text-faint:#5c657f;
+  --ice:#7fe7ff;
+  --violet:#a58bff;
+  --amber:#ffc24b;
+  --orange:#ff8a3d;
+  --crimson:#ff3d6e;
+  --safe:#2fd4a8;
+  --r-0:#1c3b63;
+  --r-25:#2fa6a0;
+  --r-50:#ffc24b;
+  --r-75:#ff8a3d;
+  --r-100:#ff2f5e;
+  --radius:14px;
+  --font-display:'RocknRoll One', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+  --font-body:'Noto Sans JP', sans-serif;
+  --font-mono:'Orbitron', 'JetBrains Mono', 'Noto Sans JP', monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+html,body{background:var(--bg); color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased;}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(127,231,255,0.08), transparent 45%),
+    radial-gradient(circle at 85% 10%, rgba(165,139,255,0.08), transparent 45%),
+    var(--bg);
+}
+a{color:var(--ice); text-decoration:none;}
+a:hover{text-decoration:underline;}
+.wrap{max-width:860px; margin:0 auto; padding:0 20px;}
+
+.top-nav{
+  position:sticky; top:0; z-index:20;
+  background:rgba(8,11,20,0.88); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-soft);
+}
+.top-nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px;}
+.top-nav .brand{font-family:var(--font-display); font-weight:900; font-size:15px; letter-spacing:0.01em;}
+.back-link{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.04em;
+  color:var(--ice); border:1px solid rgba(127,231,255,0.3); background:rgba(127,231,255,0.08);
+  padding:7px 13px; border-radius:100px; white-space:nowrap;
+}
+.back-link:hover{background:rgba(127,231,255,0.16); text-decoration:none;}
+
+.hero{padding:44px 0 30px;}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--ice); background:rgba(127,231,255,0.08); border:1px solid rgba(127,231,255,0.25);
+  padding:5px 12px; border-radius:100px; margin-bottom:16px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--ice); box-shadow:0 0 8px var(--ice);}
+.hero h1{
+  font-family:var(--font-display); font-weight:900; font-size:clamp(26px, 5vw, 40px);
+  line-height:1.25; letter-spacing:-0.01em; margin-bottom:14px;
+  background:linear-gradient(120deg, #fff 10%, var(--ice) 55%, var(--violet) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero p{max-width:640px; color:var(--text-dim); font-size:14.5px; line-height:1.85;}
+
+.toc{
+  background:var(--panel); border:1px solid var(--line-soft); border-radius:var(--radius);
+  padding:20px 22px; margin-bottom:36px;
+}
+.toc h2{font-family:var(--font-display); font-size:14px; font-weight:700; margin-bottom:12px; color:var(--text-dim); letter-spacing:0.02em;}
+.toc ol{list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:6px 18px; counter-reset:tocnum;}
+.toc li{counter-increment:tocnum; font-size:13px;}
+.toc li a{display:flex; gap:8px; color:var(--text); padding:5px 0;}
+.toc li a::before{content:counter(tocnum); font-family:var(--font-mono); color:var(--ice); font-size:11.5px; flex:none; width:1.4em;}
+.toc li a:hover{color:var(--ice); text-decoration:none;}
+
+section.card{
+  background:var(--panel); border:1px solid var(--line-soft); border-radius:var(--radius);
+  padding:26px 26px 28px; margin-bottom:22px; scroll-margin-top:78px;
+}
+section.card h2{
+  font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:4px;
+  display:flex; align-items:center; gap:10px;
+}
+section.card h2 .num{
+  font-family:var(--font-mono); font-size:12px; color:var(--ice);
+  border:1px solid rgba(127,231,255,0.3); border-radius:6px; padding:2px 7px; flex:none;
+}
+section.card .lead{color:var(--text-dim); font-size:13px; line-height:1.8; margin-bottom:18px;}
+section.card h3{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin:20px 0 8px; display:flex; align-items:center; gap:8px;}
+section.card p{color:var(--text-dim); font-size:13.5px; line-height:1.9; margin-bottom:12px;}
+section.card p b, section.card li b{color:var(--text); font-weight:700;}
+section.card ol, section.card ul{margin:0 0 14px 0; padding-left:1.3em; color:var(--text-dim); font-size:13.5px; line-height:1.95;}
+section.card li{margin-bottom:6px;}
+section.card .ic{font-size:16px;}
+
+.shot-note{
+  display:flex; gap:10px; align-items:flex-start;
+  background:var(--bg-1); border:1px solid var(--line-soft); border-radius:10px;
+  padding:12px 14px; font-size:12.5px; color:var(--text-dim); line-height:1.8; margin:14px 0;
+}
+.shot-note .ic{flex:none; margin-top:1px;}
+.shot-note.warn{border-color:rgba(255,138,61,0.35); background:rgba(255,138,61,0.06);}
+.shot-note.warn .ic{color:var(--orange);}
+.shot-note.tip{border-color:rgba(47,212,168,0.3); background:rgba(47,212,168,0.05);}
+.shot-note.tip .ic{color:var(--safe);}
+
+.scale-mini{display:flex; flex-wrap:wrap; gap:10px 18px; margin:12px 0 16px; font-size:12.5px; color:var(--text-dim);}
+.scale-mini span{display:inline-flex; align-items:center; gap:6px;}
+.scale-mini .dot{width:9px;height:9px;border-radius:50%; flex:none;}
+.scale-mini b{font-family:var(--font-mono); color:var(--text); font-weight:700;}
+
+.kbd{
+  font-family:var(--font-mono); font-size:11.5px; background:var(--bg-1);
+  border:1px solid var(--line-soft); border-radius:6px; padding:2px 7px; color:var(--ice);
+}
+
+table.field-table{width:100%; border-collapse:collapse; margin:8px 0 16px; font-size:13px;}
+table.field-table th, table.field-table td{
+  text-align:left; padding:8px 10px; border-bottom:1px solid var(--line-soft); color:var(--text-dim); vertical-align:top;
+}
+table.field-table th{font-family:var(--font-mono); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--text-faint); font-weight:500;}
+table.field-table td b{color:var(--text);}
+
+details.faq{border-bottom:1px solid var(--line-soft); padding:12px 0;}
+details.faq:last-child{border-bottom:none;}
+details.faq summary{
+  cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--text);
+  list-style:none; display:flex; align-items:center; gap:8px;
+}
+details.faq summary::-webkit-details-marker{display:none;}
+details.faq summary::before{content:'▸'; color:var(--ice); font-size:12px; transition:transform 0.15s;}
+details.faq[open] summary::before{transform:rotate(90deg);}
+details.faq .a{padding:10px 0 2px 20px; color:var(--text-dim); font-size:13.5px; line-height:1.9;}
+
+.disclaimer{
+  background:var(--bg-1); border:1px solid var(--line-soft); border-radius:12px;
+  padding:18px 20px; font-size:12px; color:#666; line-height:1.85; margin-bottom:22px;
+}
+.disclaimer b{color:var(--ice);}
+
+footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-size:11.5px; font-family:var(--font-mono);}
+
+@media (max-width:640px){
+  .hero{padding:34px 0 24px;}
+  section.card{padding:20px 18px 22px;}
+  .toc{padding:16px 18px;}
+  .toc ol{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="wrap">
+    <div class="brand">愛車雹アラート ・ 使い方マニュアル</div>
+    <a class="back-link" href="index.html">← アプリに戻る</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span>USER GUIDE</div>
+    <h1>使い方マニュアル</h1>
+    <p>「愛車雹アラート」は、気象庁が発表する天気図・注意報などの公開情報をもとに、雹（ひょう）が降りやすい条件を地域ごとに参考指数化して表示するツールです。このページでは、マップの見方から地域登録、スマホでの表示、知人への共有方法まで、アプリの使い方を順番に説明します。</p>
+  </div>
+
+  <div class="toc">
+    <h2>目次</h2>
+    <ol>
+      <li><a href="#s1">このアプリでできること</a></li>
+      <li><a href="#s2">全国ヒートマップの見方</a></li>
+      <li><a href="#s3">市区町村ヒートマップ（ドリルダウン）</a></li>
+      <li><a href="#s4">指数（%）の読み方</a></li>
+      <li><a href="#s5">期間・時間帯の切り替え</a></li>
+      <li><a href="#s6">地域を登録する</a></li>
+      <li><a href="#s7">通知先（メール／SMS）の登録</a></li>
+      <li><a href="#s8">スマホでの表示について</a></li>
+      <li><a href="#s9">知人にアプリを紹介する（QRコード）</a></li>
+      <li><a href="#s10">よくある質問</a></li>
+      <li><a href="#s11">ご利用にあたっての注意</a></li>
+    </ol>
+  </div>
+
+  <section class="card" id="s1">
+    <h2><span class="num">01</span>このアプリでできること</h2>
+    <p>大切な愛車を雹害から守るために、外出や車両の駐車場所を判断する際の参考情報として、地域別の「降雹（こうひょう）ポテンシャル指数」を確認できます。具体的には次のようなことができます。</p>
+    <ul>
+      <li>全国47都道府県の降雹リスクを、色分けされたヒートマップで一目で確認する</li>
+      <li>都道府県をタップして、市区町村単位まで絞り込んで確認する</li>
+      <li>今日から3日先まで、時間帯（早朝・午前・午後・夕方・夜間）別に切り替えて見る</li>
+      <li>気になる市区町村を「登録地域」として保存し、通知先（メール・電話番号）をブラウザに保存しておく</li>
+      <li>アプリのURLをQRコードで知人に共有する</li>
+    </ul>
+    <div class="shot-note warn">
+      <span class="ic">⚠️</span>
+      <span>本アプリの数値は気象庁が発表する公開情報を参考に独自に算出した<b>参考推定値</b>であり、気象庁による公式の降雹予報ではありません。気象庁は雹単独の注意報・予報を発表していません。最終的な判断は気象庁の公式発表をご確認ください（詳しくは本ページ最後の「ご利用にあたっての注意」をご覧ください）。</span>
+    </div>
+  </section>
+
+  <section class="card" id="s2">
+    <h2><span class="num">02</span>全国ヒートマップの見方</h2>
+    <p>アプリを開くと、最初に全国47都道府県のヒートマップが表示されます。タイルの色が、その都道府県の現在選択中の期間・時間帯における降雹指数を表しています。色が<b>青〜緑（低い）→黄色（中程度）→オレンジ〜赤（高い）</b>に近づくほど、リスクが高いことを示します。マップ右上の「低←→高」の帯が色の目安です。</p>
+    <h3><span class="ic">👉</span>都道府県の詳細を見る</h3>
+    <ol>
+      <li>気になる都道府県のタイルをタップします。</li>
+      <li>マップの下にある「詳細」エリアに、その都道府県の指数・想定される要因・行動の目安が表示されます。</li>
+      <li>同時に、マップは自動的にその都道府県の市区町村単位のヒートマップに切り替わります（次の章で説明します）。</li>
+    </ol>
+    <div class="shot-note tip">
+      <span class="ic">💡</span>
+      <span>パソコンなど広い画面では日本列島の地形に近い形でタイルが並びますが、スマートフォンなどの狭い画面では見やすさを優先し、6列の均等なグリッドに自動的に切り替わります（都道府県は北から南の順に並んでいます）。</span>
+    </div>
+  </section>
+
+  <section class="card" id="s3">
+    <h2><span class="num">03</span>市区町村ヒートマップ（ドリルダウン）</h2>
+    <p>都道府県をタップすると、その都道府県内の市区町村ごとのヒートマップが表示されます。使い方は全国マップと同じで、市区町村タイルをタップすると詳細スコアと「この地域を登録する」ボタンが表示されます。</p>
+    <ul>
+      <li>マップ左上の <span class="kbd">← 全国マップに戻る</span> ボタンで、いつでも全国表示に戻れます。</li>
+      <li>タイルの数が多い都道府県では、マップが横に長くなることがあります。マップ下に <span class="kbd">横にスクロールして全て表示</span> という案内が出ている場合は、横スクロールで全ての市区町村を確認できます。</li>
+      <li>市区町村の値は、都道府県全体の指数を基準に、内陸・沿岸・市街地などの傾向差を想定した参考的な補正を加えたものです。実測データに基づく市区町村別の公式値ではありません。</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s4">
+    <h2><span class="num">04</span>指数（%）の読み方</h2>
+    <p>指数は0〜100%で表示されますが、雨の「降水確率」とは考え方が異なります。降水確率のように普段から高めの数値が出るのではなく、雹が発生しうる複数の悪条件（大気の不安定・雷の発生しやすさ・地形・時間帯など）が重なった時だけ数値が跳ね上がるよう設計されています。目安は次のとおりです。</p>
+    <div class="scale-mini">
+      <span><span class="dot" style="background:var(--r-0)"></span><b>0〜19%</b>低い</span>
+      <span><span class="dot" style="background:var(--r-25)"></span><b>20〜39%</b>やや低い</span>
+      <span><span class="dot" style="background:var(--r-50)"></span><b>40〜59%</b>中程度</span>
+      <span><span class="dot" style="background:var(--r-75)"></span><b>60〜79%</b>高い</span>
+      <span><span class="dot" style="background:var(--r-100)"></span><b>80〜100%</b>非常に高い</span>
+    </div>
+    <p>実際の算出結果では、全国×日程×時間帯の全組み合わせのうち約7割は20%未満にとどまり、60%以上になるのは全体の1.5%程度、地域登録の通知基準となる80%以上に達するのは0.1%程度しかありません。「40〜50%台でもすでに注意が必要な状態」という点は、天気予報の降水確率の感覚とは異なるのでご留意ください。より詳しい算出方法は、アプリ内の「この指数の算出方法」セクションにも記載しています。</p>
+  </section>
+
+  <section class="card" id="s5">
+    <h2><span class="num">05</span>期間・時間帯の切り替え</h2>
+    <p>マップの上にある2つの切り替えエリアで、確認したいタイミングを選べます。</p>
+    <table class="field-table">
+      <tr><th>項目</th><th>選択肢</th><th>説明</th></tr>
+      <tr><td><b>期間</b></td><td>今日 / 明日 / 明後日 / 3日後</td><td>確認したい日を選びます。</td></tr>
+      <tr><td><b>時間帯</b></td><td>早朝(5-9時) / 午前(9-12時) / 午後(12-17時) / 夕方(17-21時) / 夜間(21-5時)</td><td>積乱雲が発達しやすい午後〜夕方にかけて指数が上がりやすくなります。</td></tr>
+    </table>
+    <p>期間・時間帯を切り替えると、マップの色・detailの数値・登録地域の警戒件数などすべてが自動的に再計算されます。</p>
+  </section>
+
+  <section class="card" id="s6">
+    <h2><span class="num">06</span>地域を登録する</h2>
+    <p>マップの下にある「登録地域と通知先」カードから、気になる市区町村を登録できます。登録方法は2つあります。</p>
+    <ol>
+      <li><b>フォームから登録：</b>「地域を登録する」の都道府県・市区町村のプルダウンで選択し、<span class="kbd">この地域を登録する</span> ボタンを押します。</li>
+      <li><b>マップから登録：</b>市区町村ヒートマップでタイルをタップし、詳細エリアに表示される登録ボタンを押します。</li>
+    </ol>
+    <p>登録した地域は「登録済みの地域」の一覧に表示され、現在の指数と、今日から3日先までのピーク（最も指数が高くなるタイミング）が一緧に確認できます。指数が80%以上になっている登録地域があると、画面上部の「登録地域の警戒」カードにその件数が表示されます。不要になった登録は、一覧の各項目にある削除ボタンで解除できます。</p>
+    <div class="shot-note tip">
+      <span class="ic">💡</span>
+      <span>登録内容はサーバーには送信されず、お使いのブラウザ内（localStorage）に保存されます。そのため、別のブラウザやスマホから見た場合は登録内容は共有されません。また、ブラウザのデータ消去やシークレットモードでは保存内容が消える場合があります。</span>
+    </div>
+  </section>
+
+  <section class="card" id="s7">
+    <h2><span class="num">07</span>通知先（メール／SMS）の登録</h2>
+    <p>同じ「登録地域と通知先」カード内の「通知先設定」から、アラートメール・アラートSMS（電話番号）を登録し、<span class="kbd">通知先を保存</span> で保存できます。「メールで受け取る」「SMSで受け取る」のチェックボックスで、受け取り方法を選べます。</p>
+    <div class="shot-note warn">
+      <span class="ic">⚠️</span>
+      <span>本アプリはサーバーを持たない単体HTMLファイルのため、<b>この画面だけでは実際のメール・SMSの自動送信はできません</b>。ここで登録した通知先はブラウザ内に保存されるのみで、実際に「指数80%以上になったら自動でメール・SMSを送る」ためには、EmailJSなどの外部サービス連携、またはSendGrid・Twilioなどと連携する専用のバックエンドサーバーの構築が別途必要です。この機能を有効にしたい場合は、その構成を別途ご相談・実装できます。</span>
+    </div>
+  </section>
+
+  <section class="card" id="s8">
+    <h2><span class="num">08</span>スマホでの表示について</h2>
+    <p>このアプリはスマートフォンでの利用を想定して調整されています。画面幅が狭い場合、全国マップは自動的に6列の均等グリッド表示に切り替わり、横スクロールなしで47都道府県すべてが一画面に収まるようになっています（都道府県の地形に近い配置は、パソコンなど広い画面でのみ表示されます）。</p>
+    <p>スマホでこのページを開くには、次のような方法があります。</p>
+    <ul>
+      <li>このファイルをメールやクラウドストレージ（Google Drive、iCloud Driveなど）経由でスマホに転送し、ブラウザで開く</li>
+      <li>アプリが既にWeb上に公開されている場合は、下記「知人にアプリを紹介する」のQRコードを読み取って開く</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s9">
+    <h2><span class="num">09</span>知人にアプリを紹介する（QRコード）</h2>
+    <p>アプリの一番下に「このアプリを知人に紹介する」というカードがあり、QRコードとURLが表示されます。このQRコードは、そのページが実際に開かれているURLを自動的に読み取れるようになっています。</p>
+    <ul>
+      <li>ファイルを直接開いている状態（file://）では「Web公開後、ここに自動でQRコードが表示されます」というプレースホルダーが表示されます。</li>
+      <li>Netlify DropやGitHub Pagesなどで公開すると、そのURLを指す本物のQRコードに自動的に切り替わります。何かを設定し直す必要はありません。</li>
+      <li>URLはコピーボタンでもコピーできるので、QRコードの代わりにメッセージアプリなどで直接共有することもできます。</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s10">
+    <h2><span class="num">10</span>よくある質問</h2>
+
+    <details class="faq">
+      <summary>登録した地域が80%以上になったら、本当にメールやSMSが届きますか？</summary>
+      <div class="a">現時点では届きません。このアプリは単体のHTMLファイルで動作しており、実際の送信には別途バックエンドサーバー（EmailJS・SendGrid・Twilioなどとの連携）が必要です。現在の「通知先設定」は、将来その機能を追加する場合に備えて登録内容を保存しておく機能です。</div>
+    </details>
+
+    <details class="faq">
+      <summary>指数はどのくらいの頻度で更新されますか？</summary>
+      <div class="a">アプリ内の「最終データ反映」に表示されている時点を基準に算出しています。実際の運用では、気象庁の発表内容が更新されるタイミングに合わせてデータを更新することを想定しています。</div>
+    </details>
+
+    <details class="faq">
+      <summary>市区町村の数値は市区町村ごとの公式な予報ですか？</summary>
+      <div class="a">いいえ。市区町村の値は、都道府県全体の指数をもとに地域傾向を想定した参考的な補正を加えたものであり、気象庁などによる市区町村別の公式値ではありません。</div>
+    </details>
+
+    <details class="faq">
+      <summary>登録した地域やメールアドレスはどこに保存されますか？</summary>
+      <div class="a">お使いのブラウザ内（localStorage）にのみ保存され、外部のサーバーには送信されません。そのため、ブラウザやデバイスを変えると登録内容は共有されず、ブラウザのデータを消去すると内容が消える場合があります。</div>
+    </details>
+
+    <details class="faq">
+      <summary>スマホとパソコンで見た目が違うのはなぜですか？</summary>
+      <div class="a">画面の狭いスマホでは、都道府県タイルを日本列島の形に近づけて配置すると余白が多くなり見づらいため、6列の均等なグリッドに自動的に切り替える仕組みにしています。パソコンなど画面が広い場合は、これまでと同じ地形に近い配置で表示されます。</div>
+    </details>
+
+    <details class="faq">
+      <summary>このアプリを他の人にも使ってもらいたいのですが、どうすればいいですか？</summary>
+      <div class="a">アプリをNetlify DropやGitHub Pagesなどで公開すると、URLが発行されます。公開後はアプリ最下部のQRコードが自動的に有効になるので、そのQRコードやURLを知人に共有してください。</div>
+    </details>
+  </section>
+
+  <section class="card" id="s11">
+    <h2><span class="num">11</span>ご利用にあたっての注意</h2>
+    <div class="disclaimer">
+      <b>ご利用にあたって：</b>本アプリの数値は気象庁が発表する天気図・注意報・解説情報等の公開情報を参考人が独自に指数化した「参考推定値」であり、気象庁による公式の降雹予報ではありません（気象庁は雹単独の注意報・予報を発表していません）。実際の外出・農作業・車両保護等の判断は、気象庁「今後の雨」「雷ナウキャスト」「竜巻注意情報」および最新の警報・注意報を必ずご確認のうえ行ってください。
+    </div>
+  </section>
+
+  <footer>愛車雹アラート ・ 使い方マニュアル ／ Not an official JMA forecast</footer>
+</div>
+
+</body>
+</html>
