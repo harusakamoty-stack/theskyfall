@@ -91,7 +91,7 @@ a{color:inherit;}
   position:relative; z-index:1;
   display:inline-flex; align-items:center; gap:8px;
   font-family:var(--font-mono);
-  font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+  font-size:13.5px; letter-spacing:0.14em; text-transform:uppercase;
   color:var(--ice);
   background:rgba(127,231,255,0.08);
   border:1px solid rgba(127,231,255,0.25);
@@ -105,7 +105,7 @@ a{color:inherit;}
   position:relative; z-index:1;
   font-family:var(--font-display);
   font-weight:900;
-  font-size:clamp(30px, 5.4vw, 54px);
+  font-size:clamp(34px, 5.6vw, 58px);
   line-height:1.1;
   letter-spacing:-0.01em;
   background:linear-gradient(120deg, #fff 10%, var(--ice) 55%, var(--violet) 100%);
@@ -116,7 +116,7 @@ a{color:inherit;}
   position:relative; z-index:1;
   max-width:640px;
   color:var(--text-dim);
-  font-size:15px;
+  font-size:16.5px;
   line-height:1.8;
 }
 .hero .meta{
@@ -126,7 +126,7 @@ a{color:inherit;}
 }
 .chip{
   font-family:var(--font-mono);
-  font-size:11.5px;
+  font-size:13px;
   color:var(--text-dim);
   border:1px solid var(--line);
   background:var(--panel);
@@ -161,9 +161,9 @@ a{color:inherit;}
   border-radius:var(--radius);
   padding:16px 18px;
 }
-.stat-card .label{font-size:11px; letter-spacing:0.06em; color:var(--text-faint); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:8px;}
-.stat-card .value{font-family:var(--font-display); font-weight:700; font-size:22px;}
-.stat-card .sub{font-size:12px; color:var(--text-dim); margin-top:4px;}
+.stat-card .label{font-size:12.5px; letter-spacing:0.06em; color:var(--text-faint); text-transform:uppercase; font-family:var(--font-mono); margin-bottom:8px;}
+.stat-card .value{font-family:var(--font-display); font-weight:700; font-size:24px;}
+.stat-card .sub{font-size:13.5px; color:var(--text-dim); margin-top:4px;}
 .stat-card.warn .value{color:var(--orange);}
 .stat-card.danger .value{color:var(--crimson);}
 
@@ -177,7 +177,7 @@ a{color:inherit;}
   position:sticky; top:8px; z-index:20;
   backdrop-filter:blur(10px);
 }
-.controls-label{font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; color:var(--text-faint); padding:0 4px; text-transform:uppercase;}
+.controls-label{font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.08em; color:var(--text-faint); padding:0 4px; text-transform:uppercase;}
 .seg{
   display:flex; gap:4px; background:var(--bg-1); border:1px solid var(--line); border-radius:10px; padding:4px;
   overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
@@ -185,7 +185,7 @@ a{color:inherit;}
 .seg::-webkit-scrollbar{display:none;}
 .seg button{
   font-family:var(--font-body);
-  font-size:13px; font-weight:500;
+  font-size:14.5px; font-weight:500;
   color:var(--text-dim);
   background:transparent; border:none; border-radius:7px;
   padding:10px 14px; cursor:pointer;
@@ -194,7 +194,7 @@ a{color:inherit;}
   flex:0 0 auto;
   min-height:44px;
 }
-.seg button .d{display:block; font-family:var(--font-mono); font-size:10px; opacity:0.75; margin-top:1px;}
+.seg button .d{display:block; font-family:var(--font-mono); font-size:11.5px; opacity:0.75; margin-top:1px;}
 .seg button.active{background:linear-gradient(135deg, var(--ice), var(--violet)); color:#0a0d16; font-weight:700;}
 .seg button:not(.active):hover{color:var(--text); background:var(--panel-2);}
 
@@ -214,10 +214,10 @@ a{color:inherit;}
   pointer-events:none;
 }
 .map-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px; margin-bottom:18px; position:relative;}
-.map-head h2{font-family:var(--font-display); font-size:19px; font-weight:700;}
-.map-head p{font-size:12.5px; color:var(--text-dim); margin-top:4px;}
+.map-head h2{font-family:var(--font-display); font-size:20.5px; font-weight:700;}
+.map-head p{font-size:14px; color:var(--text-dim); margin-top:4px;}
 
-.legend{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px; color:var(--text-dim);}
+.legend{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim);}
 .legend .bar{width:150px; height:8px; border-radius:6px; background:linear-gradient(90deg, var(--r-0), var(--r-25), var(--r-50), var(--r-75), var(--r-100));}
 
 .map-scroll{
@@ -241,14 +241,14 @@ a{color:inherit;}
   grid-auto-rows:minmax(50px, auto);
 }
 .tile.compact-tile{
-  font-size:13px;
+  font-size:14.5px;
   border-radius:10px;
   min-height:50px;
 }
 .scroll-hint{
   display:none;
   align-items:center; gap:6px;
-  font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint);
+  font-family:var(--font-mono); font-size:12px; color:var(--text-faint);
   margin-top:10px;
 }
 .scroll-hint svg{width:13px; height:13px; animation:swipe 1.6s ease-in-out infinite;}
@@ -258,7 +258,7 @@ a{color:inherit;}
   border-radius:7px;
   display:flex; align-items:center; justify-content:center;
   font-family:var(--font-mono);
-  font-size:10.5px;
+  font-size:12px;
   font-weight:700;
   color:rgba(8,11,20,0.75);
   cursor:pointer;
@@ -268,7 +268,7 @@ a{color:inherit;}
 }
 .tile:hover{transform:translateY(-2px) scale(1.06); z-index:5; box-shadow:0 8px 20px rgba(0,0,0,0.45);}
 .tile.selected{outline:2px solid #fff; outline-offset:1px; z-index:6;}
-.tile.hokkaido{font-size:12px;}
+.tile.hokkaido{font-size:13.5px;}
 .tile.hot::after{
   content:"";
   position:absolute; inset:-4px;
@@ -282,9 +282,9 @@ a{color:inherit;}
   0%{transform:scale(0.9); opacity:0.9;}
   100%{transform:scale(1.35); opacity:0;}
 }
-.tile .pct{position:absolute; bottom:-16px; left:0; right:0; text-align:center; font-size:9px; color:var(--text-faint); font-weight:400; display:none;}
+.tile .pct{position:absolute; bottom:-16px; left:0; right:0; text-align:center; font-size:10.5px; color:var(--text-faint); font-weight:400; display:none;}
 
-.map-legend-labels{display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:10px; color:var(--text-faint); margin-top:6px; max-width:150px;}
+.map-legend-labels{display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); margin-top:6px; max-width:150px;}
 
 /* ---------- DETAIL PANEL ---------- */
 .detail{
@@ -306,27 +306,27 @@ a{color:inherit;}
 .gauge .num{
   position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
 }
-.gauge .num .n{font-family:var(--font-display); font-weight:900; font-size:34px;}
-.gauge .num .u{font-family:var(--font-mono); font-size:11px; color:var(--text-dim); margin-top:-2px;}
-.risk-label{font-family:var(--font-display); font-weight:700; font-size:14px; padding:5px 14px; border-radius:100px; letter-spacing:0.02em;}
+.gauge .num .n{font-family:var(--font-display); font-weight:900; font-size:37px;}
+.gauge .num .u{font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim); margin-top:-2px;}
+.risk-label{font-family:var(--font-display); font-weight:700; font-size:15.5px; padding:5px 14px; border-radius:100px; letter-spacing:0.02em;}
 
-.detail-body h3{font-family:var(--font-display); font-size:22px; font-weight:700; margin-bottom:4px;}
-.detail-body .region-tag{font-family:var(--font-mono); font-size:11.5px; color:var(--text-dim); margin-bottom:16px; display:block;}
+.detail-body h3{font-family:var(--font-display); font-size:24px; font-weight:700; margin-bottom:4px;}
+.detail-body .region-tag{font-family:var(--font-mono); font-size:13px; color:var(--text-dim); margin-bottom:16px; display:block;}
 .factors{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
 .factor{
   display:flex; align-items:center; gap:6px;
-  font-size:12.5px; color:var(--text);
+  font-size:14px; color:var(--text);
   background:var(--bg-1); border:1px solid var(--line);
   padding:7px 12px; border-radius:9px;
 }
-.factor .ic{font-size:14px;}
+.factor .ic{font-size:15.5px;}
 .advice{
-  font-size:13.5px; line-height:1.85; color:var(--text-dim);
+  font-size:15px; line-height:1.85; color:var(--text-dim);
   background:var(--bg-1); border:1px solid var(--line-soft); border-left:3px solid var(--ice);
   padding:14px 16px; border-radius:0 10px 10px 0;
 }
 .advice b{color:var(--text);}
-.detail-empty{display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-faint); font-size:13.5px; grid-column:1/-1; text-align:center; line-height:1.8;}
+.detail-empty{display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-faint); font-size:15px; grid-column:1/-1; text-align:center; line-height:1.8;}
 
 /* ---------- METHOD ---------- */
 .method{
@@ -335,35 +335,35 @@ a{color:inherit;}
   border-radius:20px;
   padding:26px;
 }
-.method h2{font-family:var(--font-display); font-size:18px; font-weight:700; margin-bottom:14px;}
+.method h2{font-family:var(--font-display); font-size:19.5px; font-weight:700; margin-bottom:14px;}
 .method-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:20px;}
 .method-item{border:1px solid var(--line-soft); border-radius:12px; padding:14px 16px; background:var(--bg-1);}
-.method-item .ic{font-size:18px; margin-bottom:8px; display:block;}
-.method-item h4{font-size:13.5px; margin-bottom:6px; font-weight:700;}
-.method-item p{font-size:12.5px; color:var(--text-dim); line-height:1.7;}
+.method-item .ic{font-size:19.5px; margin-bottom:8px; display:block;}
+.method-item h4{font-size:15px; margin-bottom:6px; font-weight:700;}
+.method-item p{font-size:14px; color:var(--text-dim); line-height:1.7;}
 .scale-guide{background:var(--bg-1); border:1px solid var(--line-soft); border-radius:14px; padding:18px 20px; margin-bottom:20px;}
-.scale-guide h3{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin-bottom:4px;}
-.scale-guide-lead{font-size:12.5px; color:var(--text-dim); line-height:1.7; margin-bottom:16px;}
+.scale-guide h3{font-family:var(--font-display); font-size:16px; font-weight:700; margin-bottom:4px;}
+.scale-guide-lead{font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:16px;}
 .scale-bar-visual{height:12px; border-radius:8px; background:linear-gradient(90deg, var(--r-0), var(--r-25), var(--r-50), var(--r-75), var(--r-100)); margin-bottom:10px;}
 .scale-levels{display:flex; flex-wrap:wrap; gap:16px 20px; margin-bottom:16px;}
-.scale-level{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-dim); white-space:nowrap;}
+.scale-level{display:flex; align-items:center; gap:7px; font-size:13.5px; color:var(--text-dim); white-space:nowrap;}
 .scale-level .dot{width:9px; height:9px; border-radius:50%; flex:none;}
-.scale-level b{color:var(--text); font-family:var(--font-mono); font-size:12px; font-weight:700;}
-.scale-note{font-size:12.5px; color:var(--text-dim); line-height:1.85; border-top:1px solid var(--line-soft); padding-top:14px;}
+.scale-level b{color:var(--text); font-family:var(--font-mono); font-size:13.5px; font-weight:700;}
+.scale-note{font-size:14px; color:var(--text-dim); line-height:1.85; border-top:1px solid var(--line-soft); padding-top:14px;}
 .scale-note b{color:var(--text); font-weight:700;}
 @media (max-width:600px){
   .scale-levels{gap:10px 16px;}
   .scale-guide{padding:16px;}
 }
 .disclaimer{
-  font-size:12px; line-height:1.9; color:var(--text-faint);
+  font-size:13.5px; line-height:1.9; color:var(--text-faint);
   border-top:1px solid var(--line-soft); padding-top:16px;
 }
 .disclaimer b{color:var(--text-dim);}
 .sources{margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;}
-.sources span{font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint); border:1px solid var(--line-soft); padding:3px 9px; border-radius:6px;}
+.sources span{font-family:var(--font-mono); font-size:12px; color:var(--text-faint); border:1px solid var(--line-soft); padding:3px 9px; border-radius:6px;}
 
-footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-size:11.5px; font-family:var(--font-mono);}
+footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-size:13px; font-family:var(--font-mono);}
 
 /* ---------- SHARE / QR ---------- */
 .share-card{
@@ -373,7 +373,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   padding:26px;
   text-align:center;
 }
-.share-card h2{font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:4px;}
+.share-card h2{font-family:var(--font-display); font-size:20.5px; font-weight:700; margin-bottom:4px;}
 .share-card .reg-sub{text-align:center; margin-left:auto; margin-right:auto;}
 .share-body{
   display:flex; align-items:center; justify-content:center; gap:26px;
@@ -388,12 +388,12 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 }
 .qr-box svg{width:100%; height:100%; display:block;}
 .qr-box .qr-loading, .qr-box .qr-placeholder{
-  font-family:var(--font-mono); font-size:11px; color:#666; text-align:center; line-height:1.6;
+  font-family:var(--font-mono); font-size:12.5px; color:#666; text-align:center; line-height:1.6;
 }
 .share-link-col{text-align:left; max-width:320px;}
 .share-link-row{display:flex; align-items:center; gap:8px; margin-top:6px;}
 .share-link{
-  font-family:var(--font-mono); font-size:12px; color:var(--ice);
+  font-family:var(--font-mono); font-size:13.5px; color:var(--ice);
   word-break:break-all; text-decoration:none;
   border:1px solid var(--line); background:var(--bg-1);
   padding:8px 10px; border-radius:8px; flex:1; min-width:0;
@@ -411,7 +411,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 /* ---------- DRILL-DOWN / BACK ---------- */
 .back-btn{
   font-family:var(--font-mono);
-  font-size:11.5px; font-weight:600;
+  font-size:13px; font-weight:600;
   color:var(--ice);
   background:rgba(127,231,255,0.08);
   border:1px solid rgba(127,231,255,0.3);
@@ -421,7 +421,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   transition:all .15s ease;
 }
 .back-btn:hover{background:rgba(127,231,255,0.16);}
-.tile.muni{font-size:9px; font-weight:600; line-height:1.15; text-align:center; padding:1px;}
+.tile.muni{font-size:10.5px; font-weight:600; line-height:1.15; text-align:center; padding:1px;}
 
 /* ---------- REGISTRATION / ALERTS ---------- */
 .reg-card{
@@ -430,19 +430,19 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   border-radius:20px;
   padding:26px;
 }
-.reg-card h2{font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:4px;}
-.reg-card .reg-sub{font-size:12.5px; color:var(--text-dim); margin-bottom:20px; line-height:1.7; max-width:760px;}
+.reg-card h2{font-family:var(--font-display); font-size:20.5px; font-weight:700; margin-bottom:4px;}
+.reg-card .reg-sub{font-size:14px; color:var(--text-dim); margin-bottom:20px; line-height:1.7; max-width:760px;}
 .reg-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
 @media (max-width:780px){.reg-grid{grid-template-columns:1fr;}}
 .reg-block{border:1px solid var(--line-soft); border-radius:14px; padding:16px 18px; background:var(--bg-1);}
-.reg-block h3{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
-.reg-block h3 .ic{font-size:16px;}
+.reg-block h3{font-family:var(--font-display); font-size:16px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+.reg-block h3 .ic{font-size:17.5px;}
 
 .field-row{display:flex; flex-direction:column; gap:5px; margin-bottom:12px;}
-.field-row label{font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.04em; color:var(--text-faint); text-transform:uppercase;}
+.field-row label{font-family:var(--font-mono); font-size:12px; letter-spacing:0.04em; color:var(--text-faint); text-transform:uppercase;}
 .field-row select, .field-row input{
   font-family:var(--font-body);
-  font-size:13.5px;
+  font-size:15px;
   color:var(--text);
   background:var(--panel-2);
   border:1px solid var(--line);
@@ -454,11 +454,11 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 }
 .field-row select:focus, .field-row input:focus{border-color:var(--ice);}
 .field-row.checks{flex-direction:row; align-items:flex-start; gap:8px; margin-top:2px; margin-bottom:10px;}
-.field-row.checks label{text-transform:none; font-size:12.5px; color:var(--text-dim); font-family:var(--font-body); display:flex; align-items:flex-start; gap:6px; line-height:1.5;}
+.field-row.checks label{text-transform:none; font-size:14px; color:var(--text-dim); font-family:var(--font-body); display:flex; align-items:flex-start; gap:6px; line-height:1.5;}
 .field-row.checks label input{margin-top:2px; flex:0 0 auto; width:18px; height:18px; min-height:0;}
 
 .btn{
-  font-family:var(--font-body); font-weight:700; font-size:13.5px;
+  font-family:var(--font-body); font-weight:700; font-size:15px;
   color:#0a0d16;
   background:linear-gradient(135deg, var(--ice), var(--violet));
   border:none; border-radius:9px;
@@ -473,10 +473,10 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   border:1px solid var(--line);
 }
 .btn.ghost:hover{color:var(--text); background:var(--panel-2);}
-.btn.small{padding:9px 14px; font-size:12.5px; width:auto; min-height:40px;}
+.btn.small{padding:9px 14px; font-size:14px; width:auto; min-height:40px;}
 
 .reg-list{display:flex; flex-direction:column; gap:10px; margin-top:2px; max-height:420px; overflow-y:auto;}
-.reg-empty{font-size:12.5px; color:var(--text-faint); padding:14px 4px; line-height:1.7;}
+.reg-empty{font-size:14px; color:var(--text-faint); padding:14px 4px; line-height:1.7;}
 .reg-item{
   display:flex; align-items:center; gap:12px;
   background:var(--panel-2); border:1px solid var(--line);
@@ -485,28 +485,28 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 .reg-item .dot-score{
   width:44px; height:44px; border-radius:10px; flex:0 0 auto;
   display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-display); font-weight:900; font-size:13px; color:#0a0d16;
+  font-family:var(--font-display); font-weight:900; font-size:14.5px; color:#0a0d16;
 }
 .reg-item .ri-body{flex:1; min-width:0;}
-.reg-item .ri-name{font-size:13.5px; font-weight:700; color:var(--text);}
-.reg-item .ri-meta{font-size:11px; color:var(--text-dim); margin-top:2px; font-family:var(--font-mono);}
-.reg-item .ri-forecast{font-size:10.5px; color:var(--amber); margin-top:3px;}
+.reg-item .ri-name{font-size:15px; font-weight:700; color:var(--text);}
+.reg-item .ri-meta{font-size:12.5px; color:var(--text-dim); margin-top:2px; font-family:var(--font-mono);}
+.reg-item .ri-forecast{font-size:12px; color:var(--amber); margin-top:3px;}
 .reg-item .ri-remove{
   background:transparent; border:1px solid var(--line); color:var(--text-faint);
   width:36px; height:36px; border-radius:8px; cursor:pointer; flex:0 0 auto;
-  font-size:16px; line-height:1;
+  font-size:17.5px; line-height:1;
 }
 .reg-item .ri-remove:hover{color:var(--crimson); border-color:var(--crimson);}
 .reg-item.alerting{border-color:var(--crimson); box-shadow:0 0 0 1px var(--crimson) inset;}
 
 .sim-note{
-  font-size:11.5px; line-height:1.8; color:#ffffff;
+  font-size:13px; line-height:1.8; color:#ffffff;
   background:rgba(255,194,75,0.06); border:1px solid rgba(255,194,75,0.25);
   border-radius:10px; padding:10px 12px; margin-top:16px;
 }
 .sim-note b{color:var(--amber);}
 .privacy-note{
-  font-size:11.5px; line-height:1.8; color:#ffffff;
+  font-size:13px; line-height:1.8; color:#ffffff;
   background:rgba(127,231,255,0.06); border:1px solid rgba(127,231,255,0.25);
   border-radius:10px; padding:10px 12px; margin-top:10px;
 }
@@ -516,7 +516,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 
 .reg-btn-detail{
   margin-top:14px; display:inline-flex; align-items:center; gap:8px;
-  font-family:var(--font-body); font-weight:700; font-size:12.5px;
+  font-family:var(--font-body); font-weight:700; font-size:14px;
   padding:9px 14px; border-radius:9px; cursor:pointer;
   border:1px solid rgba(127,231,255,0.3); background:rgba(127,231,255,0.08); color:var(--ice);
 }
@@ -527,7 +527,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 .toast{
   background:var(--panel); border:1px solid var(--crimson); border-left:4px solid var(--crimson);
   border-radius:10px; padding:12px 14px; box-shadow:0 10px 30px rgba(0,0,0,0.5);
-  font-size:12.5px; line-height:1.6; color:var(--text);
+  font-size:14px; line-height:1.6; color:var(--text);
   animation:toastIn .25s ease;
 }
 .toast b{color:var(--crimson);}
@@ -540,53 +540,53 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 @media (max-width:760px){
   .wrap{padding:0 16px;}
   .hero{padding:36px 16px 28px;}
-  .hero p{font-size:14px;}
+  .hero p{font-size:15.5px;}
   .hero .meta{gap:8px;}
-  .chip{font-size:10.5px; padding:5px 10px;}
+  .chip{font-size:12px; padding:5px 10px;}
   .bolt{right:24px; top:10px; width:34px; height:52px;}
   .cloud.c2{right:-70px;}
 
   .stack{margin-top:22px; gap:16px;}
   .stats{grid-template-columns:1fr 1fr; gap:8px;}
   .stat-card{padding:12px 13px; border-radius:12px;}
-  .stat-card .value{font-size:18px;}
-  .stat-card .label{font-size:10px;}
-  .stat-card .sub{font-size:11px;}
+  .stat-card .value{font-size:19.5px;}
+  .stat-card .label{font-size:11.5px;}
+  .stat-card .sub{font-size:12.5px;}
 
   .controls{padding:10px; top:6px;}
-  .controls-label{font-size:9.5px;}
+  .controls-label{font-size:11px;}
 
   .map-card{padding:16px 0 16px 16px; border-radius:16px;}
   .map-head{padding-right:16px;}
-  .map-head h2{font-size:16.5px;}
-  .map-head p{font-size:11.5px;}
+  .map-head h2{font-size:18px;}
+  .map-head p{font-size:13px;}
   .legend{padding-right:0;}
   .legend .bar{width:100px;}
   .map-scroll{margin:0; padding:0 16px 6px 0;}
 
   .detail{padding:18px; border-radius:16px; gap:18px;}
-  .detail-body h3{font-size:19px;}
+  .detail-body h3{font-size:20.5px;}
   .gauge{width:120px; height:120px;}
   .gauge svg{width:120px; height:120px;}
-  .gauge .num .n{font-size:28px;}
-  .factor{font-size:12px; padding:6px 10px;}
-  .advice{font-size:13px; padding:12px 14px;}
+  .gauge .num .n{font-size:30.5px;}
+  .factor{font-size:13.5px; padding:6px 10px;}
+  .advice{font-size:14.5px; padding:12px 14px;}
 
   .method{padding:18px; border-radius:16px;}
-  .method h2{font-size:16.5px;}
+  .method h2{font-size:18px;}
   .method-grid{grid-template-columns:1fr; gap:10px;}
 
   .reg-card{padding:18px; border-radius:16px;}
-  .reg-card h2{font-size:16.5px;}
+  .reg-card h2{font-size:18px;}
   .reg-grid{gap:14px;}
   .reg-block{padding:14px;}
 }
 
 @media (max-width:400px){
-  .hero h1{font-size:28px;}
+  .hero h1{font-size:30.5px;}
   .stats{grid-template-columns:1fr 1fr;}
-  .stat-card .value{font-size:16px;}
-  .seg button{padding:10px 12px; font-size:12px;}
+  .stat-card .value{font-size:17.5px;}
+  .seg button{padding:10px 12px; font-size:13.5px;}
 }
 </style>
 </head>
@@ -655,7 +655,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 
   <div class="reg-card">
     <h2>登録地域と通知先（市区町村単位）</h2>
-    <p class="reg-sub">アラートを受け取りたい市区町村と、通知先のメールアドレス・電話番号（SMS）を登録できます。登録した内容はお使いのブラウザ内にのみ保存されます（下部の注記をご確認ください）。</p>
+    <p class="reg-sub">アラートを受け取りたい市区町村と、通知先のメールアドレスを登録できます。指数が<b style="color:var(--text)">80%以上</b>になった際、確認済みのメールアドレスに自動で通知が届きます（下部の注記をご確認ください）。</p>
 
     <div class="reg-grid">
       <div class="reg-block">
@@ -675,32 +675,28 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
           <label>アラートメール</label>
           <input type="email" id="contactEmail" placeholder="you@example.com" autocomplete="off">
         </div>
-        <div class="field-row">
-          <label>アラートSMS（電話番号）</label>
-          <input type="tel" id="contactPhone" placeholder="090-1234-5678" autocomplete="off">
-        </div>
         <div class="field-row checks">
           <label><input type="checkbox" id="enableEmail" checked>メールで受け取る</label>
-        </div>
-        <div class="field-row checks">
-          <label><input type="checkbox" id="enableSms" checked>SMSで受け取る</label>
         </div>
         <div class="perm-btn-row">
           <button class="btn ghost small" id="saveContactBtn">通知先を保存</button>
         </div>
+
+        <p class="reg-sub" style="margin-top:18px; margin-bottom:10px;">上記のメールアドレスと、右側に登録済みの市区町村に対してメール通知を有効にするには、下のボタンを押してください。登録された地域ごとに確認メールが届き、メール内のリンクをクリックすると通知が有効になります。</p>
+        <button class="btn" id="activateEmailAlertsBtn">📧 メール通知を有効にする（確認メールを送信）</button>
       </div>
 
       <div class="reg-block">
-        <h3><span class="ic">🗂️</span>登録済みの地域<span id="regCount" style="color:var(--text-faint); font-family:var(--font-mono); font-size:11px; font-weight:400;"></span></h3>
+        <h3><span class="ic">🗂️</span>登録済みの地域<span id="regCount" style="color:var(--text-faint); font-family:var(--font-mono); font-size:12.5px; font-weight:400;"></span></h3>
         <div class="reg-list" id="regList"></div>
       </div>
     </div>
 
     <div class="sim-note">
-      <b>ご注意：</b>現在は地域・通知先の「登録」のみに対応しており、実際のメール・SMS送信はまだ行われません。
+      <b>ご注意：</b>メール通知は「メール通知を有効にする」ボタンを押し、確認メール内のリンクをクリックした地域のみ有効になります（なりすまし登録を防ぐための確認です）。
     </div>
     <div class="privacy-note">
-      <b>個人情報の取り扱いについて：</b>ここで登録する市区町村・メールアドレス・電話番号は、今後アラート通知機能を提供するための利用目的に限り、お使いのブラウザ内にのみ保存されます。外部のサーバーに送信されることはなく、第三者へ提供することもありません。
+      <b>個人情報の取り扱いについて：</b>メール通知を有効にすると、市区町村・メールアドレスは通知の送信専用サーバーに送られます。この情報は<b>アラート送信の目的にのみ</b>使用され、それ以外の用途には使用しません。第三者への提供も行いません。通知はいつでも解除でき、解除すると登録情報はサーバーから完全に削除されます（解除リンクは確認メール・通知メールの両方に記載されています）。地域を登録するだけで有効化ボタンを押さない場合、情報はお使いのブラウザ内にのみ保存され、外部には送信されません。
     </div>
   </div>
 
@@ -3450,7 +3446,7 @@ function refresh(){
     </div>
     <div class="stat-card warn">
       <div class="label">警戒レベル該当（60%以上）</div>
-      <div class="value">${dangerCount}<span style="font-size:14px;color:var(--text-dim)"> 都道府県</span></div>
+      <div class="value">${dangerCount}<span style="font-size:15.5px;color:var(--text-dim)"> 都道府県</span></div>
       <div class="sub">${DAYS[state.day].d} / ${SLOTS[state.slot].label}</div>
     </div>
     <div class="stat-card">
@@ -3460,7 +3456,7 @@ function refresh(){
     </div>
     <div class="stat-card ${regAlertCount>0 ? 'danger':''}">
       <div class="label">登録地域の警戒（80%以上）</div>
-      <div class="value">${regAlertCount}<span style="font-size:14px;color:var(--text-dim)"> / ${registered.length} 件</span></div>
+      <div class="value">${regAlertCount}<span style="font-size:15.5px;color:var(--text-dim)"> / ${registered.length} 件</span></div>
       <div class="sub">表示中の条件での判定</div>
     </div>
   `;
@@ -3486,7 +3482,7 @@ function renderDetail(top){
             <circle class="fg" cx="75" cy="75" r="66" stroke="${meta.color}"
               stroke-dasharray="${dash} ${circumference}"></circle>
           </svg>
-          <div class="num"><div class="n">${v}<span style="font-size:16px">%</span></div><div class="u">HAIL INDEX</div></div>
+          <div class="num"><div class="n">${v}<span style="font-size:17.5px">%</span></div><div class="u">HAIL INDEX</div></div>
         </div>
         <div class="risk-label" style="background:${meta.color}22; color:${meta.color}; border:1px solid ${meta.color}55;">${meta.label}</div>
       </div>
@@ -3523,7 +3519,7 @@ function renderDetail(top){
             <circle class="fg" cx="75" cy="75" r="66" stroke="${meta.color}"
               stroke-dasharray="${dash} ${circumference}"></circle>
           </svg>
-          <div class="num"><div class="n">${v}<span style="font-size:16px">%</span></div><div class="u">HAIL INDEX</div></div>
+          <div class="num"><div class="n">${v}<span style="font-size:17.5px">%</span></div><div class="u">HAIL INDEX</div></div>
         </div>
         <div class="risk-label" style="background:${meta.color}22; color:${meta.color}; border:1px solid ${meta.color}55;">${meta.label}</div>
       </div>
@@ -3535,7 +3531,7 @@ function renderDetail(top){
           ${MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? '<div class="factor"><span class="ic">⛰️</span>山沿い・内陸性の積乱雲発達リスク</div>' : ''}
         </div>
         <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
-        <div style="margin-top:14px; font-size:12px; color:var(--text-faint);">上のヒートマップで市区町村タイルを選択すると、その地域の詳細とアラート登録ボタンが表示されます。</div>
+        <div style="margin-top:14px; font-size:13.5px; color:var(--text-faint);">上のヒートマップで市区町村タイルを選択すると、その地域の詳細とアラート登録ボタンが表示されます。</div>
       </div>
     `;
     return;
@@ -3561,7 +3557,7 @@ function lsSet(key, val){
 }
 
 let registered = lsGet(LS_KEYS.REG, []);
-let contact = lsGet(LS_KEYS.CONTACT, {email:'', phone:'', email_on:true, sms_on:true});
+let contact = lsGet(LS_KEYS.CONTACT, {email:'', email_on:true});
 
 function isRegistered(pref, city){
   return registered.some(r=>r.pref===pref && r.city===city);
@@ -3670,25 +3666,59 @@ function showToast(html){
 }
 
 const contactEmailEl = document.getElementById('contactEmail');
-const contactPhoneEl = document.getElementById('contactPhone');
 const enableEmailEl = document.getElementById('enableEmail');
-const enableSmsEl = document.getElementById('enableSms');
 
 contactEmailEl.value = contact.email || '';
-contactPhoneEl.value = contact.phone || '';
 enableEmailEl.checked = contact.email_on !== false;
-enableSmsEl.checked = contact.sms_on !== false;
 
 document.getElementById('saveContactBtn').onclick = ()=>{
   contact = {
     email: contactEmailEl.value.trim(),
-    phone: contactPhoneEl.value.trim(),
     email_on: enableEmailEl.checked,
-    sms_on: enableSmsEl.checked,
   };
   lsSet(LS_KEYS.CONTACT, contact);
   showToast('通知先設定を保存しました。');
 };
+
+/* ================= メール通知の有効化（サーバー登録） ================= */
+// アプリ自体はサーバーを持たないが、Netlify Functions側の register エンドポイントに
+// メールアドレス＋地域を送信し、確認メール経由での二重オプトインでアラート送信を有効化する。
+// このボタンを押さない限り、メールアドレスがサーバーに送信されることはない。
+const activateEmailAlertsBtn = document.getElementById('activateEmailAlertsBtn');
+if(activateEmailAlertsBtn){
+  activateEmailAlertsBtn.onclick = async ()=>{
+    const email = contactEmailEl.value.trim();
+    if(!email){ showToast('メールアドレスを入力してください。'); return; }
+    if(!registered.length){ showToast('先に登録したい地域を追加してください。'); return; }
+
+    activateEmailAlertsBtn.disabled = true;
+    const originalLabel = activateEmailAlertsBtn.textContent;
+    activateEmailAlertsBtn.textContent = '送信中…';
+
+    let okCount = 0, failCount = 0;
+    for(const r of registered){
+      try{
+        const res = await fetch('/.netlify/functions/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, pref: r.pref, city: r.city }),
+        });
+        if(res.ok) okCount++; else failCount++;
+      }catch(e){ failCount++; }
+    }
+
+    activateEmailAlertsBtn.disabled = false;
+    activateEmailAlertsBtn.textContent = originalLabel;
+
+    if(okCount && !failCount){
+      showToast(`${okCount}件の地域に確認メールを送信しました。メール内のリンクをクリックして通知を有効にしてください。`);
+    }else if(okCount && failCount){
+      showToast(`${okCount}件送信できましたが、${failCount}件失敗しました。`);
+    }else{
+      showToast('送信に失敗しました。このアプリがバックエンド付きで公開されているかご確認ください。');
+    }
+  };
+}
 
 /* ================= 共有用QRコード ================= */
 // このページが実際に公開されたURL（https://...）を自動的に読み取ってQR化する。

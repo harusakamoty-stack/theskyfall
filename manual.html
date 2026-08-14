@@ -53,10 +53,10 @@ a:hover{text-decoration:underline;}
   border-bottom:1px solid var(--line-soft);
 }
 .top-nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 20px;}
-.top-nav .brand{font-family:var(--font-display); font-weight:900; font-size:15px; letter-spacing:0.01em;}
+.top-nav .brand{font-family:var(--font-display); font-weight:900; font-size:16.5px; letter-spacing:0.01em;}
 .back-link{
   display:inline-flex; align-items:center; gap:6px;
-  font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.04em;
+  font-family:var(--font-mono); font-size:13px; letter-spacing:0.04em;
   color:var(--ice); border:1px solid rgba(127,231,255,0.3); background:rgba(127,231,255,0.08);
   padding:7px 13px; border-radius:100px; white-space:nowrap;
 }
@@ -65,7 +65,7 @@ a:hover{text-decoration:underline;}
 .hero{padding:44px 0 30px;}
 .eyebrow{
   display:inline-flex; align-items:center; gap:8px;
-  font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase;
+  font-family:var(--font-mono); font-size:13px; letter-spacing:0.14em; text-transform:uppercase;
   color:var(--ice); background:rgba(127,231,255,0.08); border:1px solid rgba(127,231,255,0.25);
   padding:5px 12px; border-radius:100px; margin-bottom:16px;
 }
@@ -76,17 +76,17 @@ a:hover{text-decoration:underline;}
   background:linear-gradient(120deg, #fff 10%, var(--ice) 55%, var(--violet) 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
-.hero p{max-width:640px; color:var(--text-dim); font-size:14.5px; line-height:1.85;}
+.hero p{max-width:640px; color:var(--text-dim); font-size:16px; line-height:1.85;}
 
 .toc{
   background:var(--panel); border:1px solid var(--line-soft); border-radius:var(--radius);
   padding:20px 22px; margin-bottom:36px;
 }
-.toc h2{font-family:var(--font-display); font-size:14px; font-weight:700; margin-bottom:12px; color:var(--text-dim); letter-spacing:0.02em;}
+.toc h2{font-family:var(--font-display); font-size:15.5px; font-weight:700; margin-bottom:12px; color:var(--text-dim); letter-spacing:0.02em;}
 .toc ol{list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:6px 18px; counter-reset:tocnum;}
-.toc li{counter-increment:tocnum; font-size:13px;}
+.toc li{counter-increment:tocnum; font-size:14.5px;}
 .toc li a{display:flex; gap:8px; color:var(--text); padding:5px 0;}
-.toc li a::before{content:counter(tocnum); font-family:var(--font-mono); color:var(--ice); font-size:11.5px; flex:none; width:1.4em;}
+.toc li a::before{content:counter(tocnum); font-family:var(--font-mono); color:var(--ice); font-size:13px; flex:none; width:1.4em;}
 .toc li a:hover{color:var(--ice); text-decoration:none;}
 
 section.card{
@@ -94,25 +94,25 @@ section.card{
   padding:26px 26px 28px; margin-bottom:22px; scroll-margin-top:78px;
 }
 section.card h2{
-  font-family:var(--font-display); font-size:19px; font-weight:700; margin-bottom:4px;
+  font-family:var(--font-display); font-size:20.5px; font-weight:700; margin-bottom:4px;
   display:flex; align-items:center; gap:10px;
 }
 section.card h2 .num{
-  font-family:var(--font-mono); font-size:12px; color:var(--ice);
+  font-family:var(--font-mono); font-size:13.5px; color:var(--ice);
   border:1px solid rgba(127,231,255,0.3); border-radius:6px; padding:2px 7px; flex:none;
 }
-section.card .lead{color:var(--text-dim); font-size:13px; line-height:1.8; margin-bottom:18px;}
-section.card h3{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin:20px 0 8px; display:flex; align-items:center; gap:8px;}
-section.card p{color:var(--text-dim); font-size:13.5px; line-height:1.9; margin-bottom:12px;}
+section.card .lead{color:var(--text-dim); font-size:14.5px; line-height:1.8; margin-bottom:18px;}
+section.card h3{font-family:var(--font-display); font-size:16px; font-weight:700; margin:20px 0 8px; display:flex; align-items:center; gap:8px;}
+section.card p{color:var(--text-dim); font-size:15px; line-height:1.9; margin-bottom:12px;}
 section.card p b, section.card li b{color:var(--text); font-weight:700;}
-section.card ol, section.card ul{margin:0 0 14px 0; padding-left:1.3em; color:var(--text-dim); font-size:13.5px; line-height:1.95;}
+section.card ol, section.card ul{margin:0 0 14px 0; padding-left:1.3em; color:var(--text-dim); font-size:15px; line-height:1.95;}
 section.card li{margin-bottom:6px;}
-section.card .ic{font-size:16px;}
+section.card .ic{font-size:17.5px;}
 
 .shot-note{
   display:flex; gap:10px; align-items:flex-start;
   background:var(--bg-1); border:1px solid var(--line-soft); border-radius:10px;
-  padding:12px 14px; font-size:12.5px; color:var(--text-dim); line-height:1.8; margin:14px 0;
+  padding:12px 14px; font-size:14px; color:var(--text-dim); line-height:1.8; margin:14px 0;
 }
 .shot-note .ic{flex:none; margin-top:1px;}
 .shot-note.warn{border-color:rgba(255,138,61,0.35); background:rgba(255,138,61,0.06);}
@@ -120,41 +120,41 @@ section.card .ic{font-size:16px;}
 .shot-note.tip{border-color:rgba(47,212,168,0.3); background:rgba(47,212,168,0.05);}
 .shot-note.tip .ic{color:var(--safe);}
 
-.scale-mini{display:flex; flex-wrap:wrap; gap:10px 18px; margin:12px 0 16px; font-size:12.5px; color:var(--text-dim);}
+.scale-mini{display:flex; flex-wrap:wrap; gap:10px 18px; margin:12px 0 16px; font-size:14px; color:var(--text-dim);}
 .scale-mini span{display:inline-flex; align-items:center; gap:6px;}
 .scale-mini .dot{width:9px;height:9px;border-radius:50%; flex:none;}
 .scale-mini b{font-family:var(--font-mono); color:var(--text); font-weight:700;}
 
 .kbd{
-  font-family:var(--font-mono); font-size:11.5px; background:var(--bg-1);
+  font-family:var(--font-mono); font-size:13px; background:var(--bg-1);
   border:1px solid var(--line-soft); border-radius:6px; padding:2px 7px; color:var(--ice);
 }
 
-table.field-table{width:100%; border-collapse:collapse; margin:8px 0 16px; font-size:13px;}
+table.field-table{width:100%; border-collapse:collapse; margin:8px 0 16px; font-size:14.5px;}
 table.field-table th, table.field-table td{
   text-align:left; padding:8px 10px; border-bottom:1px solid var(--line-soft); color:var(--text-dim); vertical-align:top;
 }
-table.field-table th{font-family:var(--font-mono); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--text-faint); font-weight:500;}
+table.field-table th{font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.04em; text-transform:uppercase; color:var(--text-faint); font-weight:500;}
 table.field-table td b{color:var(--text);}
 
 details.faq{border-bottom:1px solid var(--line-soft); padding:12px 0;}
 details.faq:last-child{border-bottom:none;}
 details.faq summary{
-  cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--text);
+  cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:15.5px; color:var(--text);
   list-style:none; display:flex; align-items:center; gap:8px;
 }
 details.faq summary::-webkit-details-marker{display:none;}
-details.faq summary::before{content:'▸'; color:var(--ice); font-size:12px; transition:transform 0.15s;}
+details.faq summary::before{content:'▸'; color:var(--ice); font-size:13.5px; transition:transform 0.15s;}
 details.faq[open] summary::before{transform:rotate(90deg);}
-details.faq .a{padding:10px 0 2px 20px; color:var(--text-dim); font-size:13.5px; line-height:1.9;}
+details.faq .a{padding:10px 0 2px 20px; color:var(--text-dim); font-size:15px; line-height:1.9;}
 
 .disclaimer{
   background:var(--bg-1); border:1px solid var(--line-soft); border-radius:12px;
-  padding:18px 20px; font-size:12px; color:#666; line-height:1.85; margin-bottom:22px;
+  padding:18px 20px; font-size:13.5px; color:#666; line-height:1.85; margin-bottom:22px;
 }
 .disclaimer b{color:var(--ice);}
 
-footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-size:11.5px; font-family:var(--font-mono);}
+footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-size:13px; font-family:var(--font-mono);}
 
 @media (max-width:640px){
   .hero{padding:34px 0 24px;}
@@ -189,7 +189,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
       <li><a href="#s4">指数（%）の読み方</a></li>
       <li><a href="#s5">期間・時間帯の切り替え</a></li>
       <li><a href="#s6">地域を登録する</a></li>
-      <li><a href="#s7">通知先（メール／SMS）の登録</a></li>
+      <li><a href="#s7">メール通知を有効にする</a></li>
       <li><a href="#s8">スマホでの表示について</a></li>
       <li><a href="#s9">知人にアプリを紹介する（QRコード）</a></li>
       <li><a href="#s10">よくある質問</a></li>
@@ -204,7 +204,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
       <li>全国47都道府県の降雹リスクを、色分けされたヒートマップで一目で確認する</li>
       <li>都道府県をタップして、市区町村単位まで絞り込んで確認する</li>
       <li>今日から3日先まで、時間帯（早朝・午前・午後・夕方・夜間）別に切り替えて見る</li>
-      <li>気になる市区町村を「登録地域」として保存し、通知先（メール・電話番号）をブラウザに保存しておく</li>
+      <li>気になる市区町村を「登録地域」として保存し、通知先（メールアドレス）をブラウザに保存しておく</li>
       <li>アプリのURLをQRコードで知人に共有する</li>
     </ul>
     <div class="shot-note warn">
@@ -277,15 +277,20 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
   </section>
 
   <section class="card" id="s7">
-    <h2><span class="num">07</span>通知先（メール／SMS）の登録</h2>
-    <p>同じ「登録地域と通知先」カード内の「通知先設定」から、アラートメール・アラートSMS（電話番号）を登録し、<span class="kbd">通知先を保存</span> で保存できます。「メールで受け取る」「SMSで受け取る」のチェックボックスで、受け取り方法を選べます。</p>
+    <h2><span class="num">07</span>メール通知を有効にする</h2>
+    <p>「登録地域と通知先」カード内の「通知先設定」からメールアドレスを入力して <span class="kbd">通知先を保存</span> を押し、<span class="kbd">📧 メール通知を有効にする（確認メールを送信）</span> ボタンを押すと、登録済みの各市区町村あてに確認メールが送られます。メール内のリンクをクリックすると通知が有効になり、以降、その地域の指数が<b>80%以上</b>になった際に自動でメールが届きます。</p>
+    <ol>
+      <li>アラートメールを入力し、<span class="kbd">通知先を保存</span> を押す</li>
+      <li><span class="kbd">📧 メール通知を有効にする</span> を押す（登録済みの地域ごとに確認メールが送信されます）</li>
+      <li>届いた確認メール内のリンクをクリックする（クリックするまで通知は有効になりません）</li>
+    </ol>
     <div class="shot-note warn">
       <span class="ic">⚠️</span>
-      <span><b>現在は登録のみの機能で、実際のメール・SMS送信はまだ行われません。</b>今後、通知機能が有効になった際にすぐ使えるよう、あらかじめ登録しておくための項目です。</span>
+      <span><b>現在ご利用いただけるのはメール通知のみです。</b>SMS（電話番号宛の通知）には対応していません。</span>
     </div>
     <div class="shot-note tip">
       <span class="ic">🔒</span>
-      <span><b>個人情報の取り扱いについて：</b>登録する市区町村・メールアドレス・電話番号は、今後アラート通知を行うための利用目的に限り、お使いのブラウザ内にのみ保存されます。外部のサーバーに送信されることはなく、第三者へ提供することもありません。</span>
+      <span><b>個人情報の取り扱いについて：</b>メール通知を有効にすると、市区町村・メールアドレスは通知の送信専用サーバーに送られます。この情報は<b>アラート送信の目的にのみ</b>使用され、それ以外の用途には使用しません。第三者への提供も行いません。確認メール・通知メールの両方に解除リンクが記載されており、いつでも通知を解除できます。解除すると、登録情報はサーバーから完全に削除されます。地域を登録するだけで有効化ボタンを押さない場合は、情報はお使いのブラウザ内にのみ保存され、外部には送信されません。</span>
     </div>
   </section>
 
@@ -313,7 +318,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
 
     <details class="faq">
       <summary>登録した地域が80%以上になったら、本当にメールやSMSが届きますか？</summary>
-      <div class="a">現時点では届きません。現在の「通知先設定」は、将来その機能が有効になった際にすぐ使えるよう、登録内容を保存しておく機能です。</div>
+      <div class="a">メールは届きます。「メール通知を有効にする」ボタンを押し、確認メール内のリンクをクリックした地域については、指数が80%以上になった際に自動でメールが送信されます。SMSには現在対応していません。</div>
     </details>
 
     <details class="faq">
@@ -328,7 +333,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
 
     <details class="faq">
       <summary>登録した地域やメールアドレスはどこに保存されますか？</summary>
-      <div class="a">お使いのブラウザ内（localStorage）にのみ保存され、外部のサーバーには送信されません。そのため、ブラウザやデバイスを変えると登録内容は共有されず、ブラウザのデータを消去すると内容が消える場合があります。</div>
+      <div class="a">「地域を登録する」だけの場合は、お使いのブラウザ内（localStorage）にのみ保存され、外部には送信されません。「メール通知を有効にする」を押した場合のみ、市区町村・メールアドレスが通知の送信専用サーバーに送られ、アラート送信の目的にのみ使用されます。いずれの場合も、確認メール・通知メール内の解除リンクから登録をいつでも削除できます。</div>
     </details>
 
     <details class="faq">
@@ -339,6 +344,11 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
     <details class="faq">
       <summary>このアプリを他の人にも使ってもらいたいのですが、どうすればいいですか？</summary>
       <div class="a">アプリがWeb上に公開されていれば、アプリ最下部のQRコードが自動的に有効になります。そのQRコードを読み取ってもらうか、隣に表示されているURLをコピーして、メッセージアプリなどで知人に共有してください。</div>
+    </details>
+
+    <details class="faq">
+      <summary>「メール通知を有効にする」を押しても反応がありません</summary>
+      <div class="a">メール通知の送信には、アプリ本体とは別に「送信専用の小さなサーバー機能」が動いている必要があります。この機能が動いていない場所（例：この機能を追加する前の状態でアプリを開いている場合など）でボタンを押すと、送信に失敗した旨のメッセージが表示されます。地域の登録・マップの表示など、その他の機能には影響ありません。</div>
     </details>
   </section>
 
