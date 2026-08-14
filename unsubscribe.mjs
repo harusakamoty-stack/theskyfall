@@ -1,0 +1,38 @@
+import { getStore } from '@netlify/blobs';
+import { verifyToken } from './lib/crypto.mjs';
+
+function html(status, body){
+  return new Response(
+    `<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愛車雹アラート</title>
+    <style>
+      body{font-family:'Noto Sans JP',sans-serif; background:#080b14; color:#e9edf7; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; padding:20px;}
+      .card{max-width:420px; text-align:center; background:#11172a; border:1px solid #232c45; border-radius:14px; padding:32px 28px;}
+      h1{font-size:18px; margin-bottom:12px;}
+      p{font-size:14px; color:#8a93b3; line-height:1.7;}
+    </style></head><body><div class="card">${body}</div></body></html>`,
+    { status, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+  );
+}
+
+export default async (req) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get('id') || '';
+  const token = url.searchParams.get('token') || '';
+
+  if(!id || !verifyToken('unsubscribe', id, token)){
+    return html(400, '<h1>リンクが正しくありません</h1>');
+  }
+
+  const store = getStore('hail-registrations');
+  const record = await store.get(id, { type: 'json' }).catch(()=>null);
+  if(!record){
+    return html(200, '<h1>解除済みです</h1><p>このメールアドレス・地域の登録は既に削除されています。</p>');
+  }
+
+  // 登録情報を完全に削除する（保存を残さない）
+  await store.delete(id);
+
+  return html(200, `<h1>通知を解除しました</h1><p><b>${record.pref} ${record.city}</b><br>宛のメール通知登録を削除しました。<br>登録されていた情報はサーバーから完全に削除されています。</p>`);
+};
