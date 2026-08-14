@@ -281,7 +281,11 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
     <p>同じ「登録地域と通知先」カード内の「通知先設定」から、アラートメール・アラートSMS（電話番号）を登録し、<span class="kbd">通知先を保存</span> で保存できます。「メールで受け取る」「SMSで受け取る」のチェックボックスで、受け取り方法を選べます。</p>
     <div class="shot-note warn">
       <span class="ic">⚠️</span>
-      <span>本アプリはサーバーを持たない単体HTMLファイルのため、<b>この画面だけでは実際のメール・SMSの自動送信はできません</b>。ここで登録した通知先はブラウザ内に保存されるのみで、実際に「指数80%以上になったら自動でメール・SMSを送る」ためには、EmailJSなどの外部サービス連携、またはSendGrid・Twilioなどと連携する専用のバックエンドサーバーの構築が別途必要です。この機能を有効にしたい場合は、その構成を別途ご相談・実装できます。</span>
+      <span><b>現在は登録のみの機能で、実際のメール・SMS送信はまだ行われません。</b>今後、通知機能が有効になった際にすぐ使えるよう、あらかじめ登録しておくための項目です。</span>
+    </div>
+    <div class="shot-note tip">
+      <span class="ic">🔒</span>
+      <span><b>個人情報の取り扱いについて：</b>登録する市区町村・メールアドレス・電話番号は、今後アラート通知を行うための利用目的に限り、お使いのブラウザ内にのみ保存されます。外部のサーバーに送信されることはなく、第三者へ提供することもありません。</span>
     </div>
   </section>
 
@@ -299,8 +303,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
     <h2><span class="num">09</span>知人にアプリを紹介する（QRコード）</h2>
     <p>アプリの一番下に「このアプリを知人に紹介する」というカードがあり、QRコードとURLが表示されます。このQRコードは、そのページが実際に開かれているURLを自動的に読み取れるようになっています。</p>
     <ul>
-      <li>ファイルを直接開いている状態（file://）では「Web公開後、ここに自動でQRコードが表示されます」というプレースホルダーが表示されます。</li>
-      <li>Netlify DropやGitHub Pagesなどで公開すると、そのURLを指す本物のQRコードに自動的に切り替わります。何かを設定し直す必要はありません。</li>
+      <li>Web上に公開されているこのページを開いている場合は、そのURLを指す本物のQRコードが表示されます。スマホのカメラなどで読み取ると、このページをすぐに開けます。</li>
       <li>URLはコピーボタンでもコピーできるので、QRコードの代わりにメッセージアプリなどで直接共有することもできます。</li>
     </ul>
   </section>
@@ -310,7 +313,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
 
     <details class="faq">
       <summary>登録した地域が80%以上になったら、本当にメールやSMSが届きますか？</summary>
-      <div class="a">現時点では届きません。このアプリは単体のHTMLファイルで動作しており、実際の送信には別途バックエンドサーバー（EmailJS・SendGrid・Twilioなどとの連携）が必要です。現在の「通知先設定」は、将来その機能を追加する場合に備えて登録内容を保存しておく機能です。</div>
+      <div class="a">現時点では届きません。現在の「通知先設定」は、将来その機能が有効になった際にすぐ使えるよう、登録内容を保存しておく機能です。</div>
     </details>
 
     <details class="faq">
@@ -335,7 +338,7 @@ footer{text-align:center; padding:30px 20px 50px; color:var(--text-faint); font-
 
     <details class="faq">
       <summary>このアプリを他の人にも使ってもらいたいのですが、どうすればいいですか？</summary>
-      <div class="a">アプリをNetlify DropやGitHub Pagesなどで公開すると、URLが発行されます。公開後はアプリ最下部のQRコードが自動的に有効になるので、そのQRコードやURLを知人に共有してください。</div>
+      <div class="a">アプリがWeb上に公開されていれば、アプリ最下部のQRコードが自動的に有効になります。そのQRコードを読み取ってもらうか、隣に表示されているURLをコピーして、メッセージアプリなどで知人に共有してください。</div>
     </details>
   </section>
 

@@ -505,6 +505,12 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   border-radius:10px; padding:10px 12px; margin-top:16px;
 }
 .sim-note b{color:var(--amber);}
+.privacy-note{
+  font-size:11.5px; line-height:1.8; color:#ffffff;
+  background:rgba(127,231,255,0.06); border:1px solid rgba(127,231,255,0.25);
+  border-radius:10px; padding:10px 12px; margin-top:10px;
+}
+.privacy-note b{color:var(--ice);}
 
 .perm-btn-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;}
 
@@ -649,7 +655,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 
   <div class="reg-card">
     <h2>登録地域と通知先（市区町村単位）</h2>
-    <p class="reg-sub">アラートを受け取りたい市区町村と、通知先のメールアドレス・電話番号（SMS）を登録できます。降雹指数が<b style="color:var(--text)">80%以上</b>になった際に実際にメール・SMSを送信するには、別途バックエンドサーバーとの連携が必要です（下部の注記をご確認ください）。登録した内容はこのブラウザに保存されます。</p>
+    <p class="reg-sub">アラートを受け取りたい市区町村と、通知先のメールアドレス・電話番号（SMS）を登録できます。登録した内容はお使いのブラウザ内にのみ保存されます（下部の注記をご確認ください）。</p>
 
     <div class="reg-grid">
       <div class="reg-block">
@@ -691,7 +697,10 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
     </div>
 
     <div class="sim-note">
-      <b>ご注意：</b>本アプリはサーバーを持たない単体HTMLファイルのため、この画面だけでは実際のメール・SMS送信はできません。上記で登録した市区町村・通知先はこのブラウザ内に保存されるのみです。実際にメール・SMSを自動送信するには、EmailJS等の外部サービス連携、またはSendGrid・Twilio等と連携する専用のバックエンドサーバーの構築が別途必要です。ご希望の場合は別途その構成をご提案・実装できます。
+      <b>ご注意：</b>現在は地域・通知先の「登録」のみに対応しており、実際のメール・SMS送信はまだ行われません。
+    </div>
+    <div class="privacy-note">
+      <b>個人情報の取り扱いについて：</b>ここで登録する市区町村・メールアドレス・電話番号は、今後アラート通知機能を提供するための利用目的に限り、お使いのブラウザ内にのみ保存されます。外部のサーバーに送信されることはなく、第三者へ提供することもありません。
     </div>
   </div>
 
