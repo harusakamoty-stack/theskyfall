@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hailscope-v1';
+const CACHE_NAME = 'hailscope-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -29,18 +29,17 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET' || req.url.includes('/.netlify/functions/')) {
     return;
   }
+  // ネットワーク優先：オンラインなら常に最新版を取得し、キャッシュを更新する。
+  // オフライン時（電波が届かない等）のみ、直前に保存したキャッシュを表示する。
   event.respondWith(
-    caches.match(req).then((cached) => {
-      const network = fetch(req)
-        .then((res) => {
-          if (res && res.ok && res.type === 'basic') {
-            const resClone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+    fetch(req)
+      .then((res) => {
+        if (res && res.ok && res.type === 'basic') {
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(req))
   );
 });
