@@ -126,3 +126,7 @@ export function currentJstDateKey(now = new Date()){
   const jst = new Date(now.getTime() + 9*60*60*1000);
   return jst.toISOString().slice(0,10); // YYYY-MM-DD (JST基準)
 }
+// 現在の日本時間（JST）の「時」だけを0〜23で返す（大気安定度データの時間帯マッチング等に使用）
+export function currentJstHour(now = new Date()){
+  return (now.getUTCHours() + 9) % 24;
+}
