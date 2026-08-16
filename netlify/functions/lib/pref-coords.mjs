@@ -1,118 +1,52 @@
-// ------------------------------------------------------------------
-// 高解像度降水ナウキャストのタイル画像を取得し、指定した緯度経度における
-// 「今まさに降っている雨の強さ」を0〜4のレベルで判定するモジュール。
-// lib/lightning.mjs（雷ナウキャスト=thns）と同じタイル配信の仕組みを使うが、
-// 要素名が異なる（hrpns）ため別モジュールとして実装している。
-//
-// 参照: https://www.jma.go.jp/bosai/jmatile/data/nowc/{basetime}/none/{validtime}/surf/hrpns/{z}/{x}/{y}.png
-//   - 250m格子（land沿岸部、直近30分）→1km格子（35〜60分先）、5分ごと更新、
-//     予報時間は最大60分先までの「高解像度降水ナウキャスト」の配信タイル
-//     （気象庁の解説ページ・OSS実装(kikuchan/jmamap, Kanahiro/jma-utils)で
-//     要素名"hrpns"を確認）。ログイン等は不要。
-//
-// 【未検証の前提であることの明示（重要）】
-// ・basetime/validtimeの一覧取得に使うtargetTimes_N3.jsonは、既存のlightning.mjs
-//   が雷ナウキャスト(thns)向けに使っているのと同じエンドポイントを流用している。
-//   雷ナウキャストと高解像度降水ナウキャストが同一の更新サイクル・同一の
-//   targetTimesファイルを共有しているという確証は取れておらず、OSS実装からの
-//   間接的な傍証（同じ構造の中にhrpns/hrpns_ndが値として現れる例）に基づく
-//   推測である。もし前提が誤っていた場合、症状としては「常にタイルが404＝
-//   常にlevel:0（降水なし）」という形で静かに間違い続ける可能性があるため、
-//   運用開始後はdiagnostics（tileHitCount等）を確認し、明らかに全地点が
-//   level:0のまま推移していないか検証することを推奨する。
-// ・雨量強度と色の対応（何mm/hが何色か）についても、気象庁は機械可読な
-//   色凡例表を公開していない（画像でのみ提供）ため、雷ナウキャストと同様に
-//   色相ベースのヒューリスティックで代用している。実際の色味とずれている
-//   可能性がある。
-// ------------------------------------------------------------------
-
-import { PNG } from 'pngjs';
-import { lonLatToTile, rgbToHsl } from './lightning.mjs';
-
-const TILE_ZOOM = 8;
-const UA = { 'User-Agent': 'hailscope-app/1.0 (+hail risk index; contact via app support)' };
-
-// 一般的な雨量レーダーの配色（弱い=寒色〜強い=暖色〜非常に強い=赤紫）という
-// 説明に基づく大まかな色相バケット。正式な凡例表が非公開のための代用。
-const LEVEL_HUE_HINTS = [
-  { level: 1, hueRange: [180, 250], note: '青（弱い降水、目安1〜5mm/h程度）' },
-  { level: 2, hueRange: [80, 179],  note: '緑〜黄緑（やや強い降水、目安5〜20mm/h程度）' },
-  { level: 3, hueRange: [30, 79],   note: '黄〜橙（強い降水、目安20〜50mm/h程度）' },
-  { level: 4, hueRange: [330, 360], note: '赤〜マゼンタ（非常に強い降水、目安50mm/h以上）', altRange: [0, 15] },
-];
-
-function classifyPrecipPixel(r, g, b, a){
-  if(a < 40) return 0; // 透明 = 降水なし
-  const { h, s, l } = rgbToHsl(r, g, b);
-  if(s < 0.2 || l > 0.95 || l < 0.05) return 0; // 彩度が低い/白抜け/黒すぎる = 背景扱い
-  for(const hint of LEVEL_HUE_HINTS){
-    const [lo, hi] = hint.hueRange;
-    if(h >= lo && h <= hi) return hint.level;
-    if(hint.altRange){
-      const [alo, ahi] = hint.altRange;
-      if(h >= alo && h <= ahi) return hint.level;
-    }
-  }
-  return 0;
-}
-
-let cachedTargetTimes = null;
-let cachedTargetTimesAt = 0;
-const TARGET_TIMES_TTL_MS = 2 * 60 * 1000;
-
-async function getLatestTargetTimes(){
-  if(cachedTargetTimes && (Date.now() - cachedTargetTimesAt) < TARGET_TIMES_TTL_MS){
-    return cachedTargetTimes;
-  }
-  const url = 'https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N3.json';
-  const res = await fetch(url, { headers: UA });
-  if(!res.ok) throw new Error(`targetTimes fetch failed: HTTP ${res.status}`);
-  const data = await res.json();
-  cachedTargetTimes = data;
-  cachedTargetTimesAt = Date.now();
-  return data;
-}
-
-async function fetchTilePng(basetime, validtime, x, y, z){
-  const url = `https://www.jma.go.jp/bosai/jmatile/data/nowc/${basetime}/none/${validtime}/surf/hrpns/${z}/${x}/${y}.png`;
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 8000);
-  try{
-    const res = await fetch(url, { headers: UA, signal: ctrl.signal });
-    if(!res.ok) return null; // そのタイルにデータがない（降水なし）場合は404になることがある
-    const buf = Buffer.from(await res.arrayBuffer());
-    return PNG.sync.read(buf);
-  }catch(e){
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-// 指定した1地点（緯度経度）の現在の降水強度レベル（0〜4）を返す。
-// 取得・解析に失敗した場合は例外を投げず、level:0（降水なしと同等）で返すことで、
-// パイプライン全体が高解像度降水ナウキャストの障害で止まらないようにしている。
-export async function getPrecipNowcastLevel(lat, lon){
-  try{
-    const times = await getLatestTargetTimes();
-    const list = Array.isArray(times) ? times : (times?.targetTimes || []);
-    if(!list.length) return { level: 0, ok: false, reason: 'no-target-times' };
-    const latest = list[list.length - 1];
-    const basetime = latest.basetime || latest.baseTime;
-    const validtime = latest.validtime || latest.validTime || basetime;
-    if(!basetime) return { level: 0, ok: false, reason: 'no-basetime' };
-
-    const { x, y, z, px, py } = lonLatToTile(lon, lat, TILE_ZOOM);
-    const png = await fetchTilePng(basetime, validtime, x, y, z);
-    if(!png) return { level: 0, ok: true, reason: 'no-precip-or-tile-missing' };
-
-    const idx = (png.width * py + px) << 2;
-    const r = png.data[idx], g = png.data[idx + 1], b = png.data[idx + 2], a = png.data[idx + 3];
-    const level = classifyPrecipPixel(r, g, b, a);
-    return { level, ok: true, sample: { r, g, b, a } };
-  }catch(e){
-    return { level: 0, ok: false, reason: String(e) };
-  }
-}
-
-export { classifyPrecipPixel };
+// 都道府県庁所在地の代表座標（緯度, 経度）。
+// 雷ナウキャストのタイルサンプリングは市区町村ごとの座標までは用意していないため、
+// この代表地点1つを都道府県内の全市区町村で共有する（詳細は lib/lightning.mjs 参照）。
+export const PREF_CAPITAL_COORDS = {
+  '北海道':   [43.0642, 141.3469],
+  '青森県':   [40.8244, 140.7400],
+  '岩手県':   [39.7036, 141.1527],
+  '宮城県':   [38.2682, 140.8721],
+  '秋田県':   [39.7186, 140.1024],
+  '山形県':   [38.2404, 140.3633],
+  '福島県':   [37.7503, 140.4676],
+  '茨城県':   [36.3418, 140.4468],
+  '栃木県':   [36.5658, 139.8836],
+  '群馬県':   [36.3911, 139.0608],
+  '埼玉県':   [35.8569, 139.6489],
+  '千葉県':   [35.6047, 140.1233],
+  '東京都':   [35.6895, 139.6917],
+  '神奈川県': [35.4478, 139.6425],
+  '新潟県':   [37.9026, 139.0232],
+  '富山県':   [36.6953, 137.2113],
+  '石川県':   [36.5947, 136.6256],
+  '福井県':   [36.0652, 136.2216],
+  '山梨県':   [35.6642, 138.5686],
+  '長野県':   [36.6513, 138.1810],
+  '岐阜県':   [35.3912, 136.7223],
+  '静岡県':   [34.9769, 138.3831],
+  '愛知県':   [35.1802, 136.9066],
+  '三重県':   [34.7303, 136.5086],
+  '滋賀県':   [35.0045, 135.8686],
+  '京都府':   [35.0116, 135.7681],
+  '大阪府':   [34.6937, 135.5023],
+  '兵庫県':   [34.6913, 135.1830],
+  '奈良県':   [34.6851, 135.8048],
+  '和歌山県': [34.2261, 135.1675],
+  '鳥取県':   [35.5039, 134.2378],
+  '島根県':   [35.4723, 133.0505],
+  '岡山県':   [34.6618, 133.9344],
+  '広島県':   [34.3966, 132.4596],
+  '山口県':   [34.1859, 131.4714],
+  '徳島県':   [34.0658, 134.5593],
+  '香川県':   [34.3401, 134.0434],
+  '愛媛県':   [33.8417, 132.7660],
+  '高知県':   [33.5597, 133.5311],
+  '福岡県':   [33.6064, 130.4181],
+  '佐賀県':   [33.2494, 130.2988],
+  '長崎県':   [32.7448, 129.8737],
+  '熊本県':   [32.7898, 130.7417],
+  '大分県':   [33.2382, 131.6126],
+  '宮崎県':   [31.9111, 131.4239],
+  '鹿児島県': [31.5602, 130.5581],
+  '沖縄県':   [26.2124, 127.6809],
+};
