@@ -11,7 +11,6 @@ function html(status, body){
       .card{max-width:420px; text-align:center; background:#11172a; border:1px solid #232c45; border-radius:14px; padding:32px 28px;}
       h1{font-size:18px; margin-bottom:12px;}
       p{font-size:14px; color:#8a93b3; line-height:1.7;}
-      a{color:#7fe7ff;}
     </style></head><body><div class="card">${body}</div></body></html>`,
     { status, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
   );
@@ -22,19 +21,18 @@ export default async (req) => {
   const id = url.searchParams.get('id') || '';
   const token = url.searchParams.get('token') || '';
 
-  if(!id || !verifyToken('confirm', id, token)){
-    return html(400, '<h1>リンクが正しくありません</h1><p>お手数ですが、アプリから再度登録をお試しください。</p>');
+  if(!id || !verifyToken('unsubscribe', id, token)){
+    return html(400, '<h1>リンクが正しくありません</h1>');
   }
 
   const store = getStore('hail-registrations');
   const record = await store.get(id, { type: 'json' }).catch(()=>null);
   if(!record){
-    return html(404, '<h1>登録が見つかりません</h1><p>既に解除されている可能性があります。</p>');
+    return html(200, '<h1>解除済みです</h1><p>このメールアドレス・地域の登録は既に削除されています。</p>');
   }
 
-  record.status = 'active';
-  record.updatedAt = new Date().toISOString();
-  await store.setJSON(id, record);
+  // 登録情報を完全に削除する（保存を残さない）
+  await store.delete(id);
 
-  return html(200, `<h1>登録を確認しました</h1><p><b>${record.pref} ${record.city}</b><br>の降雹アラートが有効になりました。<br>このメールアドレスへの通知をいつでも解除できます（各通知メール内のリンクから）。</p>`);
+  return html(200, `<h1>通知を解除しました</h1><p><b>${record.pref} ${record.city}</b><br>宛のメール通知登録を削除しました。<br>登録されていた情報はサーバーから完全に削除されています。</p>`);
 };

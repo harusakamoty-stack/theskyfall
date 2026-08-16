@@ -90,9 +90,9 @@ export default async (req) => {
     try{
       await sendEmail({
         to: record.email,
-        subject: '【愛車雹アラート】通知登録の確認',
+        subject: '【雹害アラート】通知登録の確認',
         html: `
-          <p>愛車雹アラートで、以下の地域のメール通知登録を受け付けました。</p>
+          <p>雹害アラートで、以下の地域のメール通知登録を受け付けました。</p>
           <p><b>${record.pref} ${record.city}</b></p>
           <p>このメールアドレスの登録を確認し、通知を有効にするには、以下のリンクをクリックしてください。</p>
           <p><a href="${confirmUrl}">${confirmUrl}</a></p>
