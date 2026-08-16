@@ -329,8 +329,8 @@ body{will-change:transform;}
 .gauge .num{
   position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
 }
-.gauge .num .n{font-family:var(--font-display); font-weight:900; font-size:37px;}
-.gauge .num .u{font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim); margin-top:-2px;}
+.gauge .num .n{font-family:var(--font-display); font-weight:900; font-size:22px; line-height:1.2; max-width:112px; text-align:center;}
+.gauge .num .u{font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim); margin-top:2px;}
 .risk-label{font-family:var(--font-display); font-weight:700; font-size:15.5px; padding:5px 14px; border-radius:100px; letter-spacing:0.02em;}
 
 .detail-body h3{font-family:var(--font-display); font-size:24px; font-weight:700; margin-bottom:4px;}
@@ -595,7 +595,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   .detail-body h3{font-size:20.5px;}
   .gauge{width:120px; height:120px;}
   .gauge svg{width:120px; height:120px;}
-  .gauge .num .n{font-size:30.5px;}
+  .gauge .num .n{font-size:18px; max-width:92px;}
   .factor{font-size:13.5px; padding:6px 10px;}
   .advice{font-size:14.5px; padding:12px 14px;}
 
@@ -633,11 +633,12 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   <div class="wrap">
     <div class="eyebrow"><span class="dot"></span>JMA SIGNAL BASED ESTIMATE — 全国降雹リスク推定</div>
     <h1>雹害アラート</h1>
-    <p>気象庁が発表する天気図・大気の状態（不安定）・雷注意報・竜巻注意情報・台風進路などの公開情報をもとに、積乱雲が発達し雹（ひょう）が降りやすい条件を地域ごとにスコア化。当日から3日先まで、時間帯別に一目で確認できます。</p>
+    <p>気象庁が公開する天気予報・警報注意報（雷注意報等）・雷ナウキャスト・高解像度降水ナウキャストに加え、気象庁が無償公開していないCAPE（対流有効位置エネルギー）等の大気安定度データ（Open-Meteo経由、GFS等の数値予報モデル由来）と気圧の実況を15分おきに自動取得し、積乱雲が発達し雹（ひょう）が降りやすい条件を地域ごとにスコア化。当日から3日先まで、時間帯別に一目で確認できます。</p>
     <div class="meta">
       <div class="chip">対象期間 <b id="periodRangeText">—</b></div>
       <div class="chip">最終データ反映 <b id="lastUpdatedText">—</b></div>
-      <div class="chip">単位 <b>降雹ポテンシャル指数 0–100%</b></div>
+      <div class="chip">単位 <b>降雹ポテンシャル指数 0〜100（降水確率の％ではありません）</b></div>
+      <div class="chip" id="dataSourceChip">データ取得方式 <b id="dataSourceText">確認中…</b></div>
       <a class="chip chip-link" href="manual.html">📖 使い方マニュアル</a>
     </div>
   </div>
@@ -685,7 +686,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
 
   <div class="reg-card">
     <h2>登録地域とメール通知</h2>
-    <p class="reg-sub">上の全国ヒートマップで市区町村タイルを選択すると、その場でアラート登録とメール通知の設定ができます。指数が<b style="color:var(--text)">80%以上</b>になった際、確認済みのメールアドレスに自動で通知が届きます（下部の注記をご確認ください）。</p>
+    <p class="reg-sub">上の全国ヒートマップで市区町村タイルを選択すると、その場でアラート登録とメール通知の設定ができます。警戒レベルが<b style="color:var(--text)">「非常に高い」</b>になった際、確認済みのメールアドレスに自動で通知が届きます（下部の注記をご確認ください）。</p>
 
     <div class="reg-block">
       <h3><span class="ic">🗂️</span>登録済みの地域<span id="regCount" style="color:var(--text-faint); font-family:var(--font-mono); font-size:14px; font-weight:400;"></span></h3>
@@ -704,31 +705,30 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
     <h2>この指数の算出方法</h2>
 
     <div class="scale-guide">
-      <h3>指数のスケール感（0〜100%の目安）</h3>
-      <p class="scale-guide-lead">降水確率とは考え方が異なるため、同じ「60%」でも意味が変わります。数値を見るときは下記を目安にしてください。</p>
+      <h3>指数のスケール感（5段階の警戒レベル）</h3>
+      <p class="scale-guide-lead">降水確率の「％」とは考え方が異なる指数のため、数値そのものよりも下記5段階の「警戒レベル」で見ることをおすすめします。</p>
       <div class="scale-bar-visual"></div>
       <div class="scale-levels">
-        <div class="scale-level"><span class="dot" style="background:var(--r-0)"></span><b>0〜19%</b>&nbsp;低い</div>
-        <div class="scale-level"><span class="dot" style="background:var(--r-25)"></span><b>20〜39%</b>&nbsp;やや低い</div>
-        <div class="scale-level"><span class="dot" style="background:var(--r-50)"></span><b>40〜59%</b>&nbsp;中程度</div>
-        <div class="scale-level"><span class="dot" style="background:var(--r-75)"></span><b>60〜79%</b>&nbsp;高い</div>
-        <div class="scale-level"><span class="dot" style="background:var(--r-100)"></span><b>80〜100%</b>&nbsp;非常に高い（通知の基準）</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-0)"></span><b>低い</b>&nbsp;（指数0〜19）</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-25)"></span><b>やや低い</b>&nbsp;（指数20〜39）</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-50)"></span><b>中程度</b>&nbsp;（指数40〜59）</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-75)"></span><b>高い</b>&nbsp;（指数60〜79）</div>
+        <div class="scale-level"><span class="dot" style="background:var(--r-100)"></span><b>非常に高い</b>&nbsp;（指数80〜100・通知の基準）</div>
       </div>
-      <p class="scale-note">実際の算出結果では、全国47都道府県 × 4日間 × 6時間帯（合計940通り）のうち<b>約7割は20%未満</b>にとどまり、<b>60%以上になるのは全体の1.5%程度</b>、通知の基準となる<b>80%以上に達するのは0.1%程度</b>しかありません。天気予報の「降水確率60%」であれば「かなり降りそう」という感覚になりますが、本アプリの指数はそれとは別のスケールで、複数の悪条件（大気の不安定・雷の発生しやすさ・地形・時間帯など）が重なった時だけ数値が跳ね上がるように設計しています。そのため40〜50%台でもすでに「通常よりは注意が必要な状態」を意味し、降水確率の感覚で見るより低めの数値で危険度が上がっている、とご理解ください。</p>
+      <p class="scale-note">実際の算出結果では、全国47都道府県 × 4日間 × 6時間帯（合計940通り）のうち<b>約7割は「低い」（指数20未満）</b>にとどまり、<b>「高い」以上になるのは全体の1.5%程度</b>、通知の基準となる<b>「非常に高い」に達するのは0.1%程度</b>しかありません。天気予報の「降水確率60%」であれば「かなり降りそう」という感覚になりますが、本アプリの指数はそれとは別のスケールで、複数の悪条件（大気の不安定・雷の発生しやすさ・地形・時間帯など）が重なった時だけ数値が跳ね上がるように設計しています。そのため「中程度」の段階でもすでに「通常よりは注意が必要な状態」を意味し、降水確率の感覚で見るより低めの数値で危険度が上がっている、とご理解ください。</p>
     </div>
 
     <div class="method-summary">
-      <p>指数には、気象庁の「大気の状態が不安定」等の発表、雷注意報・雷ナウキャストの発生確率、台風・低気圧の進路予測、内陸・山沿いの地形傾向、時間帯ごとの積乱雲の発達しやすさ、市区町村単位の地域補正などを組み合わせています。降水確率とは異なり、複数の悪条件が重なった時だけ数値が跳ね上がるよう非線形の補正をかけているため、通常は低めの数値になります。</p>
+      <p>指数は、気象庁が公開している天気予報（降水確率等）・警報注意報（雷注意報等）・雷ナウキャスト・高解像度降水ナウキャストのデータに加え、気象庁が無償公開していないCAPE・Lifted Index・0℃高度等の大気安定度データと気圧の実況（Open-Meteo経由、米国GFS等の数値予報モデル由来）を15分おきに自動取得し、内陸・山沿いの地形傾向や時間帯ごとの積乱雲の発達しやすさを加味して算出しています。降水確率とは異なり、複数の悪条件が重なった時だけ数値が跳ね上がるよう非線形の補正をかけているため、通常は低めの数値になります。なお、警報・雷ナウキャスト・高解像度降水ナウキャストのような直近の実況情報は「現在に近い時間帯」にのみ反映されます。大気安定度データは予報モデル由来のため明日以降も使われますが、これらの数値を組み合わせた指数化の重み付けは気象学の一般的な考え方を参考にした運営者独自の簡易式であり、公式の解析・予測モデルと同等の精度ではありません。</p>
       <a class="chip chip-link" href="manual.html#s4b">📖 算出に使っている要素の詳しい説明はマニュアルへ</a>
     </div>
     <div class="disclaimer">
-      <b>ご利用にあたって：</b>本アプリの数値は気象庁が発表する天気図・注意報・解説情報等の公開情報を参考人が独自に指数化した「参考推定値」であり、気象庁による公式の降雹予報ではありません（気象庁は雹単独の注意報・予報を発表していません）。実際の外出・農作業・車両保護等の判断は、気象庁「今後の雨」「雷ナウキャスト」「竜巻注意情報」および最新の警報・注意報を必ずご確認のうえ行ってください。
+      <b>ご利用にあたって：</b>本アプリの数値は気象庁が公開している天気予報・警報注意報・雷ナウキャスト・高解像度降水ナウキャストと、Open-Meteo経由で取得した大気安定度データ（CAPE等）を運営者が独自に指数化した「参考推定値」であり、気象庁による公式の降雹予報ではありません（気象庁は雹単独の注意報・予報を発表していません）。実際の外出・農作業・車両保護等の判断は、気象庁「今後の雨」「雷ナウキャスト」「竜巻注意情報」および最新の警報・注意報を必ずご確認のうえ行ってください。
       <div class="sources">
-        <span>気象庁 天気図・警報注意報</span>
-        <span>気象庁 竜巻注意情報</span>
-        <span>tenki.jp 発雷確率</span>
-        <span>ウェザーニュース</span>
-        <span>TBS NEWS DIG</span>
+        <span>気象庁 天気予報・警報注意報</span>
+        <span>気象庁 雷ナウキャスト</span>
+        <span>気象庁 高解像度降水ナウキャスト</span>
+        <span>Open-Meteo（CAPE等の大気安定度・気圧）</span>
       </div>
     </div>
   </div>
@@ -3185,6 +3185,12 @@ const SLOTS = [
 
 let state = {day:0, slot:2}; // default: today, afternoon
 
+// 気象庁の実データ（天気予報・警報注意報・雷ナウキャスト）に基づき15分おきに
+// 更新されるリアルタイム指数。ページ読み込み時に非同期で取得し、取得できるまでは
+// null のまま（=下の各computeScore/computeMuniScoreが自動的にv1のフォールバック式を使う）。
+let liveRiskData = null;
+let liveRiskDataStatus = 'loading'; // 'loading' | 'live' | 'stale' | 'unavailable'
+
 /* deterministic pseudo-random variance from name */
 function hashVariance(name){
   let h=0;
@@ -3200,13 +3206,29 @@ function hashVariance(name){
 // 指数が跳ね上がる（＝降雨・雷の確率のように常時高止まりしない）ようにしています。
 const HAIL_CURVE_K = 1.45;
 
-function computeScore(pref, dayIdx, slotIdx){
+// 参考推定式（v1）。気象庁のリアルタイムデータ（/.netlify/functions/risk-data）が
+// 取得できなかった場合や、対応する地域のデータがまだ無い場合にのみ使用される
+// フォールバック用の簡易モデルで、固定テーブルと時間帯係数だけで算出する。
+function computeScoreFallback(pref, dayIdx, slotIdx){
   const base = REGION_BASE[pref[2]][dayIdx];
   const bonus = MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? 9 : 0;
   const instability = Math.min(100, (base + bonus) * SLOTS[slotIdx].mult);
   const hail = Math.pow(instability / 100, HAIL_CURVE_K) * 100;
   const variance = hashVariance(pref[0]);
   return Math.max(1, Math.min(96, Math.round(hail + variance)));
+}
+
+// 気象庁の実データ（天気予報・警報注意報・雷ナウキャスト）に基づいて15分おきに
+// 更新されるリアルタイム指数（liveRiskData）が取得できていればそちらを優先し、
+// 取得できていない・該当データが無い場合のみ上記のフォールバック式を使う。
+function computeScore(pref, dayIdx, slotIdx){
+  const liveEntry = liveRiskData?.prefScores?.[pref[0]]?.[dayIdx]?.[slotIdx];
+  // dataAvailable(降水確率が取れたか)だけでなく、警報・雷ナウキャストという
+  // "now"限定の実況シグナルが実際に反映されたか(hasRealSignal)も合わせて見る。
+  // どちらも無い（=中立値で埋めただけ）場合のみ、地域ごとに調整されたv1
+  // フォールバック式を使う。
+  if(liveEntry && liveEntry.hasRealSignal && typeof liveEntry.score === 'number') return liveEntry.score;
+  return computeScoreFallback(pref, dayIdx, slotIdx);
 }
 
 function escapeAttr(str){
@@ -3244,6 +3266,50 @@ function adviceFor(v){
   if(v<60) return '大気の状態が不安定になりやすいタイミングです。屋外駐車では屋根のある場所を選び、洗濯物や農作物カバーの準備をおすすめします。';
   if(v<80) return '積乱雲が発達し、雷・突風とあわせて雹が降る可能性があります。車両はガレージや屋根下へ、外出予定は柔軟に見直してください。';
   return '雹害が発生しやすい非常に不安定な大気状態です。車両・農作物の保護を最優先に、最新の気象庁警報・注意報を必ず確認してください。';
+}
+
+// CAPE(対流有効位置エネルギー)を専門用語なしの一言に変換する簡易ラベル。
+// 正式な基準値ではなく、大まかな目安（本アプリのcomputeInstabilityScoreと
+// 同じ考え方の閾値）。
+function capeLabel(cape){
+  if(typeof cape !== 'number') return null;
+  if(cape < 300) return '安定';
+  if(cape < 1000) return 'やや不安定';
+  if(cape < 2000) return '不安定';
+  return '非常に不安定';
+}
+
+function pressureTrendLabel(trend){
+  if(typeof trend !== 'number') return null;
+  if(trend <= -3) return '急降下中（前線・低気圧の接近に注意）';
+  if(trend <= -1) return 'やや下降傾向';
+  if(trend >= 1) return '上昇傾向';
+  return 'ほぼ横ばい';
+}
+
+// 都道府県代表地点における「現在」の参考情報（CAPE・気圧・直近レーダー実況）を
+// 簡単な日本語1〜2行にまとめる。"現在に最も近い時間帯"を見ている時だけ意味を
+// 持つ補助情報のため、それ以外のスロットを見ている時はnullを返して非表示にする。
+function nowContextLine(prefName){
+  if(!liveRiskData || liveRiskData.currentSlotIdx == null) return null;
+  if(state.day !== 0 || state.slot !== liveRiskData.currentSlotIdx) return null;
+  const ctx = liveRiskData.nowContextByPref?.[prefName];
+  if(!ctx) return null;
+
+  const parts = [];
+  const cLabel = capeLabel(ctx.cape);
+  if(cLabel) parts.push(`大気の状態: ${cLabel}`);
+  if(typeof ctx.pressureMsl === 'number'){
+    const tLabel = pressureTrendLabel(ctx.pressureTrendHpaPer3h);
+    parts.push(`気圧 ${Math.round(ctx.pressureMsl)}hPa${tLabel ? '（'+tLabel+'）' : ''}`);
+  }
+  const radarBits = [];
+  if(ctx.precipNowcastLevel > 0) radarBits.push('降水を検知');
+  if(ctx.lightningLevel > 0) radarBits.push('雷活動を検知');
+  if(radarBits.length) parts.push(`直近レーダー: ${radarBits.join('・')}`);
+
+  if(!parts.length) return null;
+  return parts.join(' ／ ');
 }
 
 /* ================= BUILD UI ================= */
@@ -3350,12 +3416,25 @@ function buildMuniGrid(prefName){
   lastBuiltMuniPref = prefName;
 }
 
-function computeMuniScore(prefName, muniName, dayIdx, slotIdx){
+// 市区町村単位のフォールバック式（v1）。都道府県スコアに、市区町村名から
+// 機械的に算出した固定オフセットを加えるだけの簡易モデル。
+function computeMuniScoreFallback(prefName, muniName, dayIdx, slotIdx){
   const pref = PREFS.find(p=>p[0]===prefName);
   if(!pref) return 0;
-  const prefScore = computeScore(pref, dayIdx, slotIdx);
+  const prefScore = computeScoreFallback(pref, dayIdx, slotIdx);
   const v = hashVariance(prefName+'|'+muniName);
   return Math.max(1, Math.min(97, Math.round(prefScore + v*1.3)));
+}
+
+// 気象庁の実データに基づくリアルタイム指数（liveRiskData）を優先し、
+// 該当する市区町村のデータが無ければ都道府県フォールバック式を使う。
+function computeMuniScore(prefName, muniName, dayIdx, slotIdx){
+  const liveCity = liveRiskData?.cityScores?.[prefName]?.[muniName];
+  const liveCell = liveCity?.days?.[dayIdx]?.[slotIdx];
+  // computeScoreと同様、実シグナル（降水確率取得成功、または警報・雷ナウキャストの
+  // 反映）が無い中立値だけの場合はv1フォールバックを使う。
+  if(liveCell && liveCell.hasRealSignal && typeof liveCell.score === 'number') return liveCell.score;
+  return computeMuniScoreFallback(prefName, muniName, dayIdx, slotIdx);
 }
 
 function selectPref(name){
@@ -3437,20 +3516,20 @@ function refresh(){
     <div class="stat-card danger">
       <div class="label">全国最高リスク</div>
       <div class="value">${top.name}</div>
-      <div class="sub">指数 ${top.val}%（${riskMeta(top.val).label}）</div>
+      <div class="sub">${riskMeta(top.val).label}（指数 ${top.val}）</div>
     </div>
     <div class="stat-card warn">
-      <div class="label">警戒レベル該当（60%以上）</div>
+      <div class="label">警戒レベル該当（高い以上）</div>
       <div class="value">${dangerCount}<span style="font-size:15.5px;color:var(--text-dim)"> 都道府県</span></div>
       <div class="sub">${DAYS[state.day].d} / ${SLOTS[state.slot].label}</div>
     </div>
     <div class="stat-card">
       <div class="label">全国平均指数</div>
-      <div class="value">${avg}%</div>
+      <div class="value">${avg}<span style="font-size:15.5px;color:var(--text-dim)"> / 100</span></div>
       <div class="sub">47都道府県平均</div>
     </div>
     <div class="stat-card ${regAlertCount>0 ? 'danger':''}">
-      <div class="label">登録地域の警戒（80%以上）</div>
+      <div class="label">登録地域の警戒（非常に高い）</div>
       <div class="value">${regAlertCount}<span style="font-size:15.5px;color:var(--text-dim)"> / ${registered.length} 件</span></div>
       <div class="sub">表示中の条件での判定</div>
     </div>
@@ -3477,18 +3556,20 @@ function renderDetail(top){
             <circle class="fg" cx="75" cy="75" r="66" stroke="${meta.color}"
               stroke-dasharray="${dash} ${circumference}"></circle>
           </svg>
-          <div class="num"><div class="n">${v}<span style="font-size:17.5px">%</span></div><div class="u">HAIL INDEX</div></div>
+          <div class="num"><div class="n" style="color:${meta.color}">${meta.label}</div><div class="u">HAIL INDEX</div></div>
         </div>
-        <div class="risk-label" style="background:${meta.color}22; color:${meta.color}; border:1px solid ${meta.color}55;">${meta.label}</div>
+        <div class="risk-label" style="background:var(--line-soft); color:var(--text-dim); border:1px solid var(--line);">指数 ${v} / 100</div>
       </div>
       <div class="detail-body">
         <h3>${selectedMuni}</h3>
         <span class="region-tag">${drillPref} ・ ${DAYS[state.day].label}（${DAYS[state.day].d}） ・ ${SLOTS[state.slot].label}（${SLOTS[state.slot].d}）の推定</span>
+        <div style="font-size:12.5px; color:var(--text-faint); margin-bottom:6px;">この地域で雹が発生しやすいとされる一般的な傾向（気候的背景・今回の指数の直接の算出根拠ではありません）</div>
         <div class="factors">
           ${REGION_FACTORS[pref[2]].map(f=>`<div class="factor"><span class="ic">⚡</span>${f}</div>`).join('')}
           ${MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? '<div class="factor"><span class="ic">⛰️</span>山沿い・内陸性の積乱雲発達リスク</div>' : ''}
         </div>
         <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
+        ${(() => { const line = nowContextLine(drillPref); return line ? `<div style="margin-top:8px; font-size:12.5px; color:var(--text-faint);">現在の参考情報（気象庁ナウキャスト・気圧配置より）： ${line}</div>` : ''; })()}
         <div class="detail-alert">
           ${already ? `<div class="detail-alert-status">✓&nbsp;この地域は登録済みです</div>` : ''}
           <div class="field-row">
@@ -3496,7 +3577,7 @@ function renderDetail(top){
             <input type="email" id="detailEmail" placeholder="you@example.com" value="${escapeAttr(contact.email||'')}" autocomplete="off">
           </div>
           <div class="field-row checks">
-            <label><input type="checkbox" id="detailEmailOn" ${contact.email_on!==false?'checked':''}>指数が80%以上になったらメールで知らせる</label>
+            <label><input type="checkbox" id="detailEmailOn" ${contact.email_on!==false?'checked':''}>警戒レベルが「非常に高い」になったらメールで知らせる</label>
           </div>
           <button class="btn" id="detailRegBtn">${already ? '設定を更新して確認メールを送信' : '＋ この地域を登録してメール通知を設定'}</button>
         </div>
@@ -3526,18 +3607,20 @@ function renderDetail(top){
             <circle class="fg" cx="75" cy="75" r="66" stroke="${meta.color}"
               stroke-dasharray="${dash} ${circumference}"></circle>
           </svg>
-          <div class="num"><div class="n">${v}<span style="font-size:17.5px">%</span></div><div class="u">HAIL INDEX</div></div>
+          <div class="num"><div class="n" style="color:${meta.color}">${meta.label}</div><div class="u">HAIL INDEX</div></div>
         </div>
-        <div class="risk-label" style="background:${meta.color}22; color:${meta.color}; border:1px solid ${meta.color}55;">${meta.label}</div>
+        <div class="risk-label" style="background:var(--line-soft); color:var(--text-dim); border:1px solid var(--line);">指数 ${v} / 100</div>
       </div>
       <div class="detail-body">
         <h3>${drillPref}（都道府県全体）</h3>
         <span class="region-tag">${DAYS[state.day].label}（${DAYS[state.day].d}） ・ ${SLOTS[state.slot].label}（${SLOTS[state.slot].d}）の推定</span>
+        <div style="font-size:12.5px; color:var(--text-faint); margin-bottom:6px;">この地域で雹が発生しやすいとされる一般的な傾向（気候的背景・今回の指数の直接の算出根拠ではありません）</div>
         <div class="factors">
           ${REGION_FACTORS[pref[2]].map(f=>`<div class="factor"><span class="ic">⚡</span>${f}</div>`).join('')}
           ${MOUNTAIN_BONUS.has(pref[0].replace('都','').replace('府','').replace('県','')) ? '<div class="factor"><span class="ic">⛰️</span>山沿い・内陸性の積乱雲発達リスク</div>' : ''}
         </div>
         <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
+        ${(() => { const line = nowContextLine(drillPref); return line ? `<div style="margin-top:8px; font-size:12.5px; color:var(--text-faint);">現在の参考情報（気象庁ナウキャスト・気圧配置より）： ${line}</div>` : ''; })()}
         <div style="margin-top:14px; font-size:13.5px; color:var(--text-faint);">上のヒートマップで市区町村タイルを選択すると、その地域の詳細と、アラート登録・メール通知の設定欄が表示されます。</div>
       </div>
     `;
@@ -3545,7 +3628,7 @@ function renderDetail(top){
   }
 
   if(!selected){
-    detailEl.innerHTML = `<div class="detail-empty">都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。<br>現在の最高リスクは <b style="color:var(--text)">${top.name}（${top.val}%）</b> です。</div>`;
+    detailEl.innerHTML = `<div class="detail-empty">都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。<br>現在の最高リスクは <b style="color:var(--text)">${top.name}（${riskMeta(top.val).label}・指数${top.val}）</b> です。</div>`;
     return;
   }
 }
@@ -3610,7 +3693,7 @@ function renderRegisteredList(){
     const col = colorForScore(v);
     const meta = riskMeta(v);
     const fc = forecastPeak(r.pref, r.city);
-    const fcHtml = fc.hit ? `<div class="ri-forecast">⚠ ${DAYS[fc.hit.d].label} ${SLOTS[fc.hit.s].label}に80%到達の見込み（${fc.hit.v}%）</div>` : '';
+    const fcHtml = fc.hit ? `<div class="ri-forecast">⚠ ${DAYS[fc.hit.d].label} ${SLOTS[fc.hit.s].label}に「非常に高い」到達の見込み（指数${fc.hit.v}）</div>` : '';
     return `
       <div class="reg-item ${v>=80?'alerting':''}">
         <div class="dot-score" style="background:${col};">${v}</div>
@@ -3736,8 +3819,41 @@ document.getElementById('copyLinkBtn').onclick = async ()=>{
   }
 };
 
+/* ================= 気象庁リアルタイムデータの取得 ================= */
+// /.netlify/functions/risk-data から最新スナップショットを取得する。
+// 失敗しても例外を投げず、liveRiskDataはnullのまま（=全域が自動的に
+// v1のフォールバック式で表示される）。取得に成功したら画面を再描画して
+// リアルタイムデータに切り替える。
+async function loadLiveRiskData(){
+  const dataSourceText = document.getElementById('dataSourceText');
+  try{
+    const res = await fetch('/.netlify/functions/risk-data', { cache: 'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if(!data.available){
+      liveRiskData = null;
+      liveRiskDataStatus = 'unavailable';
+      if(dataSourceText) dataSourceText.textContent = '参考推定値（気象庁データ未取得）';
+      return;
+    }
+    liveRiskData = data;
+    liveRiskDataStatus = data.stale ? 'stale' : 'live';
+    if(dataSourceText){
+      dataSourceText.textContent = data.stale
+        ? '気象庁データ（更新遅延中）'
+        : '気象庁リアルタイムデータ';
+    }
+    refresh(); // 取得完了後に実データで再描画する
+  }catch(e){
+    liveRiskData = null;
+    liveRiskDataStatus = 'unavailable';
+    if(dataSourceText) dataSourceText.textContent = '参考推定値（気象庁データ未取得）';
+  }
+}
+
 /* ================= 初期化 ================= */
-refresh();
+refresh(); // まずはv1のフォールバック式で即座に表示し、初回表示を待たせない
+loadLiveRiskData(); // 取得でき次第、気象庁の実データへ切り替える
 
 /* スマートフォン等、横幅が狭い画面では初期表示位置を関東周辺（東京都）に合わせて、
    最初から意味のあるエリアが見えるようにする（コンパクト表示では横スクロールが
