@@ -349,7 +349,25 @@ body{will-change:transform;}
   padding:14px 16px; border-radius:0 10px 10px 0;
 }
 .advice b{color:var(--text);}
-.detail-empty{display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text-faint); font-size:15px; grid-column:1/-1; text-align:center; line-height:1.8;}
+.detail-empty{grid-column:1/-1; display:flex; flex-wrap:wrap; gap:16px;}
+.detail-empty-panel{
+  flex:1 1 220px;
+  background:var(--bg-1);
+  border:1px solid var(--line-soft);
+  border-radius:14px;
+  padding:22px;
+  color:var(--text-faint);
+  font-size:14.5px;
+  line-height:1.8;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.detail-empty-panel p{margin:0;}
+.detail-empty-panel b{color:var(--text);}
+.detail-empty-panel .risk-name{font-family:var(--font-display); font-weight:700; color:var(--text);}
+@media (max-width:680px){.detail-empty{flex-direction:column;}}
 
 /* ---------- METHOD ---------- */
 .method{
@@ -681,7 +699,7 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   </div>
 
   <div class="detail" id="detail">
-    <div class="detail-empty">都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。</div>
+    <div class="detail-empty"><div class="detail-empty-panel"><p>都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。</p></div></div>
   </div>
 
   <div class="reg-card">
@@ -3628,7 +3646,12 @@ function renderDetail(top){
   }
 
   if(!selected){
-    detailEl.innerHTML = `<div class="detail-empty">都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。<br>現在の最高リスクは <b style="color:var(--text)">${top.name}（${riskMeta(top.val).label}・指数${top.val}）</b> です。</div>`;
+    detailEl.innerHTML = `
+      <div class="detail-empty">
+        <div class="detail-empty-panel"><p>都道府県のタイルを選択すると、ここに降雹リスクの詳細（スコア・要因・行動の目安）が表示されます。</p></div>
+        <div class="detail-empty-panel"><p>現在の最高リスクは<span class="risk-name">${top.name}</span>（${riskMeta(top.val).label}・指数${top.val}）です。</p></div>
+      </div>
+    `;
     return;
   }
 }
