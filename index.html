@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -703,8 +704,8 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
   </div>
 
   <div class="reg-card">
-    <h2>登録地域とメール通知</h2>
-    <p class="reg-sub">上の全国ヒートマップで市区町村タイルを選択すると、その場でアラート登録とメール通知の設定ができます。警戒レベルが<b style="color:var(--text)">「非常に高い」</b>になった際、確認済みのメールアドレスに自動で通知が届きます（下部の注記をご確認ください）。</p>
+    <h2>登録地域（お気に入り）</h2>
+    <p class="reg-sub">上の全国ヒートマップで市区町村タイルを選択すると、その場で気になる地域をお気に入り登録できます。登録した地域は下の一覧にまとまり、現在の指数や今後のピークをまとめて確認できます。</p>
 
     <div class="reg-block">
       <h3><span class="ic">🗂️</span>登録済みの地域<span id="regCount" style="color:var(--text-faint); font-family:var(--font-mono); font-size:14px; font-weight:400;"></span></h3>
@@ -712,10 +713,10 @@ footer{text-align:center; padding:30px 20px 10px; color:var(--text-faint); font-
     </div>
 
     <div class="sim-note">
-      <b>ご注意：</b>メール通知は、ヒートマップで地域を選択した際に表示される「登録してメール通知を設定」ボタンを押し、確認メール内のリンクをクリックした地域のみ有効になります（なりすまし登録を防ぐための確認です）。
+      <b>メール通知機能について：</b>現在、警戒レベル到達時のメール自動通知機能は一時的に停止しています（準備中）。地域の登録（お気に入り表示）自体は通常通りご利用いただけます。
     </div>
     <div class="privacy-note">
-      <b>個人情報の取り扱いについて：</b>メール通知を設定すると、市区町村・メールアドレスは通知の送信専用サーバーに送られます。この情報は<b>アラート送信の目的にのみ</b>使用され、それ以外の用途には使用しません。第三者への提供も行いません。通知はいつでも解除でき、解除すると登録情報はサーバーから完全に削除されます（解除リンクは確認メール・通知メールの両方に記載されています）。地域を登録するだけでメール通知を設定しない場合、情報はお使いのブラウザ内にのみ保存され、外部には送信されません。
+      <b>個人情報の取り扱いについて：</b>登録した地域の情報は、お使いのブラウザ内（localStorage）にのみ保存され、外部のサーバーには送信されません。別のブラウザやスマホから見た場合は登録内容は共有されず、ブラウザのデータ消去やシークレットモードでは保存内容が消える場合があります。
     </div>
   </div>
 
@@ -3224,7 +3225,7 @@ function hashVariance(name){
 // 指数が跳ね上がる（＝降雨・雷の確率のように常時高止まりしない）ようにしています。
 const HAIL_CURVE_K = 1.45;
 
-// 参考推定式（v1）。気象庁のリアルタイムデータ（/.netlify/functions/risk-data）が
+// 参考推定式（v1）。気象庁のリアルタイムデータ（data/risk-data.json）が
 // 取得できなかった場合や、対応する地域のデータがまだ無い場合にのみ使用される
 // フォールバック用の簡易モデルで、固定テーブルと時間帯係数だけで算出する。
 function computeScoreFallback(pref, dayIdx, slotIdx){
@@ -3589,23 +3590,14 @@ function renderDetail(top){
         <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
         ${(() => { const line = nowContextLine(drillPref); return line ? `<div style="margin-top:8px; font-size:12.5px; color:var(--text-faint);">現在の参考情報（気象庁ナウキャスト・気圧配置より）： ${line}</div>` : ''; })()}
         <div class="detail-alert">
-          ${already ? `<div class="detail-alert-status">✓&nbsp;この地域は登録済みです</div>` : ''}
-          <div class="field-row">
-            <label>アラートメール</label>
-            <input type="email" id="detailEmail" placeholder="you@example.com" value="${escapeAttr(contact.email||'')}" autocomplete="off">
-          </div>
-          <div class="field-row checks">
-            <label><input type="checkbox" id="detailEmailOn" ${contact.email_on!==false?'checked':''}>警戒レベルが「非常に高い」になったらメールで知らせる</label>
-          </div>
-          <button class="btn" id="detailRegBtn">${already ? '設定を更新して確認メールを送信' : '＋ この地域を登録してメール通知を設定'}</button>
+          ${already ? `<div class="detail-alert-status">✓&nbsp;この地域はお気に入り登録済みです</div>` : ''}
+          <button class="btn" id="detailRegBtn">${already ? 'お気に入りから削除' : '＋ この地域をお気に入りに登録'}</button>
         </div>
       </div>
     `;
     const detailRegBtn = document.getElementById('detailRegBtn');
-    const detailEmailEl = document.getElementById('detailEmail');
-    const detailEmailOnEl = document.getElementById('detailEmailOn');
     if(detailRegBtn){
-      detailRegBtn.onclick = ()=> handleDetailRegister(drillPref, selectedMuni, detailEmailEl, detailEmailOnEl);
+      detailRegBtn.onclick = ()=> toggleFavoriteRegion(drillPref, selectedMuni);
     }
     return;
   }
@@ -3639,7 +3631,7 @@ function renderDetail(top){
         </div>
         <div class="advice"><b>行動の目安：</b>${adviceFor(v)}</div>
         ${(() => { const line = nowContextLine(drillPref); return line ? `<div style="margin-top:8px; font-size:12.5px; color:var(--text-faint);">現在の参考情報（気象庁ナウキャスト・気圧配置より）： ${line}</div>` : ''; })()}
-        <div style="margin-top:14px; font-size:13.5px; color:var(--text-faint);">上のヒートマップで市区町村タイルを選択すると、その地域の詳細と、アラート登録・メール通知の設定欄が表示されます。</div>
+        <div style="margin-top:14px; font-size:13.5px; color:var(--text-faint);">上のヒートマップで市区町村タイルを選択すると、その地域の詳細と、お気に入り登録欄が表示されます。</div>
       </div>
     `;
     return;
@@ -3725,20 +3717,10 @@ function renderRegisteredList(){
           <div class="ri-meta">${r.pref} ・ ${DAYS[state.day].label} ${SLOTS[state.slot].label} ・ ${meta.label}</div>
           ${fcHtml}
         </div>
-        <button class="ri-resend" data-pref="${r.pref}" data-city="${r.city}" title="確認メールを再送">📧</button>
         <button class="ri-remove" data-pref="${r.pref}" data-city="${r.city}" title="削除">×</button>
       </div>
     `;
   }).join('');
-  [...regListEl.querySelectorAll('.ri-resend')].forEach(btn=>{
-    btn.onclick = ()=>{
-      if(!contact.email){
-        showToast('先にヒートマップでこの地域を選択し、メールアドレスを入力してください。');
-        return;
-      }
-      sendConfirmationEmail(contact.email, btn.dataset.pref, btn.dataset.city);
-    };
-  });
   [...regListEl.querySelectorAll('.ri-remove')].forEach(btn=>{
     btn.onclick = ()=> removeRegisteredRegion(btn.dataset.pref, btn.dataset.city);
   });
@@ -3757,45 +3739,16 @@ function showToast(html){
   }, 5000);
 }
 
-/* ================= メール通知の登録・有効化（サーバー登録） ================= */
-// アプリ自体はサーバーを持たないが、Netlify Functions側の register エンドポイントに
-// メールアドレス＋地域を送信し、確認メール経由での二重オプトインでアラート送信を有効化する。
-// このボタンを押さない限り、メールアドレスがサーバーに送信されることはない。
-async function handleDetailRegister(pref, city, emailEl, emailOnEl){
-  const email = (emailEl?.value || '').trim();
-  const emailOn = emailOnEl ? emailOnEl.checked : true;
-  if(emailOn && !email){
-    showToast('メールアドレスを入力してください。');
-    return;
-  }
-  contact = { email, email_on: emailOn };
-  lsSet(LS_KEYS.CONTACT, contact);
-
+/* ================= 地域のお気に入り登録 ================= */
+// メール通知機能は現在停止中のため、地域の登録はブラウザ内（localStorage）だけで
+// 完結する「お気に入り」登録に簡略化している。サーバーへの通信は行わない。
+function toggleFavoriteRegion(pref, city){
   if(!isRegistered(pref, city)){
     addRegisteredRegion(pref, city); // 内部でrefresh()し、地域一覧・詳細パネルを再描画する
+    showToast(`<b>${city}</b>をお気に入りに登録しました。`);
   } else {
-    renderRegisteredList();
-  }
-
-  if(!emailOn || !email) return;
-  await sendConfirmationEmail(email, pref, city);
-}
-
-async function sendConfirmationEmail(email, pref, city){
-  showToast(`<b>${city}</b>宛に確認メールを送信しています…`);
-  try{
-    const res = await fetch('/.netlify/functions/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, pref, city }),
-    });
-    if(res.ok){
-      showToast(`<b>${city}</b>に確認メールを送信しました。メール内のリンクをクリックすると通知が有効になります。`);
-    }else{
-      showToast('確認メールの送信に失敗しました。しばらくしてから再度お試しください。');
-    }
-  }catch(e){
-    showToast('送信に失敗しました。このアプリがバックエンド付きで公開されているかご確認ください。');
+    removeRegisteredRegion(pref, city);
+    showToast(`<b>${city}</b>をお気に入りから削除しました。`);
   }
 }
 
@@ -3843,14 +3796,17 @@ document.getElementById('copyLinkBtn').onclick = async ()=>{
 };
 
 /* ================= 気象庁リアルタイムデータの取得 ================= */
-// /.netlify/functions/risk-data から最新スナップショットを取得する。
+// GitHub Actionsが15分おきに生成し、リポジトリにコミットしている
+// 静的JSON（data/risk-data.json）から最新スナップショットを取得する。
+// キャッシュ（ブラウザ・GitHub PagesのCDN）で古い内容が返るのを防ぐため、
+// 毎回異なるクエリ文字列を付けて取得する。
 // 失敗しても例外を投げず、liveRiskDataはnullのまま（=全域が自動的に
 // v1のフォールバック式で表示される）。取得に成功したら画面を再描画して
 // リアルタイムデータに切り替える。
 async function loadLiveRiskData(){
   const dataSourceText = document.getElementById('dataSourceText');
   try{
-    const res = await fetch('/.netlify/functions/risk-data', { cache: 'no-store' });
+    const res = await fetch('./data/risk-data.json?t=' + Date.now(), { cache: 'no-store' });
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     if(!data.available){
@@ -3859,10 +3815,14 @@ async function loadLiveRiskData(){
       if(dataSourceText) dataSourceText.textContent = '参考推定値（気象庁データ未取得）';
       return;
     }
+    // staleかどうかはサーバー側では計算されていない（静的ファイルのため）ので、
+    // 生成時刻(generatedAt)から自分で判定する（1時間以上更新が無ければ「古い」）。
+    const generatedAtMs = Date.parse(data.generatedAt || '');
+    const stale = !Number.isFinite(generatedAtMs) || (Date.now() - generatedAtMs) > 60*60*1000;
     liveRiskData = data;
-    liveRiskDataStatus = data.stale ? 'stale' : 'live';
+    liveRiskDataStatus = stale ? 'stale' : 'live';
     if(dataSourceText){
-      dataSourceText.textContent = data.stale
+      dataSourceText.textContent = stale
         ? '気象庁データ（更新遅延中）'
         : '気象庁リアルタイムデータ';
     }
