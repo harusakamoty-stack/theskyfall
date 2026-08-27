@@ -1,7 +1,14 @@
 // ------------------------------------------------------------------
-// 実データに基づく降雹ポテンシャル指数の更新バッチ（Netlify Background Function）。
+// 実データに基づく降雹ポテンシャル指数の更新処理（computeRiskData）。
 //
-// スケジュール実行の update-risk-data-trigger.mjs から呼び出され、以下を行う:
+// 元々はNetlify Background Functionとして実行していたが、Netlifyの利用制限に
+// 達したため、GitHub Actionsの定期実行（.github/workflows/update-risk-data.yml）
+// から呼び出す形に移行した（呼び出し口は scripts/generate-risk-data.mjs）。
+// 保存先もNetlify Blobsから、リポジトリ内の data/risk-data.json への直接コミット
+// に変更したため、このファイル自体はNetlify Blobsに一切依存しない
+// （computeRiskData()は純粋にデータを計算して返すだけで、保存は呼び出し側が行う）。
+//
+// 処理内容:
 //   1. JMAのエリアマスター(area.json)を取得し、都道府県⇔気象台、市区町村⇔二次細分区域
 //      の対応表を構築する（lib/jma-area.mjs）。
 //   2. 対応する気象台ごとに天気予報JSON・警報注意報JSONを取得する（lib/jma-fetch.mjs）。
@@ -13,21 +20,14 @@
 //      使える点がJMAの警報・雷ナウキャスト（"now"のみ）と異なる。
 //   4. 上記を組み合わせて、都道府県・市区町村 × 4日分 × 5時間帯の指数を算出する
 //      （lib/risk-scoring-v2.mjs）。
-//   5. 結果を Netlify Blobs に保存し、フロントエンド・アラート判定の両方から
-//      参照できるようにする。
-//
-// Background Function（ファイル名に -background サフィックス）として実行することで、
-// 通常の同期関数(60秒)やScheduled Function(30秒)の制限を超え、最大15分の実行時間を使える。
-// 実際に外部（jma.go.jp）へ100件以上のリクエストを送るため、この余裕が必要。
 //
 // 【失敗時の扱い】
-// このバッチが何らかの理由で失敗しても、フロントエンド・check-and-alertは
-// 「最新の保存済みデータがなければv1の静的推定式にフォールバックする」設計のため、
-// アプリ自体が止まることはない。ただし失敗が続くとデータが古くなるため、
-// 診断情報（diagnostics）を必ず保存し、後から確認できるようにしている。
+// この処理が何らかの理由で失敗しても、フロントエンドは「最新の保存済みデータが
+// なければv1の静的推定式にフォールバックする」設計のため、アプリ自体が止まる
+// ことはない。ただし失敗が続くとデータが古くなるため、診断情報（diagnostics）を
+// 必ず返し、呼び出し側（generate-risk-data.mjs）でログに残せるようにしている。
 // ------------------------------------------------------------------
 
-import { getStore } from '@netlify/blobs';
 import { getAreaMaster, officesByPrefecture, matchMunicipalitiesToClass20 } from './lib/jma-area.mjs';
 import { fetchOfficeData, addDaysToDateKey } from './lib/jma-fetch.mjs';
 import { lookupPopAndThunder } from './lib/jma-fetch.mjs';
@@ -41,8 +41,6 @@ import { MUNI_LIST } from './lib/muni-list.mjs';
 
 const DAY_COUNT = 4;
 const CONCURRENCY = 6;
-const RISK_STORE = 'hail-risk-data';
-const RISK_KEY = 'latest';
 
 export async function mapWithConcurrency(items, limit, fn){
   const results = new Array(items.length);
@@ -365,47 +363,6 @@ export function isExistingNewer(existing, result){
   return existingMs > newMs;
 }
 
-async function saveResult(result){
-  try{
-    const store = getStore(RISK_STORE);
-    if(result.ok){
-      const existing = await store.get(RISK_KEY, { type: 'json' }).catch(() => null);
-      if(isExistingNewer(existing, result)){
-        // 既存の保存データの方が新しい＝自分より後に開始した別の実行が先に書き込み済み。
-        // 古いデータで上書きしないようスキップする
-        // （＝常に「最後に完了した回」ではなく「最も新しく生成された回」が残るようにする）。
-        return { saved: false, skippedAsStale: true };
-      }
-    }
-    await store.setJSON(RISK_KEY, result);
-    return { saved: true };
-  }catch(e){
-    // Blobsへの保存自体が失敗した場合はログに残す術がないため、
-    // 少なくとも例外で落ちないようにだけしておく（次回実行に賭ける）。
-    return { saved: false, error: String(e) };
-  }
-}
-
-// Netlify Background Function のエントリポイント。
-// 実処理は computeRiskData() に委譲し、ここでは保存とレスポンス整形のみ行う。
-export default async () => {
-  const result = await computeRiskData();
-  const saveOutcome = await saveResult(result);
-
-  if(!result.ok){
-    return new Response(JSON.stringify({ ok: false, error: 'area-master-failed', detail: result.diagnostics?.fatalError }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } });
-  }
-
-  return new Response(JSON.stringify({
-    ok: true,
-    saved: saveOutcome.saved,
-    skippedAsStale: saveOutcome.skippedAsStale ?? false,
-    durationMs: result.diagnostics?.durationMs,
-    matchStats: result.diagnostics?.matchStats,
-    officeErrorCount: result.diagnostics?.officeErrors?.length ?? 0,
-    lightningErrorCount: result.diagnostics?.lightningErrors?.length ?? 0,
-    precipNowcastErrorCount: result.diagnostics?.precipNowcastErrors?.length ?? 0,
-    instabilityErrorCount: result.diagnostics?.instabilityErrors?.length ?? 0,
-  }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-};
+// 保存（data/risk-data.jsonへの書き込み）とisExistingNewerの実際の利用は
+// scripts/generate-risk-data.mjs 側で行う（このファイルはNetlify/GitHub Actions
+// どちらの実行環境にも依存しない、純粋なデータ計算ロジックだけを持つ）。
