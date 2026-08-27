@@ -12,7 +12,8 @@
 //   - class20s : 二次細分区域（警報・注意報の実際の発表単位。ほぼ市区町村に対応）
 //
 // このファイルはネットワーク越しに毎回 area.json を取りに行くと重い（かつ
-// JMA側への負荷にもなる）ため、Netlify Blobs に取得結果を24時間キャッシュする。
+// JMA側への負荷にもなる）ため、取得結果を24時間キャッシュする（実体は
+// ./file-store.mjs 経由でリポジトリ内の data/cache/ に保存されるJSONファイル）。
 // area.json はほぼ変化しない静的な参照データのため、多少古くても実用上問題ない。
 //
 // 【既知の限界】
@@ -27,7 +28,7 @@
 //   area.json の実際の構造が想定と異なっていた場合はこの一覧を調整する必要がある。
 // ------------------------------------------------------------------
 
-import { getStore } from '@netlify/blobs';
+import { getStore } from './file-store.mjs';
 import { PREFS } from './scoring.mjs';
 import { MUNI_LIST } from './muni-list.mjs';
 
